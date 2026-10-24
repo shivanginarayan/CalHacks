@@ -4,9 +4,9 @@
   "source_tick": 0,
   "source_event_sequence": 19,
   "end_tick": 12,
-  "snapshot_sha256": "56d24c20f5e2e259927693cb2d706bc0d191051b113e41397a5503512a9da52b",
+  "snapshot_sha256": "b2053a7362bc85639801fec993799f3240cbebdd9056a0d884af6270b301d7f5",
   "recommended_strategy": "household_cash",
-  "engine_version": "0.7.0",
+  "engine_version": "0.9.0",
   "seed": 42,
   "request": {
     "request_id": "comparison-example",
@@ -34,7 +34,11 @@
     "fiscal_transfer_cost_cents": 0,
     "public_loan_outstanding_cents": 0,
     "trade_credit_outstanding_cents": 0,
-    "supplier_contract_defaults": 0
+    "supplier_contract_defaults": 0,
+    "finished_goods_units": 0,
+    "produced_units_this_tick": 0,
+    "sold_units_this_tick": 0,
+    "unmet_demand_units_this_tick": 0
   },
   "branches": [
     {
@@ -60,7 +64,11 @@
         "fiscal_transfer_cost_cents": 0,
         "public_loan_outstanding_cents": 0,
         "trade_credit_outstanding_cents": 0,
-        "supplier_contract_defaults": 0
+        "supplier_contract_defaults": 0,
+        "finished_goods_units": 1693,
+        "produced_units_this_tick": 150,
+        "sold_units_this_tick": 48,
+        "unmet_demand_units_this_tick": 0
       },
       "timeline": [
         {
@@ -83,7 +91,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 0,
+          "produced_units_this_tick": 0,
+          "sold_units_this_tick": 0,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 1,
@@ -105,7 +117,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 207,
+          "produced_units_this_tick": 400,
+          "sold_units_this_tick": 193,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 2,
@@ -127,7 +143,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 359,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 148,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 3,
@@ -149,7 +169,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 524,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 135,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 4,
@@ -171,7 +195,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 652,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 172,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 5,
@@ -193,7 +221,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 813,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 139,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 6,
@@ -215,7 +247,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 939,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 74,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 7,
@@ -237,7 +273,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1084,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 55,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 8,
@@ -259,7 +299,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1222,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 62,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 9,
@@ -281,7 +325,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1340,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 82,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 10,
@@ -303,7 +351,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1470,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 70,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 11,
@@ -325,7 +377,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1591,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 79,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 12,
@@ -347,7 +403,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 0,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1693,
+          "produced_units_this_tick": 150,
+          "sold_units_this_tick": 48,
+          "unmet_demand_units_this_tick": 0
         }
       ],
       "audit": {
@@ -357,8 +417,9 @@
         "interbank_counterparties_match": true,
         "public_counterparties_match": true,
         "supplier_counterparties_match": true,
-        "transaction_count": 588,
-        "account_count": 275
+        "goods_inventory_matches": true,
+        "transaction_count": 647,
+        "account_count": 283
       },
       "delta_vs_no_intervention": {
         "employed_households": 0,
@@ -371,7 +432,11 @@
         "fiscal_transfer_cost_cents": 0,
         "public_loan_outstanding_cents": 0,
         "trade_credit_outstanding_cents": 0,
-        "supplier_contract_defaults": 0
+        "supplier_contract_defaults": 0,
+        "finished_goods_units": 0,
+        "produced_units_this_tick": 0,
+        "sold_units_this_tick": 0,
+        "unmet_demand_units_this_tick": 0
       }
     },
     {
@@ -397,7 +462,11 @@
         "fiscal_transfer_cost_cents": 0,
         "public_loan_outstanding_cents": 1000000,
         "trade_credit_outstanding_cents": 0,
-        "supplier_contract_defaults": 0
+        "supplier_contract_defaults": 0,
+        "finished_goods_units": 1864,
+        "produced_units_this_tick": 150,
+        "sold_units_this_tick": 35,
+        "unmet_demand_units_this_tick": 0
       },
       "timeline": [
         {
@@ -420,7 +489,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 0,
+          "produced_units_this_tick": 0,
+          "sold_units_this_tick": 0,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 1,
@@ -442,7 +515,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 207,
+          "produced_units_this_tick": 400,
+          "sold_units_this_tick": 193,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 2,
@@ -464,7 +541,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 359,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 148,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 3,
@@ -486,7 +567,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 524,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 135,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 4,
@@ -508,7 +593,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 652,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 172,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 5,
@@ -530,7 +619,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 813,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 139,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 6,
@@ -552,7 +645,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 971,
+          "produced_units_this_tick": 250,
+          "sold_units_this_tick": 92,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 7,
@@ -574,7 +671,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1153,
+          "produced_units_this_tick": 250,
+          "sold_units_this_tick": 68,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 8,
@@ -596,7 +697,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1326,
+          "produced_units_this_tick": 250,
+          "sold_units_this_tick": 77,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 9,
@@ -618,7 +723,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1483,
+          "produced_units_this_tick": 250,
+          "sold_units_this_tick": 93,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 10,
@@ -640,7 +749,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1660,
+          "produced_units_this_tick": 250,
+          "sold_units_this_tick": 73,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 11,
@@ -662,7 +775,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1749,
+          "produced_units_this_tick": 150,
+          "sold_units_this_tick": 61,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 12,
@@ -684,7 +801,11 @@
           "fiscal_transfer_cost_cents": 0,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1864,
+          "produced_units_this_tick": 150,
+          "sold_units_this_tick": 35,
+          "unmet_demand_units_this_tick": 0
         }
       ],
       "audit": {
@@ -694,8 +815,9 @@
         "interbank_counterparties_match": true,
         "public_counterparties_match": true,
         "supplier_counterparties_match": true,
-        "transaction_count": 630,
-        "account_count": 278
+        "goods_inventory_matches": true,
+        "transaction_count": 693,
+        "account_count": 286
       },
       "delta_vs_no_intervention": {
         "employed_households": 0,
@@ -708,7 +830,11 @@
         "fiscal_transfer_cost_cents": 0,
         "public_loan_outstanding_cents": 1000000,
         "trade_credit_outstanding_cents": 0,
-        "supplier_contract_defaults": 0
+        "supplier_contract_defaults": 0,
+        "finished_goods_units": 171,
+        "produced_units_this_tick": 0,
+        "sold_units_this_tick": -13,
+        "unmet_demand_units_this_tick": 0
       }
     },
     {
@@ -734,7 +860,11 @@
         "fiscal_transfer_cost_cents": 1000000,
         "public_loan_outstanding_cents": 1000000,
         "trade_credit_outstanding_cents": 0,
-        "supplier_contract_defaults": 0
+        "supplier_contract_defaults": 0,
+        "finished_goods_units": 1699,
+        "produced_units_this_tick": 200,
+        "sold_units_this_tick": 67,
+        "unmet_demand_units_this_tick": 0
       },
       "timeline": [
         {
@@ -757,7 +887,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 0,
+          "produced_units_this_tick": 0,
+          "sold_units_this_tick": 0,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 1,
@@ -779,7 +913,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 207,
+          "produced_units_this_tick": 400,
+          "sold_units_this_tick": 193,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 2,
@@ -801,7 +939,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 358,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 149,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 3,
@@ -823,7 +965,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 521,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 137,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 4,
@@ -845,7 +991,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 647,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 174,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 5,
@@ -867,7 +1017,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 803,
+          "produced_units_this_tick": 300,
+          "sold_units_this_tick": 144,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 6,
@@ -889,7 +1043,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 927,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 76,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 7,
@@ -911,7 +1069,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1069,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 58,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 8,
@@ -933,7 +1095,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1203,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 66,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 9,
@@ -955,7 +1121,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1321,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 82,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 10,
@@ -977,7 +1147,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1449,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 72,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 11,
@@ -999,7 +1173,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1566,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 83,
+          "unmet_demand_units_this_tick": 0
         },
         {
           "simulation_tick": 12,
@@ -1021,7 +1199,11 @@
           "fiscal_transfer_cost_cents": 1000000,
           "public_loan_outstanding_cents": 1000000,
           "trade_credit_outstanding_cents": 0,
-          "supplier_contract_defaults": 0
+          "supplier_contract_defaults": 0,
+          "finished_goods_units": 1699,
+          "produced_units_this_tick": 200,
+          "sold_units_this_tick": 67,
+          "unmet_demand_units_this_tick": 0
         }
       ],
       "audit": {
@@ -1031,8 +1213,9 @@
         "interbank_counterparties_match": true,
         "public_counterparties_match": true,
         "supplier_counterparties_match": true,
-        "transaction_count": 628,
-        "account_count": 278
+        "goods_inventory_matches": true,
+        "transaction_count": 688,
+        "account_count": 286
       },
       "delta_vs_no_intervention": {
         "employed_households": 5,
@@ -1045,7 +1228,11 @@
         "fiscal_transfer_cost_cents": 1000000,
         "public_loan_outstanding_cents": 1000000,
         "trade_credit_outstanding_cents": 0,
-        "supplier_contract_defaults": 0
+        "supplier_contract_defaults": 0,
+        "finished_goods_units": 6,
+        "produced_units_this_tick": 50,
+        "sold_units_this_tick": 19,
+        "unmet_demand_units_this_tick": 0
       }
     }
   ],

@@ -49,7 +49,8 @@ def build_comparison(source, fork_id, request):
     delta_fields = ("employed_households", "employment_rate", "business_defaults", "stressed_banks",
                     "insolvent_banks", "household_cash_cents", "public_support_disbursed_cents",
                     "fiscal_transfer_cost_cents", "public_loan_outstanding_cents",
-                    "trade_credit_outstanding_cents", "supplier_contract_defaults")
+                    "trade_credit_outstanding_cents", "supplier_contract_defaults", "finished_goods_units",
+                    "produced_units_this_tick", "sold_units_this_tick", "unmet_demand_units_this_tick")
     for branch in branches:
         branch["delta_vs_no_intervention"] = {key: branch["metrics"][key] - baseline[key] for key in delta_fields}
     def objective(branch):

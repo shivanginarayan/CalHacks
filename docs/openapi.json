@@ -3,7 +3,7 @@
   "info": {
     "title": "Economy God Mode",
     "description": "Financial simulation, Fork Reality, and central-bank agent workflows. All amounts are integer USD cents.",
-    "version": "0.7.0"
+    "version": "0.9.0"
   },
   "paths": {
     "/health": {
@@ -1064,6 +1064,302 @@
         }
       }
     },
+    "/api/worlds/{simulation_id}/agent-jobs": {
+      "post": {
+        "summary": "Enqueue Agent",
+        "operationId": "enqueue_agent_api_worlds__simulation_id__agent_jobs_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Agent Jobs",
+        "operationId": "list_agent_jobs_api_worlds__simulation_id__agent_jobs_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentJob"
+                  },
+                  "title": "Response List Agent Jobs Api Worlds  Simulation Id  Agent Jobs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/businesses/{business_id}/credit-jobs": {
+      "post": {
+        "summary": "Enqueue Credit",
+        "operationId": "enqueue_credit_api_worlds__simulation_id__businesses__business_id__credit_jobs_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Business Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreditRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/businesses/{buyer_id}/procurement-jobs": {
+      "post": {
+        "summary": "Enqueue Procurement",
+        "operationId": "enqueue_procurement_api_worlds__simulation_id__businesses__buyer_id__procurement_jobs_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "buyer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Buyer Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcurementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agent-jobs/{job_id}": {
+      "get": {
+        "summary": "Agent Job",
+        "operationId": "agent_job_api_agent_jobs__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agent-jobs/{job_id}/cancel": {
+      "post": {
+        "summary": "Cancel Agent Job",
+        "operationId": "cancel_agent_job_api_agent_jobs__job_id__cancel_post",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentJob"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/worlds/{simulation_id}/agent-runs": {
       "post": {
         "summary": "Agent Run",
@@ -1822,6 +2118,122 @@
         ],
         "title": "AgentApplication"
       },
+      "AgentJob": {
+        "properties": {
+          "job_id": {
+            "type": "string",
+            "title": "Job Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "central_bank",
+              "credit",
+              "procurement"
+            ],
+            "title": "Kind"
+          },
+          "actor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actor Id"
+          },
+          "request": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Request"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "completed",
+              "failed",
+              "cancelled"
+            ],
+            "title": "Status"
+          },
+          "created_at": {
+            "type": "number",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "number",
+            "title": "Updated At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "report_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Url"
+          },
+          "report_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Report Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "job_id",
+          "simulation_id",
+          "kind",
+          "actor_id",
+          "request",
+          "status",
+          "created_at",
+          "updated_at",
+          "error",
+          "run_id",
+          "report_url",
+          "report_status"
+        ],
+        "title": "AgentJob"
+      },
       "AgentRecommendation": {
         "properties": {
           "fork_id": {
@@ -2109,6 +2521,17 @@
             "type": "boolean",
             "title": "Supplier Counterparties Match",
             "default": true
+          },
+          "goods_inventory_matches": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goods Inventory Matches"
           },
           "transaction_count": {
             "type": "integer",
@@ -2706,6 +3129,39 @@
               }
             ],
             "title": "Materials Units"
+          },
+          "goods_units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goods Units"
+          },
+          "last_produced_units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Produced Units"
+          },
+          "production_capacity_units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Production Capacity Units"
           },
           "balance_sheet": {
             "$ref": "#/components/schemas/BalanceSheet"
@@ -3326,6 +3782,26 @@
           "supplier_contract_defaults": {
             "type": "integer",
             "title": "Supplier Contract Defaults",
+            "default": 0
+          },
+          "finished_goods_units": {
+            "type": "integer",
+            "title": "Finished Goods Units",
+            "default": 0
+          },
+          "produced_units_this_tick": {
+            "type": "integer",
+            "title": "Produced Units This Tick",
+            "default": 0
+          },
+          "sold_units_this_tick": {
+            "type": "integer",
+            "title": "Sold Units This Tick",
+            "default": 0
+          },
+          "unmet_demand_units_this_tick": {
+            "type": "integer",
+            "title": "Unmet Demand Units This Tick",
             "default": 0
           }
         },
@@ -4143,6 +4619,15 @@
                 "type": "null"
               }
             ]
+          },
+          "production_model": {
+            "type": "string",
+            "enum": [
+              "finite_v1",
+              "legacy_unlimited"
+            ],
+            "title": "Production Model",
+            "default": "legacy_unlimited"
           }
         },
         "type": "object",
@@ -4192,7 +4677,8 @@
             "type": "string",
             "enum": [
               "standard",
-              "credit_crunch"
+              "credit_crunch",
+              "supply_crunch"
             ],
             "title": "Scenario",
             "default": "standard"

@@ -51,7 +51,7 @@ Statuses:
 
 If authorized automatic settlement is blocked by a stale snapshot, the report stays `approved`, has no settlement, and records an error. Do not display it as funded. A manual settlement committed concurrently remains settled and cannot be overwritten by a late automatic error.
 
-`GET /api/worlds/{id}/businesses/{business_id}/credit-runs` lists reports. `GET /api/credit-runs/{run_id}` retrieves one report, including progress saved after every tool call. Requests run synchronously; allow enough time for live inference. There is no cancellation queue or crash lease recovery yet.
+`GET /api/worlds/{id}/businesses/{business_id}/credit-runs` lists reports. `GET /api/credit-runs/{run_id}` retrieves one report, including progress saved after every tool call. The original request runs synchronously. For immediate acceptance and progress polling, send the same body to `/api/worlds/{id}/businesses/{business_id}/credit-jobs`; see [background jobs](./AGENT_JOBS.md) for queued cancellation and worker interruption handling.
 
 ## Decisions and deterministic policy
 

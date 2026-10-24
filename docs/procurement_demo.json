@@ -7,9 +7,9 @@
       "business_2",
       "business_3"
     ],
-    "engine_version": "0.7.0",
+    "engine_version": "0.9.0",
     "source_tick": 0,
-    "snapshot_sha256": "fe33af492864bafba7ea49e83c26e323f085adad994d2429ea0753915f312817",
+    "snapshot_sha256": "15e8f33581fd950b134281a382e7830766af697fa4b22a1eded337d9027aed61",
     "request": {
       "request_id": "supplier-example",
       "mode": "demo",
@@ -159,6 +159,12 @@
         "result": {
           "quantity": 20,
           "max_total_cents": 100000,
+          "inventory": {
+            "materials_units": 1000,
+            "goods_units": 0,
+            "last_produced_units": 0,
+            "production_model": "finite_v1"
+          },
           "offers": [
             {
               "unit_price_cents": 594,
@@ -275,6 +281,12 @@
         "result": {
           "quantity": 20,
           "max_total_cents": 100000,
+          "inventory": {
+            "materials_units": 1000,
+            "goods_units": 0,
+            "last_produced_units": 0,
+            "production_model": "finite_v1"
+          },
           "offers": [
             {
               "unit_price_cents": 594,
@@ -472,11 +484,12 @@
         "balanced": true,
         "journal_matches_balances": true,
         "transaction_count": 60,
-        "account_count": 277,
+        "account_count": 285,
         "bank_counterparties_match": true,
         "interbank_counterparties_match": true,
         "public_counterparties_match": true,
-        "supplier_counterparties_match": true
+        "supplier_counterparties_match": true,
+        "goods_inventory_matches": true
       }
     },
     "error": null
@@ -502,12 +515,13 @@
   "audit_after_due_tick": {
     "balanced": true,
     "journal_matches_balances": true,
-    "transaction_count": 467,
-    "account_count": 277,
+    "transaction_count": 500,
+    "account_count": 285,
     "bank_counterparties_match": true,
     "interbank_counterparties_match": true,
     "public_counterparties_match": true,
-    "supplier_counterparties_match": true
+    "supplier_counterparties_match": true,
+    "goods_inventory_matches": true
   },
   "payment_events": [
     {
@@ -524,7 +538,7 @@
       }
     },
     {
-      "sequence": 338,
+      "sequence": 368,
       "simulation_id": "world_procurement_example",
       "simulation_tick": 5,
       "event_type": "supplier_balance_paid",

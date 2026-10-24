@@ -34,6 +34,10 @@ def business_facts(source, business_id):
             "trade_payables_cents": sum(c["outstanding_cents"] for c in contracts if c["buyer_id"] == business_id),
             "trade_receivables_cents": sum(c["outstanding_cents"] for c in contracts if c["supplier_id"] == business_id),
             "next_supplier_due_tick": min((c["due_tick"] for c in contracts if c["buyer_id"] == business_id), default=None),
+            "materials_units": business.get("materials_units", 0),
+            "goods_units": business.get("goods_units"),
+            "last_produced_units": business.get("last_produced_units"),
+            "production_model": source.state.get("production_model", "legacy_unlimited"),
             "bank": {**source.bank_health(bank), "equity_cents": sheet["equity_cents"],
                      "reserves_cents": sheet["assets"].get("reserves", 0)}}
 

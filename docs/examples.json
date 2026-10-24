@@ -37,7 +37,11 @@
       "fiscal_transfer_cost_cents": 0,
       "public_loan_outstanding_cents": 0,
       "trade_credit_outstanding_cents": 0,
-      "supplier_contract_defaults": 0
+      "supplier_contract_defaults": 0,
+      "finished_goods_units": 24,
+      "produced_units_this_tick": 60,
+      "sold_units_this_tick": 36,
+      "unmet_demand_units_this_tick": 0
     },
     "entities": [
       {
@@ -59,6 +63,9 @@
         "liquidity_ratio": 1.6674993982692234,
         "lending_available": true,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 2265433,
@@ -108,6 +115,9 @@
         "liquidity_ratio": 3.544591312291722,
         "lending_available": true,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 2126255,
@@ -149,6 +159,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -180,6 +193,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -215,10 +231,14 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": 997,
+        "goods_units": 22,
+        "last_produced_units": 30,
+        "production_capacity_units": 30,
         "balance_sheet": {
           "assets": {
             "deposit": 821442,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -255,10 +275,14 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": 997,
+        "goods_units": 2,
+        "last_produced_units": 30,
+        "production_capacity_units": 30,
         "balance_sheet": {
           "assets": {
             "deposit": 519613,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -291,6 +315,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 78260
@@ -326,6 +353,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 141243
@@ -361,6 +391,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 130801
@@ -396,6 +429,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 63770
@@ -431,6 +467,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 123065
@@ -466,6 +505,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 80246
@@ -483,8 +525,9 @@
         }
       }
     ],
-    "latest_event_sequence": 14,
-    "lineage": null
+    "latest_event_sequence": 16,
+    "lineage": null,
+    "production_model": "finite_v1"
   },
   "business_detail": {
     "id": "business_1",
@@ -509,10 +552,14 @@
     "liquidity_ratio": null,
     "lending_available": null,
     "materials_units": 997,
+    "goods_units": 22,
+    "last_produced_units": 30,
+    "production_capacity_units": 30,
     "balance_sheet": {
       "assets": {
         "deposit": 821442,
-        "materials": 0
+        "materials": 0,
+        "goods": 0
       },
       "liabilities": {
         "loan": 0
@@ -614,15 +661,49 @@
         "sequence": 8,
         "simulation_id": "world_example",
         "simulation_tick": 1,
+        "event_type": "goods_produced",
+        "agent_id": "business_1",
+        "counterparty_id": null,
+        "amount_cents": 0,
+        "transaction_id": "tick:1:production:business_1",
+        "details": {
+          "materials_used": 3,
+          "quantity": 30,
+          "carrying_cost_cents": 0
+        }
+      },
+      {
+        "sequence": 9,
+        "simulation_id": "world_example",
+        "simulation_tick": 1,
+        "event_type": "goods_produced",
+        "agent_id": "business_2",
+        "counterparty_id": null,
+        "amount_cents": 0,
+        "transaction_id": "tick:1:production:business_2",
+        "details": {
+          "materials_used": 3,
+          "quantity": 30,
+          "carrying_cost_cents": 0
+        }
+      },
+      {
+        "sequence": 10,
+        "simulation_id": "world_example",
+        "simulation_tick": 1,
         "event_type": "purchase",
         "agent_id": "household_1",
         "counterparty_id": "business_2",
         "amount_cents": 7567,
         "transaction_id": "tick:1:purchase:household_1",
-        "details": {}
+        "details": {
+          "quantity": 7,
+          "unit_price_cents": 1081,
+          "cost_of_goods_sold_cents": 0
+        }
       },
       {
-        "sequence": 9,
+        "sequence": 11,
         "simulation_id": "world_example",
         "simulation_tick": 1,
         "event_type": "purchase",
@@ -630,10 +711,14 @@
         "counterparty_id": "business_2",
         "amount_cents": 6486,
         "transaction_id": "tick:1:purchase:household_2",
-        "details": {}
+        "details": {
+          "quantity": 6,
+          "unit_price_cents": 1081,
+          "cost_of_goods_sold_cents": 0
+        }
       },
       {
-        "sequence": 10,
+        "sequence": 12,
         "simulation_id": "world_example",
         "simulation_tick": 1,
         "event_type": "purchase",
@@ -641,10 +726,14 @@
         "counterparty_id": "business_2",
         "amount_cents": 4324,
         "transaction_id": "tick:1:purchase:household_3",
-        "details": {}
+        "details": {
+          "quantity": 4,
+          "unit_price_cents": 1081,
+          "cost_of_goods_sold_cents": 0
+        }
       },
       {
-        "sequence": 11,
+        "sequence": 13,
         "simulation_id": "world_example",
         "simulation_tick": 1,
         "event_type": "purchase",
@@ -652,10 +741,14 @@
         "counterparty_id": "business_2",
         "amount_cents": 5405,
         "transaction_id": "tick:1:purchase:household_4",
-        "details": {}
+        "details": {
+          "quantity": 5,
+          "unit_price_cents": 1081,
+          "cost_of_goods_sold_cents": 0
+        }
       },
       {
-        "sequence": 12,
+        "sequence": 14,
         "simulation_id": "world_example",
         "simulation_tick": 1,
         "event_type": "purchase",
@@ -663,10 +756,14 @@
         "counterparty_id": "business_1",
         "amount_cents": 7312,
         "transaction_id": "tick:1:purchase:household_5",
-        "details": {}
+        "details": {
+          "quantity": 8,
+          "unit_price_cents": 914,
+          "cost_of_goods_sold_cents": 0
+        }
       },
       {
-        "sequence": 13,
+        "sequence": 15,
         "simulation_id": "world_example",
         "simulation_tick": 1,
         "event_type": "purchase",
@@ -674,10 +771,14 @@
         "counterparty_id": "business_2",
         "amount_cents": 6486,
         "transaction_id": "tick:1:purchase:household_6",
-        "details": {}
+        "details": {
+          "quantity": 6,
+          "unit_price_cents": 1081,
+          "cost_of_goods_sold_cents": 0
+        }
       },
       {
-        "sequence": 14,
+        "sequence": 16,
         "simulation_id": "world_example",
         "simulation_tick": 1,
         "event_type": "tick_completed",
@@ -703,6 +804,10 @@
             "insolvent_banks": 0,
             "trade_credit_outstanding_cents": 0,
             "supplier_contract_defaults": 0,
+            "finished_goods_units": 24,
+            "produced_units_this_tick": 60,
+            "sold_units_this_tick": 36,
+            "unmet_demand_units_this_tick": 0,
             "public_intervention_cost_cents": 0,
             "public_support_disbursed_cents": 0,
             "fiscal_transfer_cost_cents": 0,
@@ -711,17 +816,18 @@
         }
       }
     ],
-    "next_after": 14,
+    "next_after": 16,
     "has_more": false
   },
   "audit": {
     "balanced": true,
     "journal_matches_balances": true,
-    "transaction_count": 25,
-    "account_count": 54,
+    "transaction_count": 27,
+    "account_count": 56,
     "bank_counterparties_match": true,
     "interbank_counterparties_match": true,
     "public_counterparties_match": true,
-    "supplier_counterparties_match": true
+    "supplier_counterparties_match": true,
+    "goods_inventory_matches": true
   }
 }

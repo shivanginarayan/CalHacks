@@ -65,9 +65,9 @@ This treatment intentionally omits fire-sale discounts, interest, external credi
 ## Tick order and inspection
 
 1. Clear due interbank obligations, recalculate bank health, and attempt due supplier bills. Repeated unpaid supplier bills default the buyer and write off matching claims.
-2. Consume raw materials at recorded carrying cost, process business loan maturities, and request payroll credit.
+2. Process business loan maturities and request payroll credit. Legacy unlimited worlds also consume materials at this point.
 3. Attempt wages, track missed payroll, and close defaulting businesses.
-4. Attempt household consumption. Unemployed households limit their budget to 10% of current deposits. Choices of closed businesses are skipped.
+4. Active businesses produce finished goods from available materials and workforce. Attempt household consumption, capped by available stock. Unemployed households limit their budget to 10% of current deposits. Choices of closed businesses are skipped. See [production rules](./PRODUCTION.md) for accounting and legacy behavior.
 5. Recalculate bank status, record tick metrics, and audit the ledger.
 
 The inspector exposes bank ratios, lending availability, business maturity/counters, and balance sheets. Network exposures give borrower/lender IDs and remaining principal. Events connect asset loss, rejected credit, loan writeoff, business closure, job loss, and interbank default. All histories and obligations survive a restart in the SQLite world checkpoint.

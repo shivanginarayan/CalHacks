@@ -132,6 +132,10 @@ def run_procurement(store, simulation_id, buyer_id, request):
                     InspectArguments.model_validate(args)
                     inspected = True
                     return {"quantity": request["quantity"], "max_total_cents": request["max_total_cents"],
+                        "inventory": {"materials_units": source.customer(buyer_id).get("materials_units", 0),
+                                      "goods_units": source.customer(buyer_id).get("goods_units"),
+                                      "last_produced_units": source.customer(buyer_id).get("last_produced_units"),
+                                      "production_model": source.state.get("production_model", "legacy_unlimited")},
                         "offers": [{**offer, **offer_eligibility(source, buyer_id, request, offer)} for offer in report["offers"]],
                         "negotiation": report["negotiation"]}, False
                 if not inspected:

@@ -7,9 +7,10 @@ from backend.ledger import Ledger, LedgerError
 from backend.crisis import CrisisRules
 from backend.interventions import InterventionRules
 from backend.contracts import ContractRules
+from backend.production import ProductionRules
 
 
-class Economy(CrisisRules, InterventionRules, ContractRules):
+class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
     def __init__(self, state):
         self.state = deepcopy(state)
         self.ledger = Ledger(self.state["ledger"])
@@ -17,13 +18,15 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
 
     @classmethod
     def create(cls, simulation_id, seed=42, households=40, businesses=8, banks=5, scenario="standard"):
-        if scenario not in ("standard", "credit_crunch"):
+        if scenario not in ("standard", "credit_crunch", "supply_crunch"):
             raise LedgerError("Unknown starting scenario")
         rng = random.Random(seed)
         world = cls({"simulation_id": simulation_id, "seed": seed, "tick": 0,
                      "config": {"seed": seed, "households": households,
                                 "businesses": businesses, "banks": banks, "scenario": scenario},
                      "entities": {}, "ledger": {"accounts": {}, "journal": []},
+                     "production_model": "finite_v1",
+                     "goods_flow": {"produced_units": 0, "sold_units": 0, "unmet_demand_units": 0},
                      "events": [], "history": []})
         for i in range(banks):
             entity = world.add_entity(f"bank_{i+1}", f"Bank {i+1}", "bank")
@@ -38,8 +41,11 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                                         f"bank_{i % banks + 1}", rng.randint(500_000, 900_000))
             entity["employees"] = []
             entity["price_cents"] = rng.randint(800, 1400)
-            entity["materials_units"] = 1000
+            entity["materials_units"] = 0 if scenario == "supply_crunch" and i == 0 else 1000
+            entity["goods_units"] = 0
+            entity["last_produced_units"] = 0
             world.ledger.account(entity["id"], "materials", "asset")
+            world.ledger.account(entity["id"], "goods", "asset")
         for i in range(households):
             entity = world.add_customer(f"household_{i+1}", f"Household {i+1}", "household",
                                         f"bank_{rng.randrange(banks)+1}", rng.randint(50_000, 150_000))
@@ -107,6 +113,8 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
             raise LedgerError("Amount must be a positive integer in cents")
 
     def pay(self, transaction_id, payer_id, receiver_id, amount_cents, purpose="payment"):
+        if purpose == "purchase" and self.finite_production():
+            raise LedgerError("Retail purchases must settle finished goods through purchase_goods")
         self.positive_amount(amount_cents)
         if payer_id == receiver_id:
             raise LedgerError("Payer and receiver must differ")
@@ -116,6 +124,14 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
         if previous is not None:
             return previous
         payer, receiver = self.customer(payer_id), self.customer(receiver_id)
+        lines = self.payment_lines(payer, receiver, amount_cents)
+        entry = self.ledger.post(transaction_id, lines,
+                                 {"type": purpose, "tick": self.state["tick"], "request": request})
+        self.emit(purpose, payer_id, receiver_id, amount_cents, transaction_id)
+        return entry
+
+    def payment_lines(self, payer, receiver, amount_cents):
+        payer_id, receiver_id = payer["id"], receiver["id"]
         payer_bank, receiver_bank = payer["bank_id"], receiver["bank_id"]
         if payer["status"] != "active" or receiver["status"] != "active":
             raise LedgerError("Defaulted businesses cannot make or receive trading payments")
@@ -128,10 +144,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
         if payer_bank != receiver_bank:
             lines += [(f"{payer_bank}:reserves", -amount_cents),
                       (f"{receiver_bank}:reserves", amount_cents)]
-        entry = self.ledger.post(transaction_id, lines,
-                                 {"type": purpose, "tick": self.state["tick"], "request": request})
-        self.emit(purpose, payer_id, receiver_id, amount_cents, transaction_id)
-        return entry
+        return lines
 
     def loan(self, transaction_id, borrower_id, amount_cents, repay=False):
         """Principal-only bank credit; no interest or maturity model yet."""
@@ -167,6 +180,8 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
         for _ in range(ticks):
             self.state["tick"] += 1
             tick = self.state["tick"]
+            if self.finite_production():
+                self.state["goods_flow"] = {"produced_units": 0, "sold_units": 0, "unmet_demand_units": 0}
             self.settle_interbank()
             self.refresh_banks()
             self.settle_due_contracts()
@@ -175,7 +190,8 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
             households = [e for e in self.state["entities"].values() if e["kind"] == "household"]
             businesses = [e for e in self.state["entities"].values() if e["kind"] == "business"]
             for business in businesses:
-                self.material_consumption(business)
+                if not self.finite_production():
+                    self.material_consumption(business)
                 self.prepare_business(business)
             failed_employers = set()
             for household in households:
@@ -194,6 +210,9 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                                                         if business["id"] in failed_employers else 0)
                     if business["missed_payroll_ticks"] >= 2:
                         self.default_business(business, "Two consecutive days of incomplete payroll")
+            if self.finite_production():
+                for business in businesses:
+                    self.produce_goods(business)
             for household in households:
                 seller = rng.choice(businesses)
                 if seller["status"] != "active":
@@ -202,14 +221,23 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                 budget = min(available, household["consumption_budget_cents"])
                 if household["employer_id"] is None:
                     budget = min(budget, available // 10)
-                amount = budget // seller["price_cents"] * seller["price_cents"]
+                requested = budget // seller["price_cents"]
+                quantity = min(requested, seller["goods_units"]) if self.finite_production() else requested
+                amount = quantity * seller["price_cents"]
                 if amount:
                     try:
-                        self.pay(f"tick:{tick}:purchase:{household['id']}", household["id"],
-                                 seller["id"], amount, "purchase")
+                        if self.finite_production():
+                            self.purchase_goods(f"tick:{tick}:purchase:{household['id']}", household["id"],
+                                                seller["id"], quantity)
+                            self.record_stock_shortfall(household, seller, requested, quantity)
+                        else:
+                            self.pay(f"tick:{tick}:purchase:{household['id']}", household["id"],
+                                     seller["id"], amount, "purchase")
                     except LedgerError as error:
                         self.emit("payment_rejected", household["id"], seller["id"], amount,
                                   details={"purpose": "purchase", "reason": str(error)})
+                elif requested and self.finite_production():
+                    self.record_stock_shortfall(household, seller, requested, 0)
             self.refresh_banks()
             self.state["history"].append(self.metrics())
             self.emit("tick_completed", details={"metrics": self.metrics()})
@@ -235,7 +263,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                 "insolvent_banks": sum(s["equity_cents"] <= 0 for s in bank_sheets),
                 "trade_credit_outstanding_cents": sum(c["outstanding_cents"] for c in self.state.get("contracts", {}).values()),
                 "supplier_contract_defaults": sum(c["status"] == "defaulted" for c in self.state.get("contracts", {}).values()),
-                **self.public_metrics()}
+                **self.production_metrics(), **self.public_metrics()}
 
     def entity_view(self, entity_id):
         entity = self.state["entities"][entity_id]
@@ -243,6 +271,8 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                 "balance_sheet": self.ledger.sheet(entity_id)}
         if entity["kind"] == "bank":
             view.update(self.bank_health(entity_id))
+        if entity["kind"] == "business" and self.finite_production():
+            view["production_capacity_units"] = len(entity["employees"]) * 10 if entity["status"] == "active" else 0
         return view
 
     def view(self):
@@ -250,6 +280,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                 "simulation_tick": self.state["tick"], "status": "paused",
                 "config": self.state["config"], "metrics": self.metrics(), "lineage": self.state.get("lineage"),
                 "entities": [self.entity_view(key) for key in self.state["entities"]],
+                "production_model": self.state.get("production_model", "legacy_unlimited"),
                 "latest_event_sequence": len(self.state["events"])}
 
     def audit(self):
@@ -268,5 +299,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules):
                 raise LedgerError("Interbank obligation and ledger disagree")
         self.audit_public()
         self.audit_contracts()
+        self.audit_production()
         return {**result, "bank_counterparties_match": True, "interbank_counterparties_match": True,
-                "public_counterparties_match": True, "supplier_counterparties_match": True}
+                "public_counterparties_match": True, "supplier_counterparties_match": True,
+                "goods_inventory_matches": True if self.finite_production() else None}

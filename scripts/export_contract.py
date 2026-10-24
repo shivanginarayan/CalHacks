@@ -99,11 +99,34 @@ def main():
             "payment_events": [event for event in completed_supply.state["events"]
                                if event["event_type"] in ("supplier_down_payment", "supplier_balance_paid")]}
         supply_example = json.loads(json.dumps(supply_example).replace(supply_run["run_id"], "supply_example"))
+        production_source = Economy.create("world_production_example", scenario="supply_crunch")
+        store.create(production_source)
+        store.step_paused("world_production_example", 1)
+        starved = store.get("world_production_example")
+        production_run = run_procurement(store, "world_production_example", "business_1", {
+            "request_id": "production-restock", "mode": "demo", "supplier_ids": None,
+            "quantity": 20, "max_total_cents": 100_000, "auto_settle": True})
+        if production_run["status"] != "contracted":
+            raise RuntimeError("Production demo did not restock the business")
+        store.step_paused("world_production_example", 1)
+        recovered = store.get("world_production_example")
+        production_example = {
+            "create_world_request": {"seed": 42, "scenario": "supply_crunch"},
+            "before_restock": {"metrics": starved.metrics(), "business": starved.entity_view("business_1"),
+                "events": [event for event in starved.state["events"]
+                           if event["event_type"] == "production_limited" and event["agent_id"] == "business_1"]},
+            "procurement_run": production_run,
+            "after_restock": {"metrics": recovered.metrics(), "business": recovered.entity_view("business_1"),
+                "events": [event for event in recovered.state["events"] if event["simulation_tick"] == 2
+                           and event["event_type"] in ("goods_produced", "purchase")
+                           and "business_1" in (event["agent_id"], event["counterparty_id"])]},
+            "audit": recovered.audit()}
+        production_example = json.loads(json.dumps(production_example).replace(production_run["run_id"], "production_example"))
     for name, value in [("openapi.json", app.openapi()), ("examples.json", examples),
                         ("crisis_demo.json", crisis),
                         ("fork_demo.json", ForkComparison.model_validate(comparison).model_dump()),
                         ("agent_demo.json", agent_example), ("credit_demo.json", credit_examples),
-                        ("procurement_demo.json", supply_example)]:
+                        ("procurement_demo.json", supply_example), ("production_demo.json", production_example)]:
         (destination / name).write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
         print(f"Wrote docs/{name}")
 

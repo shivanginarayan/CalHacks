@@ -1,6 +1,6 @@
 # Economy God Mode Backend
 
-Milestone 7 adds **Play/Pause, speed control, safe reset, and reconnectable live events** for the frontend demo. Automatic ticks use atomic SQLite scheduling, while Server-Sent Events replay committed financial activity. The backend also includes supplier negotiation and contract payments, business/bank credit agents, the central-bank workflow, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live inference remains unverified, and external payment integrations remain unimplemented.
+Milestone 9 adds **finite goods production and inventory-constrained sales**. Businesses turn supplier materials into finished stock, households can only buy available goods, and retail settlement recognizes the cost of inventory sold. A `supply_crunch` scenario demonstrates supplier negotiation restoring production and sales. The backend also includes background agent jobs, Play/Pause, speed, reset, live financial events, contract payments, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live inference remains unverified, and external payment integrations remain unimplemented.
 
 The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). Frontend integration details are in [docs/API.md](./docs/API.md).
 
@@ -125,6 +125,10 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/worlds/$simulationId/audit"
 - Persistent Play/Pause and speed control with atomic automatic ticks across workers.
 - Retry-safe reset into a new seeded world while preserving the source history.
 - Server-Sent Events with ordered replay, reconnect cursors, and idle heartbeats.
+- Background jobs for all three agent workflows, with saved IDs and report links.
+- Shared queue limits, atomic worker claims, queued cancellation, and heartbeat expiry handling.
+- Material-limited production, finished-goods inventory, atomic retail sales, and cost-of-goods accounting.
+- Stock-shortage events, inventory audits, and a reproducible supplier-to-production recovery demo.
 
 ## Financial rules and assumptions
 
@@ -134,17 +138,19 @@ Opening bank capital and customer deposits are explicit genesis endowments. Init
 
 Wages and purchases move existing deposits and recognize changes in each customer’s equity immediately. Transfers between banks move reserves. Credit issuance creates a bank loan asset, deposit liability, borrower deposit, and borrower debt. Repayment reverses those entries and destroys the repaid deposit money.
 
-One tick represents one day. Due interbank obligations clear first. Active businesses then attempt principal repayments/refinancing and request payroll credit when needed. Businesses attempt wages before households buy goods. A household selects a business using a seeded per-tick random stream and spends up to its fixed budget and available deposit, rounded down to whole units of the seller’s price. Unemployed households cap spending at 10% of available deposits. Purchases targeting closed businesses are skipped. Goods supply is currently unlimited.
+One tick represents one day. Due interbank obligations and supplier bills settle first. Active businesses then attempt principal repayments/refinancing and request payroll credit when needed. After wages and payroll-default checks, businesses turn up to one material unit per employee into ten finished goods per unit. A household selects a business using a seeded per-tick random stream and spends up to its fixed budget, available deposit, and seller stock, in whole goods. Unemployed households cap spending at 10% of available deposits. Purchases targeting closed businesses are skipped. See [production and inventory](./docs/PRODUCTION.md) for accounting, legacy compatibility, and the shortage-to-restocking demo.
 
 Loans are principal-only and may be manually requested or rule-based payroll credit. Business loans mature after five ticks and may be extended under the bank’s current lending rules. Borrower debt is capped at 500,000 cents; bank lending requires at least 8% capital/assets, at least 10% reserves/customer deposits, positive equity, no prior interbank payment default, and total customer loans no greater than five times equity. These are initial simulation rules, not calibrated economics or regulatory thresholds. See [the crisis model](./docs/CRISIS.md) for the exact default and clearing assumptions.
 
-Government and central-bank entities record public lending, reserve issuance, and debt-financed household support when requested. Bank lending adds matching reserves and debt without restoring bank equity. Household support adds deposits, reserves, and government debt. See [the Fork Reality model and walkthrough](./docs/FORK_REALITY.md) for funding and comparison rules. Taxes, rent, constrained finished-goods production, continuous autonomous agent scheduling, and external payment/banking integrations are subsequent milestones.
+Government and central-bank entities record public lending, reserve issuance, and debt-financed household support when requested. Bank lending adds matching reserves and debt without restoring bank equity. Household support adds deposits, reserves, and government debt. See [the Fork Reality model and walkthrough](./docs/FORK_REALITY.md) for funding and comparison rules. Taxes, rent, continuous autonomous agent scheduling, and external payment/banking integrations are subsequent milestones.
 
 ## Frontend connection
 
 The UI can create a world, render relationships, inspect balance sheets, advance time, trigger a bank shock, compare three futures, run the central-bank workflow, poll traces/events, and apply a completed recommendation. New worlds start paused; use Play/Pause and speed controls to advance automatically, or step manually while paused. Reset creates a fresh world and preserves the source. See [the playback and SSE integration guide](./docs/PLAYBACK.md) for control requests, reconnect handling, and JavaScript examples. Fork Reality’s own ranking remains rule-based. Agent reports separately identify live provider/model or deterministic demo mode; preserve that distinction in the inspector. The network endpoint exposes real borrower/lender relationships and amounts.
 
 Business inspectors can also start a credit review, show separate business/bank tool traces and an approved/declined offer, and settle accepted credit. See [the credit workflow guide](./docs/BUSINESS_BANK_AGENTS.md) and [calculated success/decline examples](./docs/credit_demo.json). Credit workflows do not run automatically for every business on each tick; the existing rule-based simulation continues between explicit agent requests.
+
+Use [background agent jobs](./docs/AGENT_JOBS.md) for UI actions that involve model inference. These routes return HTTP 202 with a stable job ID immediately; poll the job and its linked report for public traces and results. Existing synchronous endpoints and financial apply/settle actions remain available. Pause first when settlement must use an unchanged snapshot.
 
 Supplier workflows are also ready for integration. Show the two original quotes, requested counteroffer, supplier response, selected full price/down payment/due tick, and separate procurement/contract statuses. See [the supplier guide](./docs/SUPPLIER_PAYMENTS.md) and [the calculated negotiation and payment example](./docs/procurement_demo.json). A contract commits future automatic balance collection; the maximum budget covers its entire invoice, not only the initial payment.
 
@@ -163,7 +169,7 @@ The default database is [data/economy.sqlite3](./data/economy.sqlite3), created 
 .\.venv\Scripts\python.exe -m scripts.export_contract
 ```
 
-On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current suite contains 100 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), and [the supplier payment demo](./docs/procurement_demo.json).
+On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current suite contains 124 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
 
 Tests cover ledger invariants, reproducibility, reserve/deposit conservation, loan creation and repayment, rejected transactions, request validation, persistence, event pagination, CORS, concurrent requests, shock replay, clearing calculations, crisis propagation, defaults, and legacy checkpoints.
 
@@ -176,5 +182,9 @@ Credit tests additionally verify role permissions, borrower acceptance, countero
 Supplier tests verify invoice accounting, stock and cost-basis transfers, due payments/defaults, contract branch isolation, negotiation policy, source snapshots, duplicate settlement, and full publication rollback.
 
 Playback tests verify concurrent schedulers, deterministic ticks, pause/manual-step exclusion, restart behavior, speed changes, failed-tick rollback, retry-safe reset, SSE replay and reconnect headers, plus the real API background loop.
+
+Job tests verify concurrent retries, FIFO claims and shared concurrency limits, queue saturation, cancellation, heartbeat expiry, owner fencing, all three real demo workflows, settlement retries, error sanitization, and HTTP/progress access during a slow model call.
+
+Production tests verify material-cost conversion, inventory and rounding conservation, sale rollback/retries, capped consumption, supplier restocking recovery, closed/unstaffed firms, legacy worlds, inventory tampering, and fork isolation.
 
 The persistence approach stores complete world checkpoints, including history. It favors correctness and easy snapshots for the first milestone. Long runs and high-volume event retrieval will need normalized storage or incremental journal writes; the maximum input population is not a throughput guarantee.

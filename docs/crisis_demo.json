@@ -135,16 +135,20 @@
     "banks": 5,
     "employed_households": 40,
     "employment_rate": 1.0,
-    "household_cash_cents": 10055227,
+    "household_cash_cents": 10069549,
     "business_cash_cents": 275855,
-    "total_deposits_cents": 10331082,
+    "total_deposits_cents": 10345404,
     "total_bank_reserves_cents": 2144996,
-    "total_loans_cents": 1227917,
+    "total_loans_cents": 1242239,
     "business_defaults": 0,
     "stressed_banks": 0,
     "insolvent_banks": 0,
     "trade_credit_outstanding_cents": 0,
     "supplier_contract_defaults": 0,
+    "finished_goods_units": 1893,
+    "produced_units_this_tick": 400,
+    "sold_units_this_tick": 243,
+    "unmet_demand_units_this_tick": 0,
     "public_intervention_cost_cents": 0,
     "public_support_disbursed_cents": 0,
     "fiscal_transfer_cost_cents": 0,
@@ -167,6 +171,10 @@
     "insolvent_banks": 2,
     "trade_credit_outstanding_cents": 0,
     "supplier_contract_defaults": 0,
+    "finished_goods_units": 1693,
+    "produced_units_this_tick": 150,
+    "sold_units_this_tick": 48,
+    "unmet_demand_units_this_tick": 0,
     "public_intervention_cost_cents": 0,
     "public_support_disbursed_cents": 0,
     "fiscal_transfer_cost_cents": 0,
@@ -204,7 +212,11 @@
       "fiscal_transfer_cost_cents": 0,
       "public_loan_outstanding_cents": 0,
       "trade_credit_outstanding_cents": 0,
-      "supplier_contract_defaults": 0
+      "supplier_contract_defaults": 0,
+      "finished_goods_units": 1693,
+      "produced_units_this_tick": 150,
+      "sold_units_this_tick": 48,
+      "unmet_demand_units_this_tick": 0
     },
     "entities": [
       {
@@ -226,6 +238,9 @@
         "liquidity_ratio": 0.5827290900407867,
         "lending_available": false,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 1279993,
@@ -285,6 +300,9 @@
         "liquidity_ratio": 0.06947576198934133,
         "lending_available": false,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 166906,
@@ -338,6 +356,9 @@
         "liquidity_ratio": 0.08702776136909565,
         "lending_available": false,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 164122,
@@ -397,6 +418,9 @@
         "liquidity_ratio": 0.25210151092187183,
         "lending_available": false,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 176914,
@@ -446,6 +470,9 @@
         "liquidity_ratio": 0.11652829799517453,
         "lending_available": false,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 357061,
@@ -507,6 +534,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -538,6 +568,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -568,11 +601,15 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
-        "materials_units": 990,
+        "materials_units": 995,
+        "goods_units": 13,
+        "last_produced_units": 0,
+        "production_capacity_units": 0,
         "balance_sheet": {
           "assets": {
             "deposit": 95732,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -604,11 +641,15 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
-        "materials_units": 940,
+        "materials_units": 945,
+        "goods_units": 347,
+        "last_produced_units": 0,
+        "production_capacity_units": 0,
         "balance_sheet": {
           "assets": {
             "deposit": 508,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -647,10 +688,14 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": 940,
+        "goods_units": 393,
+        "last_produced_units": 50,
+        "production_capacity_units": 50,
         "balance_sheet": {
           "assets": {
             "deposit": 15714,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 185724
@@ -682,11 +727,15 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
-        "materials_units": 970,
+        "materials_units": 975,
+        "goods_units": 124,
+        "last_produced_units": 0,
+        "production_capacity_units": 0,
         "balance_sheet": {
           "assets": {
             "deposit": 13184,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -718,11 +767,15 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
-        "materials_units": 970,
+        "materials_units": 975,
+        "goods_units": 161,
+        "last_produced_units": 0,
+        "production_capacity_units": 0,
         "balance_sheet": {
           "assets": {
             "deposit": 36666,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -754,11 +807,15 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
-        "materials_units": 990,
+        "materials_units": 995,
+        "goods_units": 39,
+        "last_produced_units": 0,
+        "production_capacity_units": 0,
         "balance_sheet": {
           "assets": {
             "deposit": 73327,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 0
@@ -797,10 +854,14 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": 940,
+        "goods_units": 307,
+        "last_produced_units": 50,
+        "production_capacity_units": 50,
         "balance_sheet": {
           "assets": {
             "deposit": 6214,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 163114
@@ -839,10 +900,14 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": 940,
+        "goods_units": 309,
+        "last_produced_units": 50,
+        "production_capacity_units": 50,
         "balance_sheet": {
           "assets": {
             "deposit": 30961,
-            "materials": 0
+            "materials": 0,
+            "goods": 0
           },
           "liabilities": {
             "loan": 193746
@@ -875,6 +940,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 935578
@@ -910,6 +978,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 654760
@@ -945,6 +1016,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 789556
@@ -980,6 +1054,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 700910
@@ -1015,6 +1092,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 996802
@@ -1050,6 +1130,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 592741
@@ -1085,6 +1168,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 641988
@@ -1120,6 +1206,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 771517
@@ -1155,6 +1244,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 39531
@@ -1190,6 +1282,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 155678
@@ -1225,6 +1320,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 194357
@@ -1260,6 +1358,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 101881
@@ -1295,6 +1396,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 99546
@@ -1330,6 +1434,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 34970
@@ -1365,6 +1472,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 185479
@@ -1400,6 +1510,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 106168
@@ -1435,6 +1548,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 101815
@@ -1470,6 +1586,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 215840
@@ -1505,6 +1624,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 179738
@@ -1540,6 +1662,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 113706
@@ -1575,6 +1700,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 76304
@@ -1610,6 +1738,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 80021
@@ -1645,6 +1776,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 142934
@@ -1680,6 +1814,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 190721
@@ -1715,6 +1852,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 40417
@@ -1750,6 +1890,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 187545
@@ -1785,6 +1928,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 79745
@@ -1820,6 +1966,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 75810
@@ -1855,6 +2004,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 113957
@@ -1890,6 +2042,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 76496
@@ -1925,6 +2080,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 148497
@@ -1960,6 +2118,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 137257
@@ -1995,6 +2156,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 76169
@@ -2030,6 +2194,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 168499
@@ -2065,6 +2232,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 155148
@@ -2100,6 +2270,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 174974
@@ -2135,6 +2308,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 146547
@@ -2170,6 +2346,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 30002
@@ -2205,6 +2384,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 94556
@@ -2240,6 +2422,9 @@
         "liquidity_ratio": null,
         "lending_available": null,
         "materials_units": null,
+        "goods_units": null,
+        "last_produced_units": null,
+        "production_capacity_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 170218
@@ -2257,8 +2442,9 @@
         }
       }
     ],
-    "latest_event_sequence": 741,
-    "lineage": null
+    "latest_event_sequence": 800,
+    "lineage": null,
+    "production_model": "finite_v1"
   },
   "network_after": {
     "simulation_id": "world_crisis_example",
@@ -2320,7 +2506,7 @@
       }
     },
     {
-      "sequence": 143,
+      "sequence": 151,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "loan_default",
@@ -2331,7 +2517,7 @@
       "details": {}
     },
     {
-      "sequence": 144,
+      "sequence": 152,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2342,7 +2528,7 @@
       "details": {}
     },
     {
-      "sequence": 145,
+      "sequence": 153,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2353,7 +2539,7 @@
       "details": {}
     },
     {
-      "sequence": 146,
+      "sequence": 154,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2364,7 +2550,7 @@
       "details": {}
     },
     {
-      "sequence": 147,
+      "sequence": 155,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2375,7 +2561,7 @@
       "details": {}
     },
     {
-      "sequence": 148,
+      "sequence": 156,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2386,7 +2572,7 @@
       "details": {}
     },
     {
-      "sequence": 149,
+      "sequence": 157,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "business_default",
@@ -2400,7 +2586,7 @@
       }
     },
     {
-      "sequence": 150,
+      "sequence": 158,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "loan_default",
@@ -2411,7 +2597,7 @@
       "details": {}
     },
     {
-      "sequence": 151,
+      "sequence": 159,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2422,7 +2608,7 @@
       "details": {}
     },
     {
-      "sequence": 152,
+      "sequence": 160,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2433,7 +2619,7 @@
       "details": {}
     },
     {
-      "sequence": 153,
+      "sequence": 161,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2444,7 +2630,7 @@
       "details": {}
     },
     {
-      "sequence": 154,
+      "sequence": 162,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2455,7 +2641,7 @@
       "details": {}
     },
     {
-      "sequence": 155,
+      "sequence": 163,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "job_lost",
@@ -2466,7 +2652,7 @@
       "details": {}
     },
     {
-      "sequence": 156,
+      "sequence": 164,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 2,
       "event_type": "business_default",
@@ -2480,7 +2666,7 @@
       }
     },
     {
-      "sequence": 326,
+      "sequence": 352,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 5,
       "event_type": "interbank_default",
@@ -2494,7 +2680,7 @@
       }
     },
     {
-      "sequence": 329,
+      "sequence": 355,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 5,
       "event_type": "interbank_default",
@@ -2508,7 +2694,7 @@
       }
     },
     {
-      "sequence": 331,
+      "sequence": 357,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 5,
       "event_type": "bank_status_changed",
@@ -2525,7 +2711,7 @@
       }
     },
     {
-      "sequence": 332,
+      "sequence": 358,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 5,
       "event_type": "bank_status_changed",
@@ -2542,7 +2728,7 @@
       }
     },
     {
-      "sequence": 411,
+      "sequence": 443,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "loan_default",
@@ -2553,7 +2739,7 @@
       "details": {}
     },
     {
-      "sequence": 412,
+      "sequence": 444,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2564,7 +2750,7 @@
       "details": {}
     },
     {
-      "sequence": 413,
+      "sequence": 445,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2575,7 +2761,7 @@
       "details": {}
     },
     {
-      "sequence": 414,
+      "sequence": 446,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2586,7 +2772,7 @@
       "details": {}
     },
     {
-      "sequence": 415,
+      "sequence": 447,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2597,7 +2783,7 @@
       "details": {}
     },
     {
-      "sequence": 416,
+      "sequence": 448,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2608,7 +2794,7 @@
       "details": {}
     },
     {
-      "sequence": 417,
+      "sequence": 449,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "business_default",
@@ -2622,7 +2808,7 @@
       }
     },
     {
-      "sequence": 418,
+      "sequence": 450,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "bank_status_changed",
@@ -2639,7 +2825,7 @@
       }
     },
     {
-      "sequence": 420,
+      "sequence": 452,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "loan_default",
@@ -2650,7 +2836,7 @@
       "details": {}
     },
     {
-      "sequence": 421,
+      "sequence": 453,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2661,7 +2847,7 @@
       "details": {}
     },
     {
-      "sequence": 422,
+      "sequence": 454,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2672,7 +2858,7 @@
       "details": {}
     },
     {
-      "sequence": 423,
+      "sequence": 455,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2683,7 +2869,7 @@
       "details": {}
     },
     {
-      "sequence": 424,
+      "sequence": 456,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2694,7 +2880,7 @@
       "details": {}
     },
     {
-      "sequence": 425,
+      "sequence": 457,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "job_lost",
@@ -2705,7 +2891,7 @@
       "details": {}
     },
     {
-      "sequence": 426,
+      "sequence": 458,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 6,
       "event_type": "business_default",
@@ -2719,7 +2905,7 @@
       }
     },
     {
-      "sequence": 553,
+      "sequence": 597,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 8,
       "event_type": "bank_status_changed",
@@ -2736,7 +2922,7 @@
       }
     },
     {
-      "sequence": 600,
+      "sequence": 648,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 9,
       "event_type": "bank_status_changed",
@@ -2753,7 +2939,7 @@
       }
     },
     {
-      "sequence": 601,
+      "sequence": 649,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 9,
       "event_type": "bank_status_changed",
@@ -2770,7 +2956,7 @@
       }
     },
     {
-      "sequence": 646,
+      "sequence": 698,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 10,
       "event_type": "bank_status_changed",
@@ -2787,7 +2973,7 @@
       }
     },
     {
-      "sequence": 647,
+      "sequence": 699,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 10,
       "event_type": "bank_status_changed",
@@ -2804,7 +2990,7 @@
       }
     },
     {
-      "sequence": 699,
+      "sequence": 755,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 11,
       "event_type": "bank_status_changed",
@@ -2821,7 +3007,7 @@
       }
     },
     {
-      "sequence": 724,
+      "sequence": 780,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "loan_default",
@@ -2832,7 +3018,7 @@
       "details": {}
     },
     {
-      "sequence": 725,
+      "sequence": 781,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "job_lost",
@@ -2843,7 +3029,7 @@
       "details": {}
     },
     {
-      "sequence": 726,
+      "sequence": 782,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "job_lost",
@@ -2854,7 +3040,7 @@
       "details": {}
     },
     {
-      "sequence": 727,
+      "sequence": 783,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "job_lost",
@@ -2865,7 +3051,7 @@
       "details": {}
     },
     {
-      "sequence": 728,
+      "sequence": 784,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "job_lost",
@@ -2876,7 +3062,7 @@
       "details": {}
     },
     {
-      "sequence": 729,
+      "sequence": 785,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "job_lost",
@@ -2887,7 +3073,7 @@
       "details": {}
     },
     {
-      "sequence": 730,
+      "sequence": 786,
       "simulation_id": "world_crisis_example",
       "simulation_tick": 12,
       "event_type": "business_default",
@@ -2904,11 +3090,12 @@
   "audit": {
     "balanced": true,
     "journal_matches_balances": true,
-    "transaction_count": 588,
-    "account_count": 275,
+    "transaction_count": 647,
+    "account_count": 283,
     "bank_counterparties_match": true,
     "interbank_counterparties_match": true,
     "public_counterparties_match": true,
-    "supplier_counterparties_match": true
+    "supplier_counterparties_match": true,
+    "goods_inventory_matches": true
   }
 }

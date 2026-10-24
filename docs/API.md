@@ -32,6 +32,12 @@ The example world ID is illustrative. Create a world and use its returned `simul
 | GET | `/api/worlds/{id}/forks` | List saved comparison summaries for this source world. |
 | GET | `/api/forks/{fork_id}` | Retrieve an immutable comparison report. |
 | GET | `/api/agents/status` | Report live configuration readiness without credential values. |
+| POST | `/api/worlds/{id}/agent-jobs` | Queue central-bank analysis and return a job immediately (202). |
+| POST | `/api/worlds/{id}/businesses/{business_id}/credit-jobs` | Queue a credit workflow (202). |
+| POST | `/api/worlds/{id}/businesses/{buyer_id}/procurement-jobs` | Queue supplier negotiation (202). |
+| GET | `/api/worlds/{id}/agent-jobs` | List recent jobs across workflows. |
+| GET | `/api/agent-jobs/{job_id}` | Poll lifecycle and the linked workflow report. |
+| POST | `/api/agent-jobs/{job_id}/cancel` | Cancel a queued job. |
 | POST | `/api/worlds/{id}/agent-runs` | Run central-bank analysis in live or explicit demo mode. |
 | GET | `/api/worlds/{id}/agent-runs` | List stored agent reports and decision traces. |
 | GET | `/api/agent-runs/{run_id}` | Inspect a running, completed, or failed agent run. |
@@ -51,6 +57,10 @@ The example world ID is illustrative. Create a world and use its returned `simul
 ## Requests
 
 See [playback and live events](./PLAYBACK.md) for control payloads, reset behavior, speed mapping, SSE examples, and reconnect handling. Manual stepping requires a paused world.
+
+Use [background agent jobs](./AGENT_JOBS.md) for UI requests involving model inference. The original synchronous workflow endpoints remain available.
+
+New worlds use `production_model: "finite_v1"`; see [production and inventory](./PRODUCTION.md) for added entity fields, tick metrics, stock events, and the runnable `supply_crunch` scenario. Older saved worlds retain `legacy_unlimited` behavior.
 
 Create world (all fields have defaults):
 

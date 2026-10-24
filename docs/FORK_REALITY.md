@@ -68,7 +68,7 @@ Inspect a branch through the existing world, institution, event, network, transa
 
 The backend copies one committed SQLite checkpoint, including financial accounts, obligations, seed, and event history. Every branch starts from a deep copy. Future consumption choices derive from the same seed and absolute tick; neither branch IDs nor strategy names enter the random seed. Actions can differ as balances and business statuses diverge.
 
-Supplier contracts, raw-material stock/carrying values, and invoice due dates are also isolated in each branch. Supplier claims settle or default independently. Metrics and deltas include outstanding trade credit and supplier contract defaults.
+Supplier contracts, raw-material and finished-goods stock/carrying values, and invoice due dates are also isolated in each branch. Supplier claims settle or default independently. Metrics and deltas include outstanding trade credit, supplier contract defaults, finished goods, output, sales, and stock-related unmet demand. New worlds use [finite production](./PRODUCTION.md); older saved sources preserve their original unlimited retail model.
 
 Computation runs synchronously outside the SQLite write lock. The source can continue while the experiment runs; the report still refers to its captured snapshot. Keep a loading state and avoid a short browser timeout for larger worlds. Population and tick limits are input limits, not a latency guarantee.
 

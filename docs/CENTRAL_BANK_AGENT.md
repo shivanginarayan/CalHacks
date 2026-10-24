@@ -82,7 +82,7 @@ Stepping the source, making payments, applying shocks, or other mutations invali
 
 ## UI, persistence, and failures
 
-Use `POST /api/worlds/{id}/agent-runs` to start synchronous analysis. Default mode is live, so UI demos must explicitly send `mode: "demo"`. Show a loading state and allow enough time for model inference and simulations. `GET /api/worlds/{id}/agent-runs` lists reports, and `GET /api/agent-runs/{run_id}` retrieves progress and results. Traces save after each tool call, so another request can inspect progress. There is no background job queue or cancellation API yet.
+Use `POST /api/worlds/{id}/agent-runs` for synchronous analysis, or `POST /api/worlds/{id}/agent-jobs` to receive HTTP 202 and poll progress through a saved job ID. See [background jobs](./AGENT_JOBS.md) for queue limits, queued cancellation, and interruption handling. Default mode is live, so UI demos must explicitly send `mode: "demo"`. `GET /api/worlds/{id}/agent-runs` lists reports, and `GET /api/agent-runs/{run_id}` retrieves progress and results. Traces save after each tool call, so another request can inspect progress.
 
 Display `status`, provider/model, source tick/hash, each accepted/rejected tool call, links to comparison reports, the final rationale, and canonical outcome metrics. Application emits `agent_recommendation_applied` in the source’s event stream. Analysis traces are separate from financial events.
 

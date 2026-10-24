@@ -26,6 +26,8 @@ from backend.procurement import run_procurement
 from backend.models import ProcurementRequest, ProcurementReport, ProcurementSettlement, SupplierContract
 from backend.models import PlayRequest, PlaybackStatus, ResetRequest, ResetResult
 from backend.streaming import stream_events
+from backend.jobs import QueueFull, job_worker
+from backend.models import AgentJob
 
 
 def create_app(db_path=None):
@@ -44,11 +46,13 @@ def create_app(db_path=None):
     async def lifespan(app):
         stop = asyncio.Event()
         task = asyncio.create_task(scheduler(stop))
+        workers = [asyncio.create_task(job_worker(store, stop)) for _ in range(2)]
         try:
             yield
         finally:
             stop.set()
             await task
+            await asyncio.gather(*workers)
 
     app = FastAPI(title="Economy God Mode", version=__version__,
                   lifespan=lifespan,
@@ -71,6 +75,10 @@ def create_app(db_path=None):
     @app.exception_handler(ProviderNotConfigured)
     async def unconfigured(request: Request, error: ProviderNotConfigured):
         return JSONResponse(status_code=503, content={"detail": str(error)})
+
+    @app.exception_handler(QueueFull)
+    async def queue_full(request: Request, error: QueueFull):
+        return JSONResponse(status_code=429, content={"detail": str(error)}, headers={"Retry-After": "5"})
 
     @app.get("/health")
     def health():
@@ -190,6 +198,30 @@ def create_app(db_path=None):
     @app.get("/api/agents/status")
     def agent_status():
         return provider_status()
+
+    @app.post("/api/worlds/{simulation_id}/agent-jobs", response_model=AgentJob, status_code=202)
+    def enqueue_agent(simulation_id: str, body: AgentRunRequest):
+        return store.enqueue_job(simulation_id, "central_bank", None, body.model_dump())
+
+    @app.post("/api/worlds/{simulation_id}/businesses/{business_id}/credit-jobs", response_model=AgentJob, status_code=202)
+    def enqueue_credit(simulation_id: str, business_id: str, body: CreditRunRequest):
+        return store.enqueue_job(simulation_id, "credit", business_id, body.model_dump())
+
+    @app.post("/api/worlds/{simulation_id}/businesses/{buyer_id}/procurement-jobs", response_model=AgentJob, status_code=202)
+    def enqueue_procurement(simulation_id: str, buyer_id: str, body: ProcurementRequest):
+        return store.enqueue_job(simulation_id, "procurement", buyer_id, body.model_dump())
+
+    @app.get("/api/worlds/{simulation_id}/agent-jobs", response_model=list[AgentJob])
+    def list_agent_jobs(simulation_id: str, limit: int = Query(default=50, ge=1, le=100)):
+        return store.list_jobs(simulation_id, limit)
+
+    @app.get("/api/agent-jobs/{job_id}", response_model=AgentJob)
+    def agent_job(job_id: str):
+        return store.get_job(job_id)
+
+    @app.post("/api/agent-jobs/{job_id}/cancel", response_model=AgentJob)
+    def cancel_agent_job(job_id: str):
+        return store.cancel_job(job_id)
 
     @app.post("/api/worlds/{simulation_id}/agent-runs", response_model=AgentReport)
     def agent_run(simulation_id: str, body: AgentRunRequest):

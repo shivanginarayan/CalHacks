@@ -12,7 +12,7 @@ class WorldConfig(Request):
     households: int = Field(default=40, ge=1, le=2000)
     businesses: int = Field(default=8, ge=1, le=150)
     banks: int = Field(default=5, ge=1, le=10)
-    scenario: Literal["standard", "credit_crunch"] = "standard"
+    scenario: Literal["standard", "credit_crunch", "supply_crunch"] = "standard"
 
 
 class StepRequest(Request):
@@ -37,6 +37,21 @@ class ResetRequest(Request):
 class ResetResult(BaseModel):
     source_simulation_id: str
     simulation_id: str
+
+
+class AgentJob(BaseModel):
+    job_id: str
+    simulation_id: str
+    kind: Literal["central_bank", "credit", "procurement"]
+    actor_id: str | None
+    request: dict[str, Any]
+    status: Literal["queued", "running", "completed", "failed", "cancelled"]
+    created_at: float
+    updated_at: float
+    error: str | None
+    run_id: str | None
+    report_url: str | None
+    report_status: str | None
 
 
 class FinancialRequest(Request):
@@ -123,6 +138,9 @@ class Entity(BaseModel):
     liquidity_ratio: float | None = None
     lending_available: bool | None = None
     materials_units: int | None = None
+    goods_units: int | None = None
+    last_produced_units: int | None = None
+    production_capacity_units: int | None = None
     balance_sheet: BalanceSheet
 
 
@@ -147,6 +165,10 @@ class Metrics(BaseModel):
     public_loan_outstanding_cents: int = 0
     trade_credit_outstanding_cents: int = 0
     supplier_contract_defaults: int = 0
+    finished_goods_units: int = 0
+    produced_units_this_tick: int = 0
+    sold_units_this_tick: int = 0
+    unmet_demand_units_this_tick: int = 0
 
 
 class World(BaseModel):
@@ -159,6 +181,7 @@ class World(BaseModel):
     entities: list[Entity]
     latest_event_sequence: int
     lineage: ForkLineage | None = None
+    production_model: Literal["finite_v1", "legacy_unlimited"] = "legacy_unlimited"
 
 
 class Event(BaseModel):
@@ -203,6 +226,7 @@ class Audit(BaseModel):
     interbank_counterparties_match: bool = True
     public_counterparties_match: bool = True
     supplier_counterparties_match: bool = True
+    goods_inventory_matches: bool | None = None
     transaction_count: int
     account_count: int
 
