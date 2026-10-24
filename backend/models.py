@@ -19,6 +19,26 @@ class StepRequest(Request):
     ticks: int = Field(default=1, ge=1, le=100)
 
 
+class PlayRequest(Request):
+    interval_ms: int = Field(default=1000, ge=250, le=10000)
+
+
+class PlaybackStatus(BaseModel):
+    simulation_id: str
+    status: Literal["paused", "running"]
+    interval_ms: int
+    error: str | None = None
+
+
+class ResetRequest(Request):
+    request_id: str = Field(min_length=1, max_length=128)
+
+
+class ResetResult(BaseModel):
+    source_simulation_id: str
+    simulation_id: str
+
+
 class FinancialRequest(Request):
     transaction_id: str = Field(min_length=1, max_length=128)
 
@@ -133,7 +153,7 @@ class World(BaseModel):
     simulation_id: str
     seed: int
     simulation_tick: int
-    status: Literal["paused"]
+    status: Literal["paused", "running"]
     config: WorldConfig
     metrics: Metrics
     entities: list[Entity]

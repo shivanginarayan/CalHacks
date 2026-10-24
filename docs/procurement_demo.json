@@ -7,7 +7,7 @@
       "business_2",
       "business_3"
     ],
-    "engine_version": "0.6.0",
+    "engine_version": "0.7.0",
     "source_tick": 0,
     "snapshot_sha256": "fe33af492864bafba7ea49e83c26e323f085adad994d2429ea0753915f312817",
     "request": {

@@ -12,6 +12,11 @@ The example world ID is illustrative. Create a world and use its returned `simul
 | POST | `/api/worlds` | Create a paused, seeded world. |
 | GET | `/api/worlds/{id}` | Current metrics, entities, tick, and latest event sequence. |
 | POST | `/api/worlds/{id}/step` | Execute 1–100 days atomically and return the updated world. |
+| GET | `/api/worlds/{id}/playback` | Current Play/Pause state, speed interval, and scheduling error. |
+| POST | `/api/worlds/{id}/play` | Start playback or change its tick interval. |
+| POST | `/api/worlds/{id}/pause` | Pause automatic ticks. |
+| POST | `/api/worlds/{id}/reset` | Pause source and create a fresh seeded world; retry-safe request ID. |
+| GET | `/api/worlds/{id}/events/stream?after=0` | Replay and stream committed events with SSE reconnect cursors. |
 | GET | `/api/worlds/{id}/entities/{entity_id}` | Institution relationships and balance sheet. |
 | GET | `/api/worlds/{id}/metrics?after_tick=-1` | Tick snapshots after the exclusive tick cursor. |
 | GET | `/api/worlds/{id}/events?after=0&limit=200` | Ordered events after the exclusive sequence cursor. |
@@ -44,6 +49,8 @@ The example world ID is illustrative. Create a world and use its returned `simul
 | POST | `/api/worlds/{id}/contracts/{contract_id}/pay` | Pay the entire outstanding balance early or after a missed payment. |
 
 ## Requests
+
+See [playback and live events](./PLAYBACK.md) for control payloads, reset behavior, speed mapping, SSE examples, and reconnect handling. Manual stepping requires a paused world.
 
 Create world (all fields have defaults):
 
@@ -148,4 +155,4 @@ Financial errors use `{"detail":"reason"}`. Validation errors use FastAPI’s st
 
 ## Not available in this milestone
 
-Backend play/pause scheduling, reset, and external payments. Supplier payments are internal simulated ledger transfers. The comparison engine ranking remains rule-based; live model decisions are separate. Demo mode is deterministic. To start over now, create another world. Keep unfinished controls disabled or clearly marked as upcoming in the UI.
+External payments and continuous autonomous agent scheduling remain upcoming. Supplier payments are internal simulated ledger transfers. The comparison engine ranking remains rule-based; live model decisions are separate. Demo mode is deterministic. Play/Pause, speed, reset, and SSE event streaming are available; see [the integration guide](./PLAYBACK.md).

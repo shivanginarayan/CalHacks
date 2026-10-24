@@ -6,7 +6,7 @@
   "end_tick": 12,
   "snapshot_sha256": "56d24c20f5e2e259927693cb2d706bc0d191051b113e41397a5503512a9da52b",
   "recommended_strategy": "household_cash",
-  "engine_version": "0.6.0",
+  "engine_version": "0.7.0",
   "seed": 42,
   "request": {
     "request_id": "comparison-example",

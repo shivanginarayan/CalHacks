@@ -12,9 +12,10 @@ from backend import __version__
 from backend.ledger import LedgerError
 from backend.credit_store import CreditStore
 from backend.supply_store import SupplyStore
+from backend.playback import PlaybackStore
 
 
-class Store(CreditStore, SupplyStore):
+class Store(CreditStore, SupplyStore, PlaybackStore):
     def __init__(self, path):
         self.path = str(path)
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -33,6 +34,7 @@ class Store(CreditStore, SupplyStore):
                 run_id TEXT PRIMARY KEY, transaction_id TEXT NOT NULL, result TEXT NOT NULL)""")
             self.init_credit_tables(connection)
             self.init_supply_tables(connection)
+            self.init_playback_tables(connection)
 
     @contextmanager
     def connection(self):

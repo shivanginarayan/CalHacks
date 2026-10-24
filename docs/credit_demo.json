@@ -4,7 +4,7 @@
     "simulation_id": "world_credit_settled_example",
     "business_id": "business_1",
     "bank_id": "bank_1",
-    "engine_version": "0.6.0",
+    "engine_version": "0.7.0",
     "source_tick": 0,
     "snapshot_sha256": "fe9c4c1a58d79432f30983e816b8ffb59e243d745b992b5590d4d7996af10624",
     "request": {
@@ -322,7 +322,7 @@
     "simulation_id": "world_credit_declined_example",
     "business_id": "business_1",
     "bank_id": "bank_1",
-    "engine_version": "0.6.0",
+    "engine_version": "0.7.0",
     "source_tick": 0,
     "snapshot_sha256": "d7bc8b9ea9feec978abb6d6861e6368a07f8c4c2c96e8d2225fe69cdc8eebd25",
     "request": {

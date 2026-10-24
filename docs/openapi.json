@@ -3,7 +3,7 @@
   "info": {
     "title": "Economy God Mode",
     "description": "Financial simulation, Fork Reality, and central-bank agent workflows. All amounts are integer USD cents.",
-    "version": "0.6.0"
+    "version": "0.7.0"
   },
   "paths": {
     "/health": {
@@ -133,6 +133,228 @@
                   "$ref": "#/components/schemas/World"
                 }
               }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/playback": {
+      "get": {
+        "summary": "Playback",
+        "operationId": "playback_api_worlds__simulation_id__playback_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaybackStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/play": {
+      "post": {
+        "summary": "Play",
+        "operationId": "play_api_worlds__simulation_id__play_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlayRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaybackStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/pause": {
+      "post": {
+        "summary": "Pause",
+        "operationId": "pause_api_worlds__simulation_id__pause_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaybackStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/reset": {
+      "post": {
+        "summary": "Reset",
+        "operationId": "reset_api_worlds__simulation_id__reset_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/events/stream": {
+      "get": {
+        "summary": "Event Stream",
+        "operationId": "event_stream_api_worlds__simulation_id__events_stream_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "After"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/event-stream": {}
             }
           },
           "422": {
@@ -3189,6 +3411,58 @@
         ],
         "title": "PaymentRequest"
       },
+      "PlayRequest": {
+        "properties": {
+          "interval_ms": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 250.0,
+            "title": "Interval Ms",
+            "default": 1000
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PlayRequest"
+      },
+      "PlaybackStatus": {
+        "properties": {
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "paused",
+              "running"
+            ],
+            "title": "Status"
+          },
+          "interval_ms": {
+            "type": "integer",
+            "title": "Interval Ms"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulation_id",
+          "status",
+          "interval_ms"
+        ],
+        "title": "PlaybackStatus"
+      },
       "ProcurementReport": {
         "properties": {
           "run_id": {
@@ -3439,6 +3713,40 @@
           "audit"
         ],
         "title": "ProcurementSettlement"
+      },
+      "ResetRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "ResetRequest"
+      },
+      "ResetResult": {
+        "properties": {
+          "source_simulation_id": {
+            "type": "string",
+            "title": "Source Simulation Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "source_simulation_id",
+          "simulation_id"
+        ],
+        "title": "ResetResult"
       },
       "ShockRequest": {
         "properties": {
@@ -3803,7 +4111,10 @@
           },
           "status": {
             "type": "string",
-            "const": "paused",
+            "enum": [
+              "paused",
+              "running"
+            ],
             "title": "Status"
           },
           "config": {

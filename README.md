@@ -1,6 +1,6 @@
 # Economy God Mode Backend
 
-Milestone 6 adds **supplier negotiation and agentic contract payments**: collect two quotes, negotiate one counteroffer, select terms, deliver finite material stock, settle a down payment, and record the remaining invoice as matching trade-credit claims. Due bills settle on simulation ticks; repeated missed bills can cause business defaults and supplier losses. The backend also includes business/bank credit agents, the central-bank workflow, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live inference and external payment integrations remain unverified/unimplemented respectively.
+Milestone 7 adds **Play/Pause, speed control, safe reset, and reconnectable live events** for the frontend demo. Automatic ticks use atomic SQLite scheduling, while Server-Sent Events replay committed financial activity. The backend also includes supplier negotiation and contract payments, business/bank credit agents, the central-bank workflow, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live inference remains unverified, and external payment integrations remain unimplemented.
 
 The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). Frontend integration details are in [docs/API.md](./docs/API.md).
 
@@ -45,7 +45,7 @@ The optional [environment template](./.env.example) documents the available sett
 | --- | --- | --- |
 | `ECONOMY_DB_PATH` | `data/economy.sqlite3` under the repository root | SQLite world storage. An override may be an absolute path, or a path relative to the working directory. Parent directories are created automatically. |
 | `ECONOMY_CORS_ORIGINS` | `http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173` | Comma-separated frontend origins, including scheme and port. |
-| `NEBIUS_API_KEY` | Unset | Required only for live central-bank runs. |
+| `NEBIUS_API_KEY` | Unset | Required for live central-bank, credit, and supplier agents. |
 | `NEBIUS_MODEL` | Unset | Exact tool-capable Nemotron model ID available to your account. |
 | `NEBIUS_BASE_URL` | `https://api.tokenfactory.nebius.com/v1` | HTTPS chat-completions API base; use your account’s regional endpoint if required. |
 
@@ -107,6 +107,9 @@ Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/worlds/$simulationId/audit"
 - Two supplier quotes, one counteroffer round, and buyer acceptance of real terms.
 - Atomic delivery, down payment, matching payables/receivables, and future invoice settlement.
 - Finite raw-material units, inventory carrying values, consumption costs, and supplier default losses.
+- Persistent Play/Pause and speed control with atomic automatic ticks across workers.
+- Retry-safe reset into a new seeded world while preserving the source history.
+- Server-Sent Events with ordered replay, reconnect cursors, and idle heartbeats.
 
 ## Financial rules and assumptions
 
@@ -120,11 +123,11 @@ One tick represents one day. Due interbank obligations clear first. Active busin
 
 Loans are principal-only and may be manually requested or rule-based payroll credit. Business loans mature after five ticks and may be extended under the bank’s current lending rules. Borrower debt is capped at 500,000 cents; bank lending requires at least 8% capital/assets, at least 10% reserves/customer deposits, positive equity, no prior interbank payment default, and total customer loans no greater than five times equity. These are initial simulation rules, not calibrated economics or regulatory thresholds. See [the crisis model](./docs/CRISIS.md) for the exact default and clearing assumptions.
 
-Government and central-bank entities record public lending, reserve issuance, and debt-financed household support when requested. Bank lending adds matching reserves and debt without restoring bank equity. Household support adds deposits, reserves, and government debt. See [the Fork Reality model and walkthrough](./docs/FORK_REALITY.md) for funding and comparison rules. Taxes, rent, constrained finished-goods production, external payment/banking integrations, and background play/pause are subsequent milestones.
+Government and central-bank entities record public lending, reserve issuance, and debt-financed household support when requested. Bank lending adds matching reserves and debt without restoring bank equity. Household support adds deposits, reserves, and government debt. See [the Fork Reality model and walkthrough](./docs/FORK_REALITY.md) for funding and comparison rules. Taxes, rent, constrained finished-goods production, continuous autonomous agent scheduling, and external payment/banking integrations are subsequent milestones.
 
 ## Frontend connection
 
-The UI can create a world, render relationships, inspect balance sheets, advance time, trigger a bank shock, compare three futures, run the central-bank workflow, poll traces/events, and apply a completed recommendation. Worlds are paused between explicit steps. Fork Reality’s own ranking remains rule-based. Agent reports separately identify live provider/model or deterministic demo mode; preserve that distinction in the inspector. The network endpoint exposes real borrower/lender relationships and amounts.
+The UI can create a world, render relationships, inspect balance sheets, advance time, trigger a bank shock, compare three futures, run the central-bank workflow, poll traces/events, and apply a completed recommendation. New worlds start paused; use Play/Pause and speed controls to advance automatically, or step manually while paused. Reset creates a fresh world and preserves the source. See [the playback and SSE integration guide](./docs/PLAYBACK.md) for control requests, reconnect handling, and JavaScript examples. Fork Reality’s own ranking remains rule-based. Agent reports separately identify live provider/model or deterministic demo mode; preserve that distinction in the inspector. The network endpoint exposes real borrower/lender relationships and amounts.
 
 Business inspectors can also start a credit review, show separate business/bank tool traces and an approved/declined offer, and settle accepted credit. See [the credit workflow guide](./docs/BUSINESS_BANK_AGENTS.md) and [calculated success/decline examples](./docs/credit_demo.json). Credit workflows do not run automatically for every business on each tick; the existing rule-based simulation continues between explicit agent requests.
 
@@ -145,7 +148,7 @@ The default database is [data/economy.sqlite3](./data/economy.sqlite3), created 
 .\.venv\Scripts\python.exe -m scripts.export_contract
 ```
 
-On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current suite contains 92 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), and [the supplier payment demo](./docs/procurement_demo.json).
+On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current suite contains 100 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), and [the supplier payment demo](./docs/procurement_demo.json).
 
 Tests cover ledger invariants, reproducibility, reserve/deposit conservation, loan creation and repayment, rejected transactions, request validation, persistence, event pagination, CORS, concurrent requests, shock replay, clearing calculations, crisis propagation, defaults, and legacy checkpoints.
 
@@ -156,5 +159,7 @@ Agent tests use offline scripted responses and mocked HTTP transport. They verif
 Credit tests additionally verify role permissions, borrower acceptance, counteroffers, frozen deposits, post-issuance risk constraints, maturity preservation, concurrent settlement, complete rollback, and automatic settlement recovery.
 
 Supplier tests verify invoice accounting, stock and cost-basis transfers, due payments/defaults, contract branch isolation, negotiation policy, source snapshots, duplicate settlement, and full publication rollback.
+
+Playback tests verify concurrent schedulers, deterministic ticks, pause/manual-step exclusion, restart behavior, speed changes, failed-tick rollback, retry-safe reset, SSE replay and reconnect headers, plus the real API background loop.
 
 The persistence approach stores complete world checkpoints, including history. It favors correctness and easy snapshots for the first milestone. Long runs and high-volume event retrieval will need normalized storage or incremental journal writes; the maximum input population is not a throughput guarantee.

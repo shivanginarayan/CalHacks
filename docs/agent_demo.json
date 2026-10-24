@@ -1,7 +1,7 @@
 {
   "run_id": "agent_example",
   "simulation_id": "world_agent_example",
-  "engine_version": "0.6.0",
+  "engine_version": "0.7.0",
   "source_tick": 0,
   "snapshot_sha256": "20a276c65e4b1429e54ca00fdcee314f0e0b8b08354c9ff3a8c610c18e97f35c",
   "request": {

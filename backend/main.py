@@ -1,10 +1,13 @@
+import asyncio
+import logging
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 from uuid import uuid4
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from backend import __version__
 
@@ -21,17 +24,41 @@ from backend.credit_agents import run_credit
 from backend.models import CreditRunRequest, CreditReport, CreditSettlement
 from backend.procurement import run_procurement
 from backend.models import ProcurementRequest, ProcurementReport, ProcurementSettlement, SupplierContract
+from backend.models import PlayRequest, PlaybackStatus, ResetRequest, ResetResult
+from backend.streaming import stream_events
 
 
 def create_app(db_path=None):
+    async def scheduler(stop):
+        while not stop.is_set():
+            try:
+                await asyncio.to_thread(store.advance_due)
+            except Exception:
+                logging.getLogger(__name__).exception("Playback scheduler could not access storage")
+            try:
+                await asyncio.wait_for(stop.wait(), timeout=0.1)
+            except TimeoutError:
+                pass
+
+    @asynccontextmanager
+    async def lifespan(app):
+        stop = asyncio.Event()
+        task = asyncio.create_task(scheduler(stop))
+        try:
+            yield
+        finally:
+            stop.set()
+            await task
+
     app = FastAPI(title="Economy God Mode", version=__version__,
+                  lifespan=lifespan,
                   description="Financial simulation, Fork Reality, and central-bank agent workflows. All amounts are integer USD cents.")
     default_db = Path(__file__).resolve().parent.parent / "data" / "economy.sqlite3"
     store = Store(db_path or os.getenv("ECONOMY_DB_PATH", str(default_db)))
     app.state.store = store
     origins = os.getenv("ECONOMY_CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173")
     app.add_middleware(CORSMiddleware, allow_origins=[s.strip() for s in origins.split(",") if s.strip()],
-                       allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
+                       allow_methods=["GET", "POST"], allow_headers=["Content-Type", "Last-Event-ID"])
 
     @app.exception_handler(KeyError)
     async def missing(request: Request, error: KeyError):
@@ -57,14 +84,44 @@ def create_app(db_path=None):
 
     @app.get("/api/worlds/{simulation_id}", response_model=World)
     def get_world(simulation_id: str):
-        return store.get(simulation_id).view()
+        return store.world_view(simulation_id)
 
     @app.post("/api/worlds/{simulation_id}/step", response_model=World)
     def step(simulation_id: str, body: StepRequest):
-        def operation(world):
-            world.step(body.ticks)
-            return world.view()
-        return store.mutate(simulation_id, operation)
+        return store.step_paused(simulation_id, body.ticks)
+
+    @app.get("/api/worlds/{simulation_id}/playback", response_model=PlaybackStatus)
+    def playback(simulation_id: str):
+        return store.playback_status(simulation_id)
+
+    @app.post("/api/worlds/{simulation_id}/play", response_model=PlaybackStatus)
+    def play(simulation_id: str, body: PlayRequest):
+        return store.control_playback(simulation_id, "running", body.interval_ms)
+
+    @app.post("/api/worlds/{simulation_id}/pause", response_model=PlaybackStatus)
+    def pause(simulation_id: str):
+        return store.control_playback(simulation_id, "paused")
+
+    @app.post("/api/worlds/{simulation_id}/reset", response_model=ResetResult)
+    def reset(simulation_id: str, body: ResetRequest):
+        return store.reset_world(simulation_id, body.request_id)
+
+    @app.get("/api/worlds/{simulation_id}/events/stream", response_class=StreamingResponse,
+             responses={200: {"content": {"text/event-stream": {}}}})
+    def event_stream(simulation_id: str, request: Request, after: int = Query(default=0, ge=0)):
+        cursor = request.headers.get("last-event-id")
+        if cursor is not None:
+            try:
+                if not cursor.isascii() or not cursor.isdigit() or len(cursor) > 18:
+                    raise ValueError
+                after = int(cursor)
+            except ValueError:
+                raise HTTPException(422, "Last-Event-ID must be a nonnegative integer") from None
+        latest = len(store.get(simulation_id).state["events"])
+        if after > latest:
+            raise LedgerError("Event cursor is ahead of this world; refresh its state and reconnect")
+        return StreamingResponse(stream_events(request, store, simulation_id, after), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     @app.get("/api/worlds/{simulation_id}/entities/{entity_id}", response_model=Entity)
     def entity(simulation_id: str, entity_id: str):
