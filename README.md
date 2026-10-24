@@ -4,9 +4,24 @@ Milestone 7 adds **Play/Pause, speed control, safe reset, and reconnectable live
 
 The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). Frontend integration details are in [docs/API.md](./docs/API.md).
 
+## Frontend demo
+
+The React frontend lives in [`apps/web`](./apps/web/README.md). It includes the local Earth globe, a Canvas miniature of San Francisco, and the full healthy-world → crisis → intervention → comparison UI path. Its economics and mock agent responses currently come from committed fixtures; it does not call the Python API yet. The backend integration contract is documented in [docs/API.md](./docs/API.md).
+
+From the repository root, use Node 22 or 24 and run:
+
+```sh
+npm install
+npm run dev
+npm test
+npm run build
+```
+
+Open <http://127.0.0.1:5173/>. The frontend does not require the Python service for the offline demo. See the [frontend README](./apps/web/README.md) for the supported fixture scenario and controls.
+
 ## Run locally
 
-Prerequisites: Git and Python 3.11 or newer with pip and venv. The backend was tested with Python 3.11 on Windows. SQLite is included with Python; no separate database server, Node.js, or Docker is needed. Simulation and explicit demo-agent mode need no cloud account or API keys. Live agent mode requires Nebius credentials and a tool-capable model. The frontend is being developed separately.
+Prerequisites: Git and Python 3.11 or newer with pip and venv. The backend was tested with Python 3.11 on Windows. SQLite is included with Python; no separate database server, Node.js, or Docker is needed. Simulation and explicit demo-agent mode need no cloud account or API keys. Live agent mode requires Nebius credentials and a tool-capable model. The fixture-driven frontend lives in `apps/web` and runs independently of the backend.
 
 Clone the repository:
 
