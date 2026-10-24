@@ -1,0 +1,1 @@
+"""Economy God Mode backend."""

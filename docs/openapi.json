@@ -1,0 +1,1509 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Economy God Mode",
+    "description": "Deterministic economy, bank shocks, and crisis propagation. All amounts are integer USD cents.",
+    "version": "0.2.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds": {
+      "post": {
+        "summary": "Create World",
+        "operationId": "create_world_api_worlds_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorldConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/World"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}": {
+      "get": {
+        "summary": "Get World",
+        "operationId": "get_world_api_worlds__simulation_id__get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/World"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/step": {
+      "post": {
+        "summary": "Step",
+        "operationId": "step_api_worlds__simulation_id__step_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StepRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/World"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/entities/{entity_id}": {
+      "get": {
+        "summary": "Entity",
+        "operationId": "entity_api_worlds__simulation_id__entities__entity_id__get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Entity Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Entity"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/metrics": {
+      "get": {
+        "summary": "Metrics",
+        "operationId": "metrics_api_worlds__simulation_id__metrics_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "after_tick",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": -1,
+              "default": -1,
+              "title": "After Tick"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Metrics"
+                  },
+                  "title": "Response Metrics Api Worlds  Simulation Id  Metrics Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/events": {
+      "get": {
+        "summary": "Events",
+        "operationId": "events_api_worlds__simulation_id__events_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "After"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 200,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/transactions": {
+      "get": {
+        "summary": "Transactions",
+        "operationId": "transactions_api_worlds__simulation_id__transactions_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionPage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/payments": {
+      "post": {
+        "summary": "Payment",
+        "operationId": "payment_api_worlds__simulation_id__payments_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/loans": {
+      "post": {
+        "summary": "Loan",
+        "operationId": "loan_api_worlds__simulation_id__loans_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/loan-repayments": {
+      "post": {
+        "summary": "Repayment",
+        "operationId": "repayment_api_worlds__simulation_id__loan_repayments_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/audit": {
+      "get": {
+        "summary": "Audit",
+        "operationId": "audit_api_worlds__simulation_id__audit_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Audit"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/shocks": {
+      "post": {
+        "summary": "Shock",
+        "operationId": "shock_api_worlds__simulation_id__shocks_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/network": {
+      "get": {
+        "summary": "Network",
+        "operationId": "network_api_worlds__simulation_id__network_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Network"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Audit": {
+        "properties": {
+          "balanced": {
+            "type": "boolean",
+            "title": "Balanced"
+          },
+          "journal_matches_balances": {
+            "type": "boolean",
+            "title": "Journal Matches Balances"
+          },
+          "bank_counterparties_match": {
+            "type": "boolean",
+            "title": "Bank Counterparties Match"
+          },
+          "interbank_counterparties_match": {
+            "type": "boolean",
+            "title": "Interbank Counterparties Match",
+            "default": true
+          },
+          "transaction_count": {
+            "type": "integer",
+            "title": "Transaction Count"
+          },
+          "account_count": {
+            "type": "integer",
+            "title": "Account Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "balanced",
+          "journal_matches_balances",
+          "bank_counterparties_match",
+          "transaction_count",
+          "account_count"
+        ],
+        "title": "Audit"
+      },
+      "BalanceSheet": {
+        "properties": {
+          "assets": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Assets"
+          },
+          "liabilities": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Liabilities"
+          },
+          "equity": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "title": "Equity"
+          },
+          "assets_cents": {
+            "type": "integer",
+            "title": "Assets Cents"
+          },
+          "liabilities_cents": {
+            "type": "integer",
+            "title": "Liabilities Cents"
+          },
+          "equity_cents": {
+            "type": "integer",
+            "title": "Equity Cents"
+          },
+          "balanced": {
+            "type": "boolean",
+            "title": "Balanced"
+          }
+        },
+        "type": "object",
+        "required": [
+          "assets",
+          "liabilities",
+          "equity",
+          "assets_cents",
+          "liabilities_cents",
+          "equity_cents",
+          "balanced"
+        ],
+        "title": "BalanceSheet"
+      },
+      "Entity": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "household",
+              "business",
+              "bank",
+              "government",
+              "central_bank"
+            ],
+            "title": "Kind"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank Id"
+          },
+          "employer_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employer Id"
+          },
+          "employees": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Employees"
+          },
+          "price_cents": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price Cents"
+          },
+          "wage_cents": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wage Cents"
+          },
+          "consumption_budget_cents": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Consumption Budget Cents"
+          },
+          "loan_due_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Loan Due Tick"
+          },
+          "missed_debt_ticks": {
+            "type": "integer",
+            "title": "Missed Debt Ticks",
+            "default": 0
+          },
+          "missed_payroll_ticks": {
+            "type": "integer",
+            "title": "Missed Payroll Ticks",
+            "default": 0
+          },
+          "interbank_default": {
+            "type": "boolean",
+            "title": "Interbank Default",
+            "default": false
+          },
+          "capital_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Capital Ratio"
+          },
+          "liquidity_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Liquidity Ratio"
+          },
+          "lending_available": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lending Available"
+          },
+          "balance_sheet": {
+            "$ref": "#/components/schemas/BalanceSheet"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "status",
+          "balance_sheet"
+        ],
+        "title": "Entity"
+      },
+      "Event": {
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "title": "Sequence"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "simulation_tick": {
+            "type": "integer",
+            "title": "Simulation Tick"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "counterparty_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Counterparty Id"
+          },
+          "amount_cents": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Amount Cents"
+          },
+          "transaction_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transaction Id"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sequence",
+          "simulation_id",
+          "simulation_tick",
+          "event_type",
+          "agent_id",
+          "counterparty_id",
+          "amount_cents",
+          "transaction_id",
+          "details"
+        ],
+        "title": "Event"
+      },
+      "EventPage": {
+        "properties": {
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "next_after": {
+            "type": "integer",
+            "title": "Next After"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          }
+        },
+        "type": "object",
+        "required": [
+          "events",
+          "next_after",
+          "has_more"
+        ],
+        "title": "EventPage"
+      },
+      "Exposure": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "interbank",
+              "customer_loan"
+            ],
+            "title": "Kind"
+          },
+          "borrower_id": {
+            "type": "string",
+            "title": "Borrower Id"
+          },
+          "lender_id": {
+            "type": "string",
+            "title": "Lender Id"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "title": "Amount Cents"
+          },
+          "due_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Tick"
+          }
+        },
+        "type": "object",
+        "required": [
+          "kind",
+          "borrower_id",
+          "lender_id",
+          "amount_cents",
+          "due_tick"
+        ],
+        "title": "Exposure"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JournalLine": {
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "title": "Account Id"
+          },
+          "signed_cents": {
+            "type": "integer",
+            "title": "Signed Cents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "account_id",
+          "signed_cents"
+        ],
+        "title": "JournalLine"
+      },
+      "LoanRequest": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Transaction Id"
+          },
+          "borrower_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Borrower Id"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount Cents"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "borrower_id",
+          "amount_cents"
+        ],
+        "title": "LoanRequest"
+      },
+      "Metrics": {
+        "properties": {
+          "simulation_tick": {
+            "type": "integer",
+            "title": "Simulation Tick"
+          },
+          "households": {
+            "type": "integer",
+            "title": "Households"
+          },
+          "businesses": {
+            "type": "integer",
+            "title": "Businesses"
+          },
+          "banks": {
+            "type": "integer",
+            "title": "Banks"
+          },
+          "employed_households": {
+            "type": "integer",
+            "title": "Employed Households"
+          },
+          "employment_rate": {
+            "type": "number",
+            "title": "Employment Rate"
+          },
+          "household_cash_cents": {
+            "type": "integer",
+            "title": "Household Cash Cents"
+          },
+          "business_cash_cents": {
+            "type": "integer",
+            "title": "Business Cash Cents"
+          },
+          "total_deposits_cents": {
+            "type": "integer",
+            "title": "Total Deposits Cents"
+          },
+          "total_bank_reserves_cents": {
+            "type": "integer",
+            "title": "Total Bank Reserves Cents"
+          },
+          "total_loans_cents": {
+            "type": "integer",
+            "title": "Total Loans Cents"
+          },
+          "business_defaults": {
+            "type": "integer",
+            "title": "Business Defaults"
+          },
+          "stressed_banks": {
+            "type": "integer",
+            "title": "Stressed Banks"
+          },
+          "insolvent_banks": {
+            "type": "integer",
+            "title": "Insolvent Banks",
+            "default": 0
+          },
+          "public_intervention_cost_cents": {
+            "type": "integer",
+            "title": "Public Intervention Cost Cents"
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulation_tick",
+          "households",
+          "businesses",
+          "banks",
+          "employed_households",
+          "employment_rate",
+          "household_cash_cents",
+          "business_cash_cents",
+          "total_deposits_cents",
+          "total_bank_reserves_cents",
+          "total_loans_cents",
+          "business_defaults",
+          "stressed_banks",
+          "public_intervention_cost_cents"
+        ],
+        "title": "Metrics"
+      },
+      "Network": {
+        "properties": {
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "simulation_tick": {
+            "type": "integer",
+            "title": "Simulation Tick"
+          },
+          "exposures": {
+            "items": {
+              "$ref": "#/components/schemas/Exposure"
+            },
+            "type": "array",
+            "title": "Exposures"
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulation_id",
+          "simulation_tick",
+          "exposures"
+        ],
+        "title": "Network"
+      },
+      "PaymentRequest": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Transaction Id"
+          },
+          "payer_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Payer Id"
+          },
+          "receiver_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Receiver Id"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount Cents"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "payer_id",
+          "receiver_id",
+          "amount_cents"
+        ],
+        "title": "PaymentRequest"
+      },
+      "ShockRequest": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Transaction Id"
+          },
+          "bank_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Bank Id"
+          },
+          "asset_category": {
+            "type": "string",
+            "const": "risky_assets",
+            "title": "Asset Category",
+            "default": "risky_assets"
+          },
+          "loss_bps": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 1.0,
+            "title": "Loss Bps",
+            "default": 4000
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "bank_id"
+        ],
+        "title": "ShockRequest"
+      },
+      "StepRequest": {
+        "properties": {
+          "ticks": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Ticks",
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "StepRequest"
+      },
+      "Transaction": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "title": "Transaction Id"
+          },
+          "lines": {
+            "items": {
+              "$ref": "#/components/schemas/JournalLine"
+            },
+            "type": "array",
+            "title": "Lines"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "lines",
+          "metadata"
+        ],
+        "title": "Transaction"
+      },
+      "TransactionPage": {
+        "properties": {
+          "transactions": {
+            "items": {
+              "$ref": "#/components/schemas/Transaction"
+            },
+            "type": "array",
+            "title": "Transactions"
+          },
+          "next_offset": {
+            "type": "integer",
+            "title": "Next Offset"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          }
+        },
+        "type": "object",
+        "required": [
+          "transactions",
+          "next_offset",
+          "has_more"
+        ],
+        "title": "TransactionPage"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "World": {
+        "properties": {
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "seed": {
+            "type": "integer",
+            "title": "Seed"
+          },
+          "simulation_tick": {
+            "type": "integer",
+            "title": "Simulation Tick"
+          },
+          "status": {
+            "type": "string",
+            "const": "paused",
+            "title": "Status"
+          },
+          "config": {
+            "$ref": "#/components/schemas/WorldConfig"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          },
+          "entities": {
+            "items": {
+              "$ref": "#/components/schemas/Entity"
+            },
+            "type": "array",
+            "title": "Entities"
+          },
+          "latest_event_sequence": {
+            "type": "integer",
+            "title": "Latest Event Sequence"
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulation_id",
+          "seed",
+          "simulation_tick",
+          "status",
+          "config",
+          "metrics",
+          "entities",
+          "latest_event_sequence"
+        ],
+        "title": "World"
+      },
+      "WorldConfig": {
+        "properties": {
+          "seed": {
+            "type": "integer",
+            "maximum": 4294967295.0,
+            "minimum": 0.0,
+            "title": "Seed",
+            "default": 42
+          },
+          "households": {
+            "type": "integer",
+            "maximum": 2000.0,
+            "minimum": 1.0,
+            "title": "Households",
+            "default": 40
+          },
+          "businesses": {
+            "type": "integer",
+            "maximum": 150.0,
+            "minimum": 1.0,
+            "title": "Businesses",
+            "default": 8
+          },
+          "banks": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Banks",
+            "default": 5
+          },
+          "scenario": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "credit_crunch"
+            ],
+            "title": "Scenario",
+            "default": "standard"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "WorldConfig"
+      }
+    }
+  }
+}
