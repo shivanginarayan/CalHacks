@@ -5,9 +5,11 @@ from copy import deepcopy
 
 from backend.ledger import Ledger, LedgerError
 from backend.crisis import CrisisRules
+from backend.interventions import InterventionRules
+from backend.contracts import ContractRules
 
 
-class Economy(CrisisRules):
+class Economy(CrisisRules, InterventionRules, ContractRules):
     def __init__(self, state):
         self.state = deepcopy(state)
         self.ledger = Ledger(self.state["ledger"])
@@ -36,6 +38,8 @@ class Economy(CrisisRules):
                                         f"bank_{i % banks + 1}", rng.randint(500_000, 900_000))
             entity["employees"] = []
             entity["price_cents"] = rng.randint(800, 1400)
+            entity["materials_units"] = 1000
+            world.ledger.account(entity["id"], "materials", "asset")
         for i in range(households):
             entity = world.add_customer(f"household_{i+1}", f"Household {i+1}", "household",
                                         f"bank_{rng.randrange(banks)+1}", rng.randint(50_000, 150_000))
@@ -165,11 +169,13 @@ class Economy(CrisisRules):
             tick = self.state["tick"]
             self.settle_interbank()
             self.refresh_banks()
+            self.settle_due_contracts()
             # Independent per-tick RNG makes future snapshot branches comparable.
             rng = random.Random(f"{self.state['seed']}:{tick}:consumption")
             households = [e for e in self.state["entities"].values() if e["kind"] == "household"]
             businesses = [e for e in self.state["entities"].values() if e["kind"] == "business"]
             for business in businesses:
+                self.material_consumption(business)
                 self.prepare_business(business)
             failed_employers = set()
             for household in households:
@@ -227,7 +233,9 @@ class Economy(CrisisRules):
                 "business_defaults": sum(e["status"] == "defaulted" for e in businesses),
                 "stressed_banks": sum(self.bank_health(b["id"])["status"] != "active" for b in banks),
                 "insolvent_banks": sum(s["equity_cents"] <= 0 for s in bank_sheets),
-                "public_intervention_cost_cents": 0}
+                "trade_credit_outstanding_cents": sum(c["outstanding_cents"] for c in self.state.get("contracts", {}).values()),
+                "supplier_contract_defaults": sum(c["status"] == "defaulted" for c in self.state.get("contracts", {}).values()),
+                **self.public_metrics()}
 
     def entity_view(self, entity_id):
         entity = self.state["entities"][entity_id]
@@ -240,7 +248,7 @@ class Economy(CrisisRules):
     def view(self):
         return {"simulation_id": self.state["simulation_id"], "seed": self.state["seed"],
                 "simulation_tick": self.state["tick"], "status": "paused",
-                "config": self.state["config"], "metrics": self.metrics(),
+                "config": self.state["config"], "metrics": self.metrics(), "lineage": self.state.get("lineage"),
                 "entities": [self.entity_view(key) for key in self.state["entities"]],
                 "latest_event_sequence": len(self.state["events"])}
 
@@ -258,4 +266,7 @@ class Economy(CrisisRules):
             if (self.ledger.balance(f"{debtor}:interbank_debt_{creditor}") != obligation["amount_cents"]
                     or self.ledger.balance(f"{creditor}:interbank_asset_{debtor}") != obligation["amount_cents"]):
                 raise LedgerError("Interbank obligation and ledger disagree")
-        return {**result, "bank_counterparties_match": True, "interbank_counterparties_match": True}
+        self.audit_public()
+        self.audit_contracts()
+        return {**result, "bank_counterparties_match": True, "interbank_counterparties_match": True,
+                "public_counterparties_match": True, "supplier_counterparties_match": True}

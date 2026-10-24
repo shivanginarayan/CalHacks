@@ -225,6 +225,7 @@ class CrisisRules:
                              {"type": "loan_writeoff", "tick": self.state["tick"]})
             self.emit("loan_default", business["id"], business["bank_id"], debt, transaction_id)
         business["status"] = "defaulted"
+        self.default_buyer_contracts(business["id"])
         business["loan_due_tick"] = None
         workers = business["employees"][:]
         business["employees"] = []
@@ -238,6 +239,9 @@ class CrisisRules:
     def network(self):
         exposures = [{**o, "kind": "interbank"} for o in self.state.get("interbank_obligations", [])
                      if o["amount_cents"]]
+        exposures += [{"kind": "trade_credit", "borrower_id": c["buyer_id"], "lender_id": c["supplier_id"],
+                       "amount_cents": c["outstanding_cents"], "due_tick": c["due_tick"]}
+                      for c in self.state.get("contracts", {}).values() if c["outstanding_cents"]]
         for entity in self.state["entities"].values():
             if "debt_account" in entity:
                 debt = self.ledger.balance(entity["debt_account"])
@@ -245,5 +249,12 @@ class CrisisRules:
                     exposures.append({"kind": "customer_loan", "borrower_id": entity["id"],
                                       "lender_id": entity["bank_id"], "amount_cents": debt,
                                       "due_tick": entity.get("loan_due_tick")})
+        for key, account in self.ledger.state["accounts"].items():
+            if account["owner_id"] == "central_bank" and account["name"].startswith("public_loan_"):
+                amount = self.ledger.balance(key)
+                if amount:
+                    exposures.append({"kind": "public_loan", "lender_id": "central_bank",
+                                      "borrower_id": account["name"].removeprefix("public_loan_"),
+                                      "amount_cents": amount, "due_tick": None})
         return {"simulation_id": self.state["simulation_id"], "simulation_tick": self.state["tick"],
                 "exposures": exposures}

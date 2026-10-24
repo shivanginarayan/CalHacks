@@ -16,7 +16,7 @@ Invoke-RestMethod -Uri "$base/events?after=0&limit=1000"
 Invoke-RestMethod -Uri "$base/audit"
 ```
 
-Page through events using `next_after` while `has_more` is true. Create another world using the same seed/configuration and step 12 days without applying a shock to compare the baseline. These are manual experiments; a managed Fork Reality API comes next.
+Page through events using `next_after` while `has_more` is true. Create another world using the same seed/configuration and step 12 days without applying a shock to compare the healthy baseline. To test interventions from the same shocked state, use [the Fork Reality API](./FORK_REALITY.md).
 
 Regenerate [the calculated example](./crisis_demo.json) with `python -m scripts.export_contract`. It includes baseline and shocked metrics, financial exposures, the shock receipt, default events, and an accounting audit.
 
@@ -64,8 +64,8 @@ This treatment intentionally omits fire-sale discounts, interest, external credi
 
 ## Tick order and inspection
 
-1. Clear due interbank obligations and recalculate bank health.
-2. Process business maturities and request payroll credit.
+1. Clear due interbank obligations, recalculate bank health, and attempt due supplier bills. Repeated unpaid supplier bills default the buyer and write off matching claims.
+2. Consume raw materials at recorded carrying cost, process business loan maturities, and request payroll credit.
 3. Attempt wages, track missed payroll, and close defaulting businesses.
 4. Attempt household consumption. Unemployed households limit their budget to 10% of current deposits. Choices of closed businesses are skipped.
 5. Recalculate bank status, record tick metrics, and audit the ledger.

@@ -143,7 +143,12 @@
     "business_defaults": 0,
     "stressed_banks": 0,
     "insolvent_banks": 0,
-    "public_intervention_cost_cents": 0
+    "trade_credit_outstanding_cents": 0,
+    "supplier_contract_defaults": 0,
+    "public_intervention_cost_cents": 0,
+    "public_support_disbursed_cents": 0,
+    "fiscal_transfer_cost_cents": 0,
+    "public_loan_outstanding_cents": 0
   },
   "shocked_metrics": {
     "simulation_tick": 12,
@@ -160,7 +165,12 @@
     "business_defaults": 5,
     "stressed_banks": 5,
     "insolvent_banks": 2,
-    "public_intervention_cost_cents": 0
+    "trade_credit_outstanding_cents": 0,
+    "supplier_contract_defaults": 0,
+    "public_intervention_cost_cents": 0,
+    "public_support_disbursed_cents": 0,
+    "fiscal_transfer_cost_cents": 0,
+    "public_loan_outstanding_cents": 0
   },
   "world_after_crisis": {
     "simulation_id": "world_crisis_example",
@@ -189,7 +199,12 @@
       "business_defaults": 5,
       "stressed_banks": 5,
       "insolvent_banks": 2,
-      "public_intervention_cost_cents": 0
+      "public_intervention_cost_cents": 0,
+      "public_support_disbursed_cents": 0,
+      "fiscal_transfer_cost_cents": 0,
+      "public_loan_outstanding_cents": 0,
+      "trade_credit_outstanding_cents": 0,
+      "supplier_contract_defaults": 0
     },
     "entities": [
       {
@@ -210,6 +225,7 @@
         "capital_ratio": -0.05224156225523893,
         "liquidity_ratio": 0.5827290900407867,
         "lending_available": false,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 1279993,
@@ -268,6 +284,7 @@
         "capital_ratio": 0.09313924966158292,
         "liquidity_ratio": 0.06947576198934133,
         "lending_available": false,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 166906,
@@ -320,6 +337,7 @@
         "capital_ratio": 0.14347509146112988,
         "liquidity_ratio": 0.08702776136909565,
         "lending_available": false,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 164122,
@@ -378,6 +396,7 @@
         "capital_ratio": 0.0,
         "liquidity_ratio": 0.25210151092187183,
         "lending_available": false,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 176914,
@@ -426,6 +445,7 @@
         "capital_ratio": 0.008085437536863083,
         "liquidity_ratio": 0.11652829799517453,
         "lending_available": false,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 357061,
@@ -486,6 +506,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -516,6 +537,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -546,9 +568,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 990,
         "balance_sheet": {
           "assets": {
-            "deposit": 95732
+            "deposit": 95732,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -580,9 +604,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 940,
         "balance_sheet": {
           "assets": {
-            "deposit": 508
+            "deposit": 508,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -620,9 +646,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 940,
         "balance_sheet": {
           "assets": {
-            "deposit": 15714
+            "deposit": 15714,
+            "materials": 0
           },
           "liabilities": {
             "loan": 185724
@@ -654,9 +682,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 970,
         "balance_sheet": {
           "assets": {
-            "deposit": 13184
+            "deposit": 13184,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -688,9 +718,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 970,
         "balance_sheet": {
           "assets": {
-            "deposit": 36666
+            "deposit": 36666,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -722,9 +754,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 990,
         "balance_sheet": {
           "assets": {
-            "deposit": 73327
+            "deposit": 73327,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -762,9 +796,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 940,
         "balance_sheet": {
           "assets": {
-            "deposit": 6214
+            "deposit": 6214,
+            "materials": 0
           },
           "liabilities": {
             "loan": 163114
@@ -802,9 +838,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 940,
         "balance_sheet": {
           "assets": {
-            "deposit": 30961
+            "deposit": 30961,
+            "materials": 0
           },
           "liabilities": {
             "loan": 193746
@@ -836,6 +874,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 935578
@@ -870,6 +909,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 654760
@@ -904,6 +944,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 789556
@@ -938,6 +979,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 700910
@@ -972,6 +1014,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 996802
@@ -1006,6 +1049,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 592741
@@ -1040,6 +1084,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 641988
@@ -1074,6 +1119,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 771517
@@ -1108,6 +1154,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 39531
@@ -1142,6 +1189,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 155678
@@ -1176,6 +1224,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 194357
@@ -1210,6 +1259,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 101881
@@ -1244,6 +1294,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 99546
@@ -1278,6 +1329,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 34970
@@ -1312,6 +1364,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 185479
@@ -1346,6 +1399,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 106168
@@ -1380,6 +1434,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 101815
@@ -1414,6 +1469,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 215840
@@ -1448,6 +1504,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 179738
@@ -1482,6 +1539,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 113706
@@ -1516,6 +1574,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 76304
@@ -1550,6 +1609,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 80021
@@ -1584,6 +1644,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 142934
@@ -1618,6 +1679,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 190721
@@ -1652,6 +1714,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 40417
@@ -1686,6 +1749,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 187545
@@ -1720,6 +1784,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 79745
@@ -1754,6 +1819,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 75810
@@ -1788,6 +1854,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 113957
@@ -1822,6 +1889,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 76496
@@ -1856,6 +1924,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 148497
@@ -1890,6 +1959,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 137257
@@ -1924,6 +1994,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 76169
@@ -1958,6 +2029,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 168499
@@ -1992,6 +2064,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 155148
@@ -2026,6 +2099,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 174974
@@ -2060,6 +2134,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 146547
@@ -2094,6 +2169,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 30002
@@ -2128,6 +2204,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 94556
@@ -2162,6 +2239,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 170218
@@ -2179,7 +2257,8 @@
         }
       }
     ],
-    "latest_event_sequence": 741
+    "latest_event_sequence": 741,
+    "lineage": null
   },
   "network_after": {
     "simulation_id": "world_crisis_example",
@@ -2826,8 +2905,10 @@
     "balanced": true,
     "journal_matches_balances": true,
     "transaction_count": 588,
-    "account_count": 267,
+    "account_count": 275,
     "bank_counterparties_match": true,
-    "interbank_counterparties_match": true
+    "interbank_counterparties_match": true,
+    "public_counterparties_match": true,
+    "supplier_counterparties_match": true
   }
 }

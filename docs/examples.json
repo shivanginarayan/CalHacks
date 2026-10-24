@@ -32,7 +32,12 @@
       "business_defaults": 0,
       "stressed_banks": 0,
       "insolvent_banks": 0,
-      "public_intervention_cost_cents": 0
+      "public_intervention_cost_cents": 0,
+      "public_support_disbursed_cents": 0,
+      "fiscal_transfer_cost_cents": 0,
+      "public_loan_outstanding_cents": 0,
+      "trade_credit_outstanding_cents": 0,
+      "supplier_contract_defaults": 0
     },
     "entities": [
       {
@@ -53,6 +58,7 @@
         "capital_ratio": 0.600435327621232,
         "liquidity_ratio": 1.6674993982692234,
         "lending_available": true,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 2265433,
@@ -101,6 +107,7 @@
         "capital_ratio": 0.6290945800293548,
         "liquidity_ratio": 3.544591312291722,
         "lending_available": true,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "reserves": 2126255,
@@ -141,6 +148,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -171,6 +179,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {},
           "liabilities": {},
@@ -205,9 +214,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 997,
         "balance_sheet": {
           "assets": {
-            "deposit": 821442
+            "deposit": 821442,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -243,9 +254,11 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": 997,
         "balance_sheet": {
           "assets": {
-            "deposit": 519613
+            "deposit": 519613,
+            "materials": 0
           },
           "liabilities": {
             "loan": 0
@@ -277,6 +290,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 78260
@@ -311,6 +325,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 141243
@@ -345,6 +360,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 130801
@@ -379,6 +395,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 63770
@@ -413,6 +430,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 123065
@@ -447,6 +465,7 @@
         "capital_ratio": null,
         "liquidity_ratio": null,
         "lending_available": null,
+        "materials_units": null,
         "balance_sheet": {
           "assets": {
             "deposit": 80246
@@ -464,7 +483,8 @@
         }
       }
     ],
-    "latest_event_sequence": 14
+    "latest_event_sequence": 14,
+    "lineage": null
   },
   "business_detail": {
     "id": "business_1",
@@ -488,9 +508,11 @@
     "capital_ratio": null,
     "liquidity_ratio": null,
     "lending_available": null,
+    "materials_units": 997,
     "balance_sheet": {
       "assets": {
-        "deposit": 821442
+        "deposit": 821442,
+        "materials": 0
       },
       "liabilities": {
         "loan": 0
@@ -679,7 +701,12 @@
             "business_defaults": 0,
             "stressed_banks": 0,
             "insolvent_banks": 0,
-            "public_intervention_cost_cents": 0
+            "trade_credit_outstanding_cents": 0,
+            "supplier_contract_defaults": 0,
+            "public_intervention_cost_cents": 0,
+            "public_support_disbursed_cents": 0,
+            "fiscal_transfer_cost_cents": 0,
+            "public_loan_outstanding_cents": 0
           }
         }
       }
@@ -691,8 +718,10 @@
     "balanced": true,
     "journal_matches_balances": true,
     "transaction_count": 25,
-    "account_count": 52,
+    "account_count": 54,
     "bank_counterparties_match": true,
-    "interbank_counterparties_match": true
+    "interbank_counterparties_match": true,
+    "public_counterparties_match": true,
+    "supplier_counterparties_match": true
   }
 }

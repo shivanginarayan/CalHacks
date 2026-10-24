@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Economy God Mode",
-    "description": "Deterministic economy, bank shocks, and crisis propagation. All amounts are integer USD cents.",
-    "version": "0.2.0"
+    "description": "Financial simulation, Fork Reality, and central-bank agent workflows. All amounts are integer USD cents.",
+    "version": "0.6.0"
   },
   "paths": {
     "/health": {
@@ -647,10 +647,1218 @@
           }
         }
       }
+    },
+    "/api/worlds/{simulation_id}/interventions": {
+      "post": {
+        "summary": "Intervention",
+        "operationId": "intervention_api_worlds__simulation_id__interventions_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InterventionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/forks": {
+      "post": {
+        "summary": "Fork",
+        "operationId": "fork_api_worlds__simulation_id__forks_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForkComparison"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Forks",
+        "operationId": "list_forks_api_worlds__simulation_id__forks_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ForkSummary"
+                  },
+                  "title": "Response List Forks Api Worlds  Simulation Id  Forks Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/forks/{fork_id}": {
+      "get": {
+        "summary": "Comparison",
+        "operationId": "comparison_api_forks__fork_id__get",
+        "parameters": [
+          {
+            "name": "fork_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Fork Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForkComparison"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/status": {
+      "get": {
+        "summary": "Agent Status",
+        "operationId": "agent_status_api_agents_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/agent-runs": {
+      "post": {
+        "summary": "Agent Run",
+        "operationId": "agent_run_api_worlds__simulation_id__agent_runs_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Agent Runs",
+        "operationId": "agent_runs_api_worlds__simulation_id__agent_runs_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AgentReport"
+                  },
+                  "title": "Response Agent Runs Api Worlds  Simulation Id  Agent Runs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agent-runs/{run_id}": {
+      "get": {
+        "summary": "Agent Report",
+        "operationId": "agent_report_api_agent_runs__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agent-runs/{run_id}/apply": {
+      "post": {
+        "summary": "Apply Agent",
+        "operationId": "apply_agent_api_agent_runs__run_id__apply_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApplication"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/businesses/{business_id}/credit-runs": {
+      "post": {
+        "summary": "Credit Run",
+        "operationId": "credit_run_api_worlds__simulation_id__businesses__business_id__credit_runs_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Business Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreditRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Credit Runs",
+        "operationId": "credit_runs_api_worlds__simulation_id__businesses__business_id__credit_runs_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Business Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CreditReport"
+                  },
+                  "title": "Response Credit Runs Api Worlds  Simulation Id  Businesses  Business Id  Credit Runs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/credit-runs/{run_id}": {
+      "get": {
+        "summary": "Credit Report",
+        "operationId": "credit_report_api_credit_runs__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/credit-runs/{run_id}/settle": {
+      "post": {
+        "summary": "Settle Credit",
+        "operationId": "settle_credit_api_credit_runs__run_id__settle_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditSettlement"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/businesses/{buyer_id}/procurement-runs": {
+      "post": {
+        "summary": "Procurement Run",
+        "operationId": "procurement_run_api_worlds__simulation_id__businesses__buyer_id__procurement_runs_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "buyer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Buyer Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcurementRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcurementReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Procurement Runs",
+        "operationId": "procurement_runs_api_worlds__simulation_id__businesses__buyer_id__procurement_runs_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "buyer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Buyer Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProcurementReport"
+                  },
+                  "title": "Response Procurement Runs Api Worlds  Simulation Id  Businesses  Buyer Id  Procurement Runs Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/procurement-runs/{run_id}": {
+      "get": {
+        "summary": "Procurement Report",
+        "operationId": "procurement_report_api_procurement_runs__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcurementReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/procurement-runs/{run_id}/settle": {
+      "post": {
+        "summary": "Settle Procurement",
+        "operationId": "settle_procurement_api_procurement_runs__run_id__settle_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcurementSettlement"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/contracts": {
+      "get": {
+        "summary": "Contracts",
+        "operationId": "contracts_api_worlds__simulation_id__contracts_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SupplierContract"
+                  },
+                  "title": "Response Contracts Api Worlds  Simulation Id  Contracts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/contracts/{contract_id}": {
+      "get": {
+        "summary": "Contract",
+        "operationId": "contract_api_worlds__simulation_id__contracts__contract_id__get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "contract_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Contract Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierContract"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/contracts/{contract_id}/pay": {
+      "post": {
+        "summary": "Pay Contract",
+        "operationId": "pay_contract_api_worlds__simulation_id__contracts__contract_id__pay_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "contract_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Contract Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AgentApplication": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "strategy": {
+            "type": "string",
+            "title": "Strategy"
+          },
+          "transaction_id": {
+            "type": "string",
+            "title": "Transaction Id"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/Transaction"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "simulation_id",
+          "strategy",
+          "transaction_id",
+          "receipt",
+          "audit"
+        ],
+        "title": "AgentApplication"
+      },
+      "AgentRecommendation": {
+        "properties": {
+          "fork_id": {
+            "type": "string",
+            "title": "Fork Id"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "no_intervention",
+              "bank_lending",
+              "household_cash"
+            ],
+            "title": "Strategy"
+          },
+          "bank_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank Id"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "title": "Amount Cents"
+          },
+          "rationale": {
+            "type": "string",
+            "title": "Rationale"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          },
+          "delta_vs_no_intervention": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Delta Vs No Intervention"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fork_id",
+          "strategy",
+          "bank_id",
+          "amount_cents",
+          "rationale",
+          "metrics",
+          "delta_vs_no_intervention"
+        ],
+        "title": "AgentRecommendation"
+      },
+      "AgentReport": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "engine_version": {
+            "type": "string",
+            "title": "Engine Version"
+          },
+          "source_tick": {
+            "type": "integer",
+            "title": "Source Tick"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "title": "Snapshot Sha256"
+          },
+          "request": {
+            "$ref": "#/components/schemas/AgentRunRequest"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "running",
+              "completed",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model"
+          },
+          "trace": {
+            "items": {
+              "$ref": "#/components/schemas/AgentTrace"
+            },
+            "type": "array",
+            "title": "Trace"
+          },
+          "comparison_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Comparison Ids"
+          },
+          "recommendation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AgentRecommendation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "simulation_id",
+          "engine_version",
+          "source_tick",
+          "snapshot_sha256",
+          "request",
+          "status",
+          "provider",
+          "model",
+          "trace",
+          "comparison_ids"
+        ],
+        "title": "AgentReport"
+      },
+      "AgentRunRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "demo"
+            ],
+            "title": "Mode",
+            "default": "live"
+          },
+          "budget_cap_cents": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 1.0,
+            "title": "Budget Cap Cents",
+            "default": 1000000
+          },
+          "ticks": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Ticks",
+            "default": 12
+          },
+          "max_experiments": {
+            "type": "integer",
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Max Experiments",
+            "default": 2
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "AgentRunRequest"
+      },
+      "AgentTrace": {
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "title": "Sequence"
+          },
+          "tool": {
+            "type": "string",
+            "title": "Tool"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Arguments"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "rejected"
+            ],
+            "title": "Status"
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sequence",
+          "tool",
+          "arguments",
+          "status",
+          "result"
+        ],
+        "title": "AgentTrace"
+      },
+      "ApplyAgentRequest": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Transaction Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "transaction_id"
+        ],
+        "title": "ApplyAgentRequest"
+      },
       "Audit": {
         "properties": {
           "balanced": {
@@ -668,6 +1876,16 @@
           "interbank_counterparties_match": {
             "type": "boolean",
             "title": "Interbank Counterparties Match",
+            "default": true
+          },
+          "public_counterparties_match": {
+            "type": "boolean",
+            "title": "Public Counterparties Match",
+            "default": true
+          },
+          "supplier_counterparties_match": {
+            "type": "boolean",
+            "title": "Supplier Counterparties Match",
             "default": true
           },
           "transaction_count": {
@@ -740,6 +1958,368 @@
           "balanced"
         ],
         "title": "BalanceSheet"
+      },
+      "CreditDecision": {
+        "properties": {
+          "approved": {
+            "type": "boolean",
+            "title": "Approved"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "title": "Amount Cents"
+          },
+          "rationale": {
+            "type": "string",
+            "title": "Rationale"
+          },
+          "assessment": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assessment"
+          }
+        },
+        "type": "object",
+        "required": [
+          "approved",
+          "amount_cents",
+          "rationale",
+          "assessment"
+        ],
+        "title": "CreditDecision"
+      },
+      "CreditProposal": {
+        "properties": {
+          "amount_cents": {
+            "type": "integer",
+            "maximum": 500000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount Cents"
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Rationale"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "amount_cents",
+          "rationale"
+        ],
+        "title": "CreditProposal"
+      },
+      "CreditReport": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "business_id": {
+            "type": "string",
+            "title": "Business Id"
+          },
+          "bank_id": {
+            "type": "string",
+            "title": "Bank Id"
+          },
+          "engine_version": {
+            "type": "string",
+            "title": "Engine Version"
+          },
+          "source_tick": {
+            "type": "integer",
+            "title": "Source Tick"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "title": "Snapshot Sha256"
+          },
+          "request": {
+            "$ref": "#/components/schemas/CreditRunRequest"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "running",
+              "approved",
+              "declined",
+              "not_requested",
+              "settled",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "providers": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Providers"
+          },
+          "models": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Models"
+          },
+          "facts": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Facts"
+          },
+          "trace": {
+            "items": {
+              "$ref": "#/components/schemas/CreditTrace"
+            },
+            "type": "array",
+            "title": "Trace"
+          },
+          "proposal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreditProposal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "business_rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Rationale"
+          },
+          "business_accepted": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Business Accepted"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreditDecision"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "settlement": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settlement"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "simulation_id",
+          "business_id",
+          "bank_id",
+          "engine_version",
+          "source_tick",
+          "snapshot_sha256",
+          "request",
+          "status",
+          "providers",
+          "models",
+          "facts",
+          "trace"
+        ],
+        "title": "CreditReport"
+      },
+      "CreditRunRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "demo"
+            ],
+            "title": "Mode",
+            "default": "live"
+          },
+          "max_amount_cents": {
+            "type": "integer",
+            "maximum": 500000.0,
+            "minimum": 1.0,
+            "title": "Max Amount Cents",
+            "default": 500000
+          },
+          "auto_settle": {
+            "type": "boolean",
+            "title": "Auto Settle",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "CreditRunRequest"
+      },
+      "CreditSettlement": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "business_id": {
+            "type": "string",
+            "title": "Business Id"
+          },
+          "bank_id": {
+            "type": "string",
+            "title": "Bank Id"
+          },
+          "transaction_id": {
+            "type": "string",
+            "title": "Transaction Id"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "title": "Amount Cents"
+          },
+          "due_tick": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due Tick"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/Transaction"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "simulation_id",
+          "business_id",
+          "bank_id",
+          "transaction_id",
+          "amount_cents",
+          "due_tick",
+          "receipt",
+          "audit"
+        ],
+        "title": "CreditSettlement"
+      },
+      "CreditTrace": {
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "title": "Sequence"
+          },
+          "tool": {
+            "type": "string",
+            "title": "Tool"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Arguments"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "rejected"
+            ],
+            "title": "Status"
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "business",
+              "bank"
+            ],
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sequence",
+          "tool",
+          "arguments",
+          "status",
+          "result",
+          "actor_id",
+          "role"
+        ],
+        "title": "CreditTrace"
       },
       "Entity": {
         "properties": {
@@ -894,6 +2474,17 @@
             ],
             "title": "Lending Available"
           },
+          "materials_units": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Materials Units"
+          },
           "balance_sheet": {
             "$ref": "#/components/schemas/BalanceSheet"
           }
@@ -1022,7 +2613,9 @@
             "type": "string",
             "enum": [
               "interbank",
-              "customer_loan"
+              "customer_loan",
+              "public_loan",
+              "trade_credit"
             ],
             "title": "Kind"
           },
@@ -1060,6 +2653,265 @@
         ],
         "title": "Exposure"
       },
+      "ForkBranch": {
+        "properties": {
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "no_intervention",
+              "bank_lending",
+              "household_cash"
+            ],
+            "title": "Strategy"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          },
+          "timeline": {
+            "items": {
+              "$ref": "#/components/schemas/Metrics"
+            },
+            "type": "array",
+            "title": "Timeline"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          },
+          "delta_vs_no_intervention": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Delta Vs No Intervention"
+          }
+        },
+        "type": "object",
+        "required": [
+          "strategy",
+          "simulation_id",
+          "metrics",
+          "timeline",
+          "audit",
+          "delta_vs_no_intervention"
+        ],
+        "title": "ForkBranch"
+      },
+      "ForkComparison": {
+        "properties": {
+          "fork_id": {
+            "type": "string",
+            "title": "Fork Id"
+          },
+          "source_simulation_id": {
+            "type": "string",
+            "title": "Source Simulation Id"
+          },
+          "source_tick": {
+            "type": "integer",
+            "title": "Source Tick"
+          },
+          "source_event_sequence": {
+            "type": "integer",
+            "title": "Source Event Sequence"
+          },
+          "end_tick": {
+            "type": "integer",
+            "title": "End Tick"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "title": "Snapshot Sha256"
+          },
+          "recommended_strategy": {
+            "type": "string",
+            "title": "Recommended Strategy"
+          },
+          "engine_version": {
+            "type": "string",
+            "title": "Engine Version"
+          },
+          "seed": {
+            "type": "integer",
+            "title": "Seed"
+          },
+          "request": {
+            "$ref": "#/components/schemas/ForkRequest"
+          },
+          "initial_metrics": {
+            "$ref": "#/components/schemas/Metrics"
+          },
+          "branches": {
+            "items": {
+              "$ref": "#/components/schemas/ForkBranch"
+            },
+            "type": "array",
+            "title": "Branches"
+          },
+          "tied_strategies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tied Strategies"
+          },
+          "recommendation_basis": {
+            "type": "string",
+            "title": "Recommendation Basis"
+          },
+          "cost_definition": {
+            "type": "string",
+            "title": "Cost Definition"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fork_id",
+          "source_simulation_id",
+          "source_tick",
+          "source_event_sequence",
+          "end_tick",
+          "snapshot_sha256",
+          "recommended_strategy",
+          "engine_version",
+          "seed",
+          "request",
+          "initial_metrics",
+          "branches",
+          "tied_strategies",
+          "recommendation_basis",
+          "cost_definition"
+        ],
+        "title": "ForkComparison"
+      },
+      "ForkLineage": {
+        "properties": {
+          "fork_id": {
+            "type": "string",
+            "title": "Fork Id"
+          },
+          "parent_simulation_id": {
+            "type": "string",
+            "title": "Parent Simulation Id"
+          },
+          "source_tick": {
+            "type": "integer",
+            "title": "Source Tick"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "title": "Snapshot Sha256"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "no_intervention",
+              "bank_lending",
+              "household_cash"
+            ],
+            "title": "Strategy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fork_id",
+          "parent_simulation_id",
+          "source_tick",
+          "snapshot_sha256",
+          "strategy"
+        ],
+        "title": "ForkLineage"
+      },
+      "ForkRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id"
+          },
+          "bank_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Bank Id",
+            "default": "bank_1"
+          },
+          "budget_cents": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Budget Cents",
+            "default": 1000000
+          },
+          "ticks": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 1.0,
+            "title": "Ticks",
+            "default": 12
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "ForkRequest"
+      },
+      "ForkSummary": {
+        "properties": {
+          "fork_id": {
+            "type": "string",
+            "title": "Fork Id"
+          },
+          "source_simulation_id": {
+            "type": "string",
+            "title": "Source Simulation Id"
+          },
+          "source_tick": {
+            "type": "integer",
+            "title": "Source Tick"
+          },
+          "source_event_sequence": {
+            "type": "integer",
+            "title": "Source Event Sequence"
+          },
+          "end_tick": {
+            "type": "integer",
+            "title": "End Tick"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "title": "Snapshot Sha256"
+          },
+          "recommended_strategy": {
+            "type": "string",
+            "title": "Recommended Strategy"
+          }
+        },
+        "type": "object",
+        "required": [
+          "fork_id",
+          "source_simulation_id",
+          "source_tick",
+          "source_event_sequence",
+          "end_tick",
+          "snapshot_sha256",
+          "recommended_strategy"
+        ],
+        "title": "ForkSummary"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -1072,6 +2924,51 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "InterventionRequest": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Transaction Id"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "bank_lending",
+              "household_cash"
+            ],
+            "title": "Kind"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount Cents"
+          },
+          "bank_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "kind",
+          "amount_cents"
+        ],
+        "title": "InterventionRequest"
       },
       "JournalLine": {
         "properties": {
@@ -1183,6 +3080,31 @@
           "public_intervention_cost_cents": {
             "type": "integer",
             "title": "Public Intervention Cost Cents"
+          },
+          "public_support_disbursed_cents": {
+            "type": "integer",
+            "title": "Public Support Disbursed Cents",
+            "default": 0
+          },
+          "fiscal_transfer_cost_cents": {
+            "type": "integer",
+            "title": "Fiscal Transfer Cost Cents",
+            "default": 0
+          },
+          "public_loan_outstanding_cents": {
+            "type": "integer",
+            "title": "Public Loan Outstanding Cents",
+            "default": 0
+          },
+          "trade_credit_outstanding_cents": {
+            "type": "integer",
+            "title": "Trade Credit Outstanding Cents",
+            "default": 0
+          },
+          "supplier_contract_defaults": {
+            "type": "integer",
+            "title": "Supplier Contract Defaults",
+            "default": 0
           }
         },
         "type": "object",
@@ -1267,6 +3189,257 @@
         ],
         "title": "PaymentRequest"
       },
+      "ProcurementReport": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "buyer_id": {
+            "type": "string",
+            "title": "Buyer Id"
+          },
+          "supplier_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supplier Ids"
+          },
+          "engine_version": {
+            "type": "string",
+            "title": "Engine Version"
+          },
+          "source_tick": {
+            "type": "integer",
+            "title": "Source Tick"
+          },
+          "snapshot_sha256": {
+            "type": "string",
+            "title": "Snapshot Sha256"
+          },
+          "request": {
+            "$ref": "#/components/schemas/ProcurementRequest"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "running",
+              "ready",
+              "declined",
+              "contracted",
+              "failed"
+            ],
+            "title": "Status"
+          },
+          "providers": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Providers"
+          },
+          "models": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Models"
+          },
+          "offers": {
+            "items": {
+              "$ref": "#/components/schemas/SupplierOffer"
+            },
+            "type": "array",
+            "title": "Offers"
+          },
+          "trace": {
+            "items": {
+              "$ref": "#/components/schemas/SupplyTrace"
+            },
+            "type": "array",
+            "title": "Trace"
+          },
+          "negotiation": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Negotiation"
+          },
+          "selected_offer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SupplierOffer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "buyer_rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Buyer Rationale"
+          },
+          "contract_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contract Id"
+          },
+          "settlement": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Settlement"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "simulation_id",
+          "buyer_id",
+          "supplier_ids",
+          "engine_version",
+          "source_tick",
+          "snapshot_sha256",
+          "request",
+          "status",
+          "providers",
+          "models",
+          "offers",
+          "trace"
+        ],
+        "title": "ProcurementReport"
+      },
+      "ProcurementRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "live",
+              "demo"
+            ],
+            "title": "Mode",
+            "default": "live"
+          },
+          "supplier_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "maxItems": 2,
+                "minItems": 2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supplier Ids"
+          },
+          "quantity": {
+            "type": "integer",
+            "maximum": 1000.0,
+            "minimum": 1.0,
+            "title": "Quantity",
+            "default": 20
+          },
+          "max_total_cents": {
+            "type": "integer",
+            "maximum": 1000000000.0,
+            "minimum": 1.0,
+            "title": "Max Total Cents",
+            "default": 100000
+          },
+          "auto_settle": {
+            "type": "boolean",
+            "title": "Auto Settle",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "ProcurementRequest"
+      },
+      "ProcurementSettlement": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "contract": {
+            "$ref": "#/components/schemas/SupplierContract"
+          },
+          "receipt": {
+            "$ref": "#/components/schemas/Transaction"
+          },
+          "audit": {
+            "$ref": "#/components/schemas/Audit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "simulation_id",
+          "contract",
+          "receipt",
+          "audit"
+        ],
+        "title": "ProcurementSettlement"
+      },
       "ShockRequest": {
         "properties": {
           "transaction_id": {
@@ -1316,6 +3489,210 @@
         "additionalProperties": false,
         "type": "object",
         "title": "StepRequest"
+      },
+      "SupplierContract": {
+        "properties": {
+          "contract_id": {
+            "type": "string",
+            "title": "Contract Id"
+          },
+          "buyer_id": {
+            "type": "string",
+            "title": "Buyer Id"
+          },
+          "supplier_id": {
+            "type": "string",
+            "title": "Supplier Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "unit_price_cents": {
+            "type": "integer",
+            "title": "Unit Price Cents"
+          },
+          "total_cents": {
+            "type": "integer",
+            "title": "Total Cents"
+          },
+          "down_payment_cents": {
+            "type": "integer",
+            "title": "Down Payment Cents"
+          },
+          "paid_cents": {
+            "type": "integer",
+            "title": "Paid Cents"
+          },
+          "outstanding_cents": {
+            "type": "integer",
+            "title": "Outstanding Cents"
+          },
+          "written_off_cents": {
+            "type": "integer",
+            "title": "Written Off Cents"
+          },
+          "created_tick": {
+            "type": "integer",
+            "title": "Created Tick"
+          },
+          "due_tick": {
+            "type": "integer",
+            "title": "Due Tick"
+          },
+          "missed_payment_ticks": {
+            "type": "integer",
+            "title": "Missed Payment Ticks"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "overdue",
+              "paid",
+              "defaulted"
+            ],
+            "title": "Status"
+          },
+          "creation_transaction_id": {
+            "type": "string",
+            "title": "Creation Transaction Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "contract_id",
+          "buyer_id",
+          "supplier_id",
+          "quantity",
+          "unit_price_cents",
+          "total_cents",
+          "down_payment_cents",
+          "paid_cents",
+          "outstanding_cents",
+          "written_off_cents",
+          "created_tick",
+          "due_tick",
+          "missed_payment_ticks",
+          "status",
+          "creation_transaction_id"
+        ],
+        "title": "SupplierContract"
+      },
+      "SupplierOffer": {
+        "properties": {
+          "unit_price_cents": {
+            "type": "integer",
+            "maximum": 100000.0,
+            "minimum": 1.0,
+            "title": "Unit Price Cents"
+          },
+          "down_payment_bps": {
+            "type": "integer",
+            "maximum": 10000.0,
+            "minimum": 1000.0,
+            "title": "Down Payment Bps"
+          },
+          "due_in_ticks": {
+            "type": "integer",
+            "maximum": 30.0,
+            "minimum": 1.0,
+            "title": "Due In Ticks"
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Rationale"
+          },
+          "offer_id": {
+            "type": "string",
+            "title": "Offer Id"
+          },
+          "supplier_id": {
+            "type": "string",
+            "title": "Supplier Id"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "total_cents": {
+            "type": "integer",
+            "title": "Total Cents"
+          },
+          "down_payment_cents": {
+            "type": "integer",
+            "title": "Down Payment Cents"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "unit_price_cents",
+          "down_payment_bps",
+          "due_in_ticks",
+          "rationale",
+          "offer_id",
+          "supplier_id",
+          "quantity",
+          "total_cents",
+          "down_payment_cents"
+        ],
+        "title": "SupplierOffer"
+      },
+      "SupplyTrace": {
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "title": "Sequence"
+          },
+          "tool": {
+            "type": "string",
+            "title": "Tool"
+          },
+          "arguments": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Arguments"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "rejected"
+            ],
+            "title": "Status"
+          },
+          "result": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Result"
+          },
+          "actor_id": {
+            "type": "string",
+            "title": "Actor Id"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "buyer",
+              "supplier"
+            ],
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sequence",
+          "tool",
+          "arguments",
+          "status",
+          "result",
+          "actor_id",
+          "role"
+        ],
+        "title": "SupplyTrace"
       },
       "Transaction": {
         "properties": {
@@ -1445,6 +3822,16 @@
           "latest_event_sequence": {
             "type": "integer",
             "title": "Latest Event Sequence"
+          },
+          "lineage": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ForkLineage"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
