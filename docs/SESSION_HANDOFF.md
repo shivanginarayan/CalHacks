@@ -309,3 +309,39 @@ PowerShell exec often needed the normal escalation review in this environment; u
   - Ecosystem verifier `scripts/verify_fetch_ecosystem.py`: verified all 10 Bech32 Fetch agent addresses, protocol message schemas, and all 3 multi-agent workflows. Saved evidence to `artifacts/fetch-ecosystem-verification.json`.
   - Added unit test suite `tests/test_fetch_ecosystem.py`: 11 targeted tests passed cleanly in pytest. Total backend suite now stands at **187 passed, 1 skipped**.
   - Documented in `docs/FETCH_ECOSYSTEM.md`.
+
+## Latest milestone: Live Economic Map with Causal HUD, Flow Particles & Institution Badges
+
+- **Visual Macro-Map Transformation**:
+  - Rebuilt the San Francisco isometric view into a **live animated economic map** where economic actions, transmissions, and distress propagate visually across institutions in real time.
+  - **Labeled Institution Overlays**:
+    - Commercial Banks 1–5: Floating glassmorphic badges with real-time Capital Adequacy Ratio (CAR %) meters (color-coded green > 12%, amber 8–12%, red < 8%), stress status (`FROZEN`), and haircut loss tags.
+    - Central Bank (Ferry Building): Macro policy authority badge, displaying live policy status (`⚡ Rescue Available` / `⚡ Policy Active`).
+    - Government (Coit Tower): Fiscal Treasury authority badge.
+    - Businesses: Key firms (including Business 1 / Café Seventy8) display finished goods stock inventory (`📦 50 goods`), payroll status (`💼 OK` vs `⚠️ Missed Payroll`), and closure status (`⛔ CLOSED`).
+    - Residential Districts: Workforce employment indicators (`👥 40/40 Employed`).
+  - **Real-Time Transaction Flow Particles**:
+    - Animated visual particle streams derived dynamically from `world.events` (`apps/web/src/city/economicDynamics.ts`):
+      - Wages: Emerald green streams (`#34d399`) from businesses to households.
+      - Consumer Retail Purchases: Warm gold particles (`#fbbf24`) from households to shops.
+      - Bank Credit Lines: Cyan beams (`#38bdf8`) from commercial banks to borrowing businesses.
+      - Interbank Netting: Purple arcs (`#c084fc`) between commercial banks.
+      - Emergency Public Support: Radiant gold streams (`#f59e0b`) from Central Bank to banks/households.
+  - **Stressed Bank Shockwaves & Exposed Borrower Highlight**:
+    - Expanding concentric ripple rings pulse from written-down banks upon asset shock.
+    - Dashed connector lines illuminate from the shocked bank to its borrower firms, making credit exposure immediately visible.
+  - **Persistent "What Changed This Day?" Causal Narrative Banner**:
+    - Floating banner at top-center of the city canvas explaining the causal chain reaction of the day in plain English.
+    - Expandable **Causal Chain Drawer** tracking the chronological cause-and-effect cascade: Trigger → Mechanism → Consequence.
+  - **Layer Filter Controls**:
+    - Toolbar overlay allowing user to filter map visual layers: `[All Layers]`, `[💵 Money Flows]`, `[💳 Credit & Banks]`, `[🏭 Supply & Goods]`, and `[👥 Jobs & Wages]`.
+  - **Paced Replay & Slow-Motion**:
+    - Map-level controls for Play, Pause, Step 1 Day, and speed options: `0.5× (Slow-Mo)`, `1×`, `2×`, and `4×`.
+  - **Zero Regressions & Full Verification**:
+    - `qa-live-city.mjs`: all 6 test groups passed (including Cafe 14 click, inspector zoom, district filter, bank shock, step 12 ticks, forks, report download, mobile layout).
+    - `qa-integration.mjs`: all 11 test groups passed (including real world creation, speed, crisis, forks, central bank, network, supplier contract, reload, reset, mobile).
+    - Vitest unit tests: **74/74 passed**.
+    - Backend pytest suite: **187 passed, 1 skipped**.
+    - Schema validation suite (`scripts/test_all_fetch_schemas.py`): **27/27 passed**.
+    - Production build: `tsc --noEmit && vite build` built cleanly in 6.91s.
+    - Pushed to branch `chetas` on GitHub.
