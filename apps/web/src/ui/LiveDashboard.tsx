@@ -2,9 +2,12 @@ import {useEffect,useState} from 'react';
 import {Play,Pause,Plus,RotateCcw,GitFork,ArrowLeft,ArrowRight,Building2,Network as NetworkIcon} from 'lucide-react';
 import {useStore} from '../state/store';
 import {api,currency} from '../data/api';
-import type {Metrics,Entity,Report} from '../data/api';
+import type {Metrics,Entity,Report,ComparisonEvidence,EconomyEvent} from '../data/api';
+import {comparisonReport,downloadComparison} from '../data/comparisonReport';
 import IntegrationsPanel from './IntegrationsPanel';
 import {WorldDataOptions,CreditSafeguards} from './TrackControls';
+import ShockStory from './ShockStory';
+import PublicDataPanel from './PublicDataPanel';
 
 export const strategyName:Record<string,string> = {no_intervention:'No intervention',bank_lending:'Emergency bank lending',household_cash:'Direct household support'};
 const activeJob = (status?:string) => status === 'queued' || status === 'running';
@@ -92,7 +95,7 @@ export default function LivePanel(){const s=useStore(),city=s.stage==='CITY';con
  <div className="panel-topline"><span className="eyebrow">{city?'CONNECTED ECONOMY':'CHOOSE YOUR EXPERIMENT'}</span><span className="badge">{city?'BACKEND DATA':'SAN FRANCISCO VISUAL'}</span></div>
  {!city?<><div className="city-heading"><div><h1>San Francisco</h1><p>A stylized city for your simulated economy.</p></div></div><p className="panel-intro">Healthy economy → bank shock → consequences → intervention → compare futures.</p>
  <label className="slider-label">Starting world<select aria-label="Starting scenario" value={s.selectedScenario} onChange={e=>s.set({selectedScenario:e.target.value})}><option value="credit_crunch">Credit crunch · bank crisis demo</option><option value="standard">Standard · well-capitalized banks</option><option value="supply_crunch">Supply crunch · inventory recovery</option></select></label>
- <WorldDataOptions/><p className="muted">Seed 42 · 40 households · 8 businesses · 5 banks. Institutions and financial balances are simulated; optional price/wage samples have separate provenance.</p><button disabled={s.busy} className="primary" onClick={s.createWorld}>{s.busy?'Creating world…':'Create and explore economy'} <ArrowRight size={16}/></button>
+ <WorldDataOptions/><PublicDataPanel/><p className="muted">Seed 42 · 40 households · 8 businesses · 5 banks. Institutions and financial balances are simulated; public price/wage references have separate provenance.</p><button disabled={s.busy} className="primary" onClick={s.createWorld}>{s.busy?'Creating world…':'Create and explore economy'} <ArrowRight size={16}/></button>
  <p className="muted">Current experiments support bank asset losses and supplier shortages. Interest-rate, rent, and tax scenarios are not implemented.</p></>:
  s.selected?<Inspector/>:<><h2>The living economy.</h2><p className="muted">{s.world?.simulation_id} · {s.world?.production_model}</p>
  <label className="slider-label">Agent mode<select aria-label="Agent mode" disabled={activeJob(s.job?.status)} value={s.agentMode} onChange={e=>s.set({agentMode:e.target.value as 'demo'|'live'})}><option value="demo">Deterministic demo · no AI inference</option><option value="live" disabled={!s.providerStatus?.live_configured}>Live Nemotron via Nebius</option></select></label>
@@ -100,7 +103,7 @@ export default function LivePanel(){const s=useStore(),city=s.stage==='CITY';con
  <label className="muted"><input aria-label="Allow paid testnet research" type="checkbox" checked={paid} disabled={s.agentMode!=='live'||activeJob(s.job?.status)} onChange={e=>setPaid(e.target.checked)}/> Allow one paid research purchase, up to 0.01 Base Sepolia test USDC. Requires the separate configured test wallet.</label>
  {s.world?.calibration&&<p className="muted">Apify inputs: {s.world.calibration.calibration_id} · {s.world.calibration.collected_at}<br/>Snapshot {s.world.calibration.sha256.slice(0,16)}</p>}
  <button className="primary" disabled={s.busy||activeJob(s.job?.status)} onClick={()=>void s.startJob('central_bank',undefined,paid?{allow_paid_research:true}:{})}>Test rescue policies</button><p className="muted">Tests two budgets over 12 days. Maximum gross support $10,000. Pauses the source; applying is a separate action.</p><AgentProgress/><Crisis/>
- <IntegrationsPanel key={s.world?.simulation_id}/><details className="institution-list"><summary>Inspect institutions ({s.world?.entities.length})</summary>{s.world?.entities.map(e=><button className="relationship" key={e.id} onClick={()=>s.set({selected:e.id})}>{e.name}<small>{e.kind} · {e.status}</small></button>)}</details><EventFeed/></>}
+ <PublicDataPanel key={'data-'+s.world?.simulation_id}/><ShockStory key={'story-'+s.world?.simulation_id}/><IntegrationsPanel key={s.world?.simulation_id}/><details className="institution-list"><summary>Inspect institutions ({s.world?.entities.length})</summary>{s.world?.entities.map(e=><button className="relationship" key={e.id} onClick={()=>s.set({selected:e.id})}>{e.name}<small>{e.kind} · {e.status}</small></button>)}</details><EventFeed/></>}
  </div><div className="panel-footer">{s.busy?'Working…':s.connection} · Simulated ledger · not a forecast</div></aside>;}
 
 export function NetworkView(){const s=useStore(),[edge,setEdge]=useState<number|null>(null);
@@ -111,14 +114,19 @@ export function NetworkView(){const s=useStore(),[edge,setEdge]=useState<number|
  {nodes.map(n=><g className="network-node" role="button" aria-label={`Inspect ${n.name}`} tabIndex={0} key={n.id} transform={`translate(${n.x},${n.y})`} onClick={()=>s.set({selected:n.id})} onKeyDown={e=>{if(e.key==='Enter')s.set({selected:n.id});}}><circle r={n.kind==='bank'?29:20} fill="#1a2733" stroke={n.status==='active'?'#a2b9b8':'#ef4444'}/><text textAnchor="middle" y="4" fill="white" fontSize="10">{n.kind==='bank'?'BANK':n.kind==='business'?'FIRM':'PUBLIC'}</text><text textAnchor="middle" y="43" fill="white" fontSize="11">{n.name}</text></g>)}</svg>
  {selectedEdge&&<div className="edge-detail"><span>{selectedEdge.borrower_id} → {selectedEdge.lender_id}</span><b>{currency(selectedEdge.amount_cents)}</b><small>{selectedEdge.kind} · due day {selectedEdge.due_tick??'unscheduled'}</small><button onClick={()=>setEdge(null)}>Dismiss</button></div>}</div>;}
 
-export function BranchCompare(){const s=useStore(),fork=s.fork,[index,setIndex]=useState(0);useEffect(()=>setIndex(0),[fork?.fork_id]);if(!fork)return null;
+export function BranchCompare(){const s=useStore(),fork=s.fork,[index,setIndex]=useState(0),[exporting,setExporting]=useState(false),[exportError,setExportError]=useState('');useEffect(()=>{setIndex(0);setExportError('');},[fork?.fork_id]);if(!fork)return null;
+ const exportReport=async()=>{if(!s.world)return;setExporting(true);setExportError('');try{
+  const [saved,events]=await Promise.all([api<ComparisonEvidence>(`/api/forks/${fork.fork_id}`),api<{events:EconomyEvent[]}>(`/api/worlds/${s.world.simulation_id}/events?limit=1000`)]);
+  downloadComparison(comparisonReport(saved,s.world,events.events,s.report),saved.fork_id);
+ }catch(error){setExportError(error instanceof Error?error.message:'Comparison export failed');}finally{setExporting(false);}};
  const colors=['#c2cbd4','#e6bd6c','#6dd7be'];
  const metrics:{key:keyof Metrics;title:string;format:(n:number)=>string}[]=[
   {key:'employment_rate',title:'Employment',format:n=>(n*100).toFixed(1)+'%'},
   {key:'business_defaults',title:'Business defaults',format:String},
   {key:'stressed_banks',title:'Stressed banks',format:String},
   {key:'public_support_disbursed_cents',title:'Gross public support',format:currency}];
- return <div className="compare-view"><div className="compare-header"><div><p className="eyebrow">FORK REALITY</p><h2>One world. Three futures.</h2></div><button className="dark-quiet" onClick={()=>s.set({compare:false})}><ArrowLeft size={14}/>Back to city</button></div>
+ return <div className="compare-view"><div className="compare-header"><div><p className="eyebrow">FORK REALITY</p><h2>One world. Three futures.</h2></div><div className="button-row"><button className="dark-quiet" disabled={exporting} onClick={()=>void exportReport()}>{exporting?'Preparing report…':'Download comparison report'}</button><button className="dark-quiet" onClick={()=>s.set({compare:false})}><ArrowLeft size={14}/>Back to city</button></div></div>
+ {exportError&&<p role="alert">{exportError}</p>}
  <div className="snapshot-proof">Same source day {fork.source_tick}<code title={fork.snapshot_sha256}>{fork.snapshot_sha256.slice(0,16)}…</code></div>
  <div className="recommendation"><div><span className="badge">RULE-BASED RANKING</span><h3>{strategyName[fork.recommended_strategy]}</h3><p>{fork.recommendation_basis}</p></div></div>
  <div className="comparison-legend">{fork.branches.map((b,i)=><span key={b.strategy}><i style={{background:colors[i]}}/>{strategyName[b.strategy]}</span>)}</div>

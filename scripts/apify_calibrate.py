@@ -32,7 +32,7 @@ def cents(value, unit):
     return int((amount * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def collect(spec, client, wait_seconds=180):
+def collect(spec, client, wait_seconds=180, on_run=None):
     actor = spec["actor_id"]
     if not re.fullmatch(r"[a-zA-Z0-9_~.-]{1,128}", actor):
         raise ValueError("Invalid Actor ID; use the owner~actor form")
@@ -40,11 +40,13 @@ def collect(spec, client, wait_seconds=180):
     if spec.get("run_id"):
         run_id = spec["run_id"]
     else:
-        response = client.post(url, json=spec.get("input", {}))
+        response = client.post(url, params=spec.get("run_options", {}), json=spec.get("input", {}))
         response.raise_for_status()
         run_id = response.json()["data"]["id"]
     if not re.fullmatch(r"[A-Za-z0-9]{1,128}", run_id):
         raise ValueError("Invalid Apify run ID")
+    if on_run:
+        on_run(run_id)
     deadline = time.monotonic() + wait_seconds
     while True:
         response = client.get(f"https://api.apify.com/v2/actor-runs/{run_id}")
@@ -60,20 +62,22 @@ def collect(spec, client, wait_seconds=180):
         raise ValueError("Invalid dataset ID")
     response = client.get(f"https://api.apify.com/v2/datasets/{dataset}/items", params={"format": "json", "clean": "true", "limit": 1000})
     response.raise_for_status()
-    samples, skipped = [], 0
+    samples, skipped, observations = [], 0, []
     for row in response.json():
         try:
             value = row
             for part in spec["value_path"].split("."):
                 value = value[part]
             samples.append(cents(value, spec["unit"]))
+            observations.append({k: row[k] for k in ("item", "variant", "value", "unit", "source_url", "observed_at", "effective_date", "kind", "venue") if k in row})
         except (ValueError, KeyError, TypeError):
             skipped += 1
     if not samples:
         raise ValueError("No numeric observations matched the configured field/unit")
     return samples, {"actor_id": run.get("actId", actor), "requested_actor_id": actor, "run_id": run_id, "dataset_id": dataset,
                      "source_url": spec["source_url"], "unit": spec["unit"], "value_path": spec["value_path"],
-                     "accepted": len(samples), "skipped": skipped, "source_finished_at": run.get("finishedAt")}
+                     "accepted": len(samples), "skipped": skipped, "source_finished_at": run.get("finishedAt"),
+                     "observations": observations, "usage_total_usd": run.get("usageTotalUsd")}
 
 
 def main():

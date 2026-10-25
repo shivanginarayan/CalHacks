@@ -1,13 +1,15 @@
 import {useEffect,useState} from 'react';
 import {api} from '../data/api';
 import {useStore} from '../state/store';
+import {usePublicInputs} from '../state/publicInputs';
 
 export function WorldDataOptions(){
  const s=useStore(),[items,setItems]=useState<{calibration_id:string;collected_at:string}[]>([]);
- useEffect(()=>{let active=true;void api<typeof items>('/api/calibrations').then(v=>{if(active)setItems(v);}).catch(()=>{});return()=>{active=false;};},[]);
+ const latest=usePublicInputs(state=>state.data?.calibration_id);
+ useEffect(()=>{let active=true;void api<typeof items>('/api/calibrations').then(v=>{if(active)setItems(v);}).catch(()=>{});return()=>{active=false;};},[latest]);
  return <label className="slider-label">Price and wage inputs<select aria-label="World calibration" value={s.selectedCalibration} onChange={e=>s.set({selectedCalibration:e.target.value})}>
- <option value="">Seeded synthetic inputs</option>{items.map(c=><option key={c.calibration_id} value={c.calibration_id}>Apify: {c.calibration_id} · {c.collected_at.slice(0,10)}</option>)}</select>
- <small>Opt-in samples are frozen in each world. Rent remains reference data.</small></label>;
+ <option value="latest">Latest collected Apify inputs</option><option value="">Seeded synthetic inputs · explicit demo</option>{items.map(c=><option key={c.calibration_id} value={c.calibration_id}>Apify: {c.calibration_id} · {c.collected_at.slice(0,10)}</option>)}</select>
+ <small>Public inputs load automatically and are frozen in each new world. Existing worlds keep their original inputs.</small></label>;
 }
 
 export function CreditSafeguards({businessId}:{businessId:string}){

@@ -1,12 +1,18 @@
 # Economy God Mode Backend
 
+The dashboard now supports a [sourced debt-crisis story](./docs/SHOCK_STORIES.md): retrieve dated US Treasury debt, preview a hypothetical 25% increase, choose separate bond-yield/exposure assumptions, and explicitly apply the calculated bank investment loss before comparing rescue strategies. The real baseline and hypothetical assumptions remain clearly distinguished.
+
 Milestone 9 adds **finite goods production and inventory-constrained sales**. Businesses turn supplier materials into finished stock, households can only buy available goods, and retail settlement recognizes the cost of inventory sold. A `supply_crunch` scenario demonstrates supplier negotiation restoring production and sales. The backend also includes background agent jobs, Play/Pause, speed, reset, live financial events, contract payments, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live Nemotron function calling and all three economic agent workflows have been verified; see [Nemotron setup and checks](./docs/NEMOTRON.md). Successful external on-chain settlement remains unverified; the optional x402 testnet integration is described below.
 
 The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). The UI is connected to the backend; see [alignment, setup, and demo instructions](./docs/UI_INTEGRATION.md). The API contract is in [docs/API.md](./docs/API.md).
 
 The dashboard now includes sourced Census/FDIC reference data, a Fetch ACP gateway and optional ASI research, a CRS sandbox fraud-screened payment workflow, and a real SpacetimeDB shared event feed. See [setup, verified behavior and remaining credentials](./docs/SPONSOR_INTEGRATIONS.md). Public data and SpacetimeDB were verified live locally. CRS needs sponsor credentials/test profiles; the supplied Fetch credential returned HTTP 401. The economy's households, businesses, banks and balances remain seeded synthetic data.
 
-The next track milestone adds opt-in CRS bank underwriting, explicit human approval, a complete Fetch stress-test conversation, isolated Base Sepolia x402 research, and reproducible Apify price/wage samples. Setup and precise live/fixture status are in [the track implementation guide](./docs/TRACK_IMPLEMENTATION.md); [submission evidence](./docs/SUBMISSION_EVIDENCE.md) includes the real-versus-simulated matrix and Hyphenate/Microsoft demo outline. Existing workflows retain their defaults. The testnet wallet is unfunded; CRS, Agentverse and Apify still need valid sponsor credentials/configuration before those live claims can be made.
+The next track milestone adds opt-in CRS bank underwriting, explicit human approval, a complete Fetch stress-test conversation, isolated Base Sepolia x402 research, and reproducible Apify price/wage samples. Setup and precise live/fixture status are in [the track implementation guide](./docs/TRACK_IMPLEMENTATION.md); [submission evidence](./docs/SUBMISSION_EVIDENCE.md) includes the real-versus-simulated matrix and Hyphenate/Microsoft demo outline. Existing workflows retain their defaults. The testnet wallet is unfunded; CRS and Agentverse still need valid sponsor credentials/configuration. Apify collection is now verified live through a private limited-permission Actor; see [public-input setup and scope](./docs/APIFY.md).
+
+For Hyphenate and Apify judging, use the [submission guide and three-minute demo](./docs/HYPHENATE_APIFY_SUBMISSION.md). It includes copy-ready descriptions and a reproducible live recording that verifies automatic public inputs, human credit approval, separate settlement, retry protection and live policy comparisons. The [custom Actor instructions](./apify_actor/README.md) describe its input, output and deployment.
+
+For Microsoft and Most Technically Complex judging, use the [customer workflow, evaluation and submission guide](./docs/MICROSOFT_TECHNICAL_SUBMISSION.md). Fork Reality now offers **Download comparison report**, producing a standalone analyst report with final outcomes, baseline differences, audits, funding breakdown and frozen-source provenance. The evaluation command reproduces 30 matched branches across five seeds and two explicit input modes. [Nebius × NVIDIA](./docs/NEBIUS_SUBMISSION_READINESS.md) is a separate event with additional remote-access, licensing and video requirements.
 
 ## Frontend demo
 
@@ -21,11 +27,11 @@ npm test
 npm run build
 ```
 
-Open <http://127.0.0.1:5173/>. The frontend does not require the Python service for the offline demo. See the [frontend README](./apps/web/README.md) for the supported fixture scenario and controls.
+Open <http://127.0.0.1:5173/> with the Python API running. New UI worlds default to the latest collected Apify inputs; public inputs load automatically on open and refresh in the background when over six hours old. An explicit seeded demo option is available in world setup. See [Apify setup and data scope](./docs/APIFY.md).
 
 ## Run locally
 
-Prerequisites: Git and Python 3.11 or newer with pip and venv. The backend was tested with Python 3.11 on Windows. SQLite is included with Python; no separate database server, Node.js, or Docker is needed. Simulation and explicit demo-agent mode need no cloud account or API keys. Live agent mode requires Nebius credentials and a tool-capable model. The fixture-driven frontend lives in `apps/web` and runs independently of the backend.
+Prerequisites: Git and Python 3.11 or newer with pip and venv. The backend was tested with Python 3.11 on Windows. SQLite is included with Python; no separate database server, Node.js, or Docker is needed. Simulation and explicit demo-agent mode need no cloud account or API keys. Live agent mode requires Nebius credentials and a tool-capable model. The connected frontend requires the API and Node.js 22 or 24; the backend itself does not need Node.js.
 
 Clone the repository:
 
@@ -173,7 +179,7 @@ The default database is [data/economy.sqlite3](./data/economy.sqlite3), created 
 .\.venv\Scripts\python.exe -m scripts.export_contract
 ```
 
-On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current backend suite contains 127 tests; the frontend has 34 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
+On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current backend suite contains 171 passing tests plus one optional skipped SDK module; the frontend has 42 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
 
 Tests cover ledger invariants, reproducibility, reserve/deposit conservation, loan creation and repayment, rejected transactions, request validation, persistence, event pagination, CORS, concurrent requests, shock replay, clearing calculations, crisis propagation, defaults, and legacy checkpoints.
 

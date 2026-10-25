@@ -59,7 +59,7 @@ class DemoCreditModel:
                 name, args = "request_credit", {"amount_cents": amount, "rationale": "Deterministic demo: request only the observed payroll gap within the authorized cap."}
             else:
                 name, args = "continue_without_credit", {"rationale": "Deterministic demo: no payroll financing requested because there is no shortfall or the business is closed."}
-        elif "assess_credit" in names:
+        elif self.role == "bank":
             if "pull_credit_report" in names and not any(r.get("provider") == "crs" for r in results):
                 return tool_call("pull_credit_report", {}, len(results))
             assessed = [r for r in results if "eligible" in r]
@@ -90,7 +90,7 @@ def role_loop(store, report, role, model, tools, handler, instruction):
                  " Use only the supplied function tools. Give concise public rationales, not hidden reasoning. "
                  "Balances, eligibility, and terms are determined by the tools, never by model assertions."}]
     for _ in range(8):
-        message = model.complete(messages, tools)
+        message = model.complete(messages, tools() if callable(tools) else tools)
         calls = message.get("tool_calls") if isinstance(message, dict) else None
         if not isinstance(calls, list) or not 1 <= len(calls) <= 4:
             raise ProviderError("Credit model returned an invalid function-call batch")
@@ -141,6 +141,20 @@ def run_credit(store, simulation_id, business_id, request):
     require_crs = bool(request.get("require_crs") or request.get("crs_profile_id"))
     bank_tools = BANK_TOOLS + (tools_for([("pull_credit_report", "Retrieve the bound business owner's CRS sandbox credit evidence before underwriting. Returns redacted score and risk flags; never raw identities.", InspectArguments)]) if require_crs else [])
 
+    def available_bank_tools():
+        # Expose actions only after their prerequisites succeeded. A rejected
+        # assessment must be corrected before a decision can be proposed.
+        # The handlers still validate every call, including out-of-stage calls.
+        if not inspected:
+            names = {"inspect_credit"}
+        elif require_crs and evidence is None:
+            names = {"pull_credit_report"}
+        elif not assessments:
+            names = {"assess_credit"}
+        else:
+            names = {"assess_credit", "decide_credit"}
+        return [tool for tool in bank_tools if tool["function"]["name"] in names]
+
     def business_handler(name, args):
         nonlocal inspected
         if name == "inspect_business":
@@ -185,7 +199,7 @@ def run_credit(store, simulation_id, business_id, request):
                 raise LedgerError("Call pull_credit_report before assessing CRS-backed credit")
             amount = AssessCreditArguments.model_validate(args).amount_cents
             if amount > report["proposal"]["amount_cents"]:
-                raise LedgerError("Counteroffer cannot exceed the business proposal")
+                raise LedgerError(f"Counteroffer cannot exceed the business proposal of {report['proposal']['amount_cents']} cents. Call assess_credit again with principal at or below that amount before decide_credit.")
             controls = credit_controls(request, evidence, amount)
             assessment = assess_credit(source, business_id, amount, controls if require_crs or controls["reasons"] else None)
             assessments[amount] = assessment
@@ -234,8 +248,10 @@ def run_credit(store, simulation_id, business_id, request):
                   f"The caller authorizes at most {request['max_amount_cents']} cents. Do not request settlement.")
         if report["proposal"] is not None:
             inspected = False
-            role_loop(store, report, "bank", models["bank"], bank_tools, bank_handler,
+            role_loop(store, report, "bank", models["bank"], available_bank_tools, bank_handler,
                       f"You manage {report['bank_id']}. Inspect the proposal, assess eligibility, then approve tested principal or decline. "
+                      "Use the exact observed proposal amount or a smaller counteroffer in integer cents. "
+                      "A rejected assessment is not an assessment result: correct the principal and call assess_credit again before deciding. "
                       "A lower principal is a counteroffer; collateral and interest are not modeled. "
                       + ("Call pull_credit_report before assess_credit. Cite the returned score and risk decisions. Blocked identity/fraud evidence cannot be overridden. Review flags or large loans require a human decision, not automatic settlement." if require_crs else ""))
             if report["decision"]["approved"]:

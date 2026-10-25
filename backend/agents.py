@@ -26,6 +26,8 @@ def observations(source):
                           "equity_cents": sheet["equity_cents"], "assets_cents": sheet["assets_cents"],
                           "reserves_cents": sheet["assets"].get("reserves", 0)})
     return {"metrics": source.metrics(), "banks": banks,
+            "shock_stories": [event["details"] for event in source.state["events"]
+                              if event["event_type"] == "sourced_debt_stress_applied"][-3:],
             "warning": "Liquidity loans add debt; they do not restore equity. Household support may remain frozen at insolvent banks."}
 
 

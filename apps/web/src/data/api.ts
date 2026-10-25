@@ -7,7 +7,9 @@ export type Entity = {id:string; name:string; kind:string; status:string; bank_i
  last_produced_units?:number|null; loan_due_tick?:number|null; capital_ratio?:number|null; liquidity_ratio?:number|null;
  lending_available?:boolean|null; balance_sheet:{assets:Record<string,number>; liabilities:Record<string,number>;
  assets_cents:number; liabilities_cents:number; equity_cents:number; balanced:boolean}};
-export type World = {simulation_id:string; simulation_tick:number; status:'paused'|'running';calibration?:{calibration_id:string;provider:string;sha256:string;collected_at:string}|null;
+export type SourceObservation={item?:string;value?:number;unit?:string;kind?:string;effective_date?:string;variant?:string;source_url?:string;observed_at?:string};
+export type CalibrationSource={actor_id:string;run_id:string;dataset_id:string;source_url:string;category?:string;scope?:string;conversion?:string;accepted?:number;observations?:SourceObservation[]};
+export type World = {simulation_id:string; simulation_tick:number; status:'paused'|'running';calibration?:{calibration_id:string;provider:string;sha256:string;collected_at:string;sources:CalibrationSource[];price_sample_count:number;wage_sample_count:number}|null;
  config:{seed:number; scenario:string}; entities:Entity[]; metrics:Metrics; latest_event_sequence:number; production_model:string};
 export type EconomyEvent = {sequence:number; simulation_id:string; simulation_tick:number; event_type:string;
  agent_id:string|null; counterparty_id:string|null; amount_cents:number|null; transaction_id:string|null; details:Record<string,unknown>};
@@ -17,17 +19,20 @@ export type Contract = {contract_id:string; buyer_id:string; supplier_id:string;
  quantity:number; total_cents:number; down_payment_cents:number; outstanding_cents:number; due_tick:number};
 export type Trace = {sequence:number; tool:string; role?:string; actor_id?:string; status:string; arguments:Record<string,unknown>; result:unknown};
 export type Offer = {offer_id:string; supplier_id:string; quantity:number; total_cents:number; down_payment_cents:number; due_in_ticks:number};
-export type Report = {run_id:string; simulation_id:string; status:string; source_tick:number; provider?:string; model?:string;
+export type Report = {run_id:string; simulation_id:string; status:string; source_tick:number; snapshot_sha256?:string; provider?:string; model?:string;
  risk_evidence?:{provider:string;score:number|null;risk_decision:string;cached:boolean}|null;approval_reasons?:string[];human_approval?:{decision:string;rationale:string}|null;
  providers?:Record<string,string>; models?:Record<string,string>; error?:string|null; business_id?:string; buyer_id?:string; trace:Trace[];
  offers?:Offer[]; selected_offer?:Offer|null; settlement?:unknown;
- recommendation?:{strategy:string; amount_cents:number; rationale:string; bank_id:string|null};
+ recommendation?:{strategy:string; amount_cents:number; rationale:string; bank_id:string|null;fork_id?:string};
  decision?:{approved:boolean; amount_cents:number; rationale:string}; business_accepted?:boolean|null};
 export type Job = {job_id:string; simulation_id:string; kind:'central_bank'|'credit'|'procurement'; actor_id:string|null;
  status:string; error:string|null; report_url:string|null; report_status:string|null};
 export type Fork = {fork_id:string; source_tick:number; end_tick:number; snapshot_sha256:string;
  recommended_strategy:string; recommendation_basis:string;
  branches:{strategy:string; simulation_id:string; metrics:Metrics; timeline:Metrics[]}[]};
+export type ComparisonEvidence = Omit<Fork,'branches'> & {source_simulation_id:string;source_event_sequence:number;seed:number;engine_version:string;
+ request:{bank_id:string;budget_cents:number;ticks:number};cost_definition:string;tied_strategies:string[];
+ branches:(Omit<Fork['branches'][number],'metrics'>&{metrics:Metrics&{fiscal_transfer_cost_cents:number;public_loan_outstanding_cents:number};audit:{balanced:boolean};delta_vs_no_intervention:Record<string,number>})[]};
 export const API_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 export async function api<T>(path:string, body?:unknown):Promise<T> {
  const response = await fetch(API_URL+path, body === undefined ? undefined : {

@@ -104,7 +104,7 @@ The collector converts numeric USD with decimal rounding. Hourly pay assumes eig
 
 Select a saved calibration in the world-creation UI, or provide `calibration_id` to `POST /api/worlds`. Prices and daily wages are sampled with the seed, and the complete sample/provenance object is frozen in world state. Forks copy it, and reset uses that frozen object even if the source file changes/disappears. Existing worlds never reload it. The UI shows the calibration ID, date and checksum. Households, businesses, bank balance sheets and behavioral rules remain synthetic; a sample of prices/wages does not calibrate the whole city economy.
 
-The collector's API flow, units, provenance, invalid-row handling and world replay are tested with fixtures. No live Apify collection is claimed until a token and working Actor spec are supplied.
+The collector is now verified live through the project's private limited-permission Actor: 29 posted cafe drink-price options plus one official statutory wage reference. The UI can collect fresh data and create a world with frozen public inputs. See [the live Apify setup and scope](./APIFY.md). Generic private Actor specs remain supported by the CLI above; parsing/replay failures are also covered by fixtures.
 
 ## Rehearse and verify
 

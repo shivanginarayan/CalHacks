@@ -226,6 +226,40 @@ def test_source_change_during_model_review_blocks_auto_settlement(client, monkey
     assert not any(event["event_type"] == "agent_credit_settled" for event in events)
 
 
+def test_bank_corrects_rejected_assessment_before_decision_is_available(client, monkeypatch):
+    base, endpoint = setup(client)
+    before = client.get(base).json()
+    gap = business_facts(client.app.state.store.get(before["simulation_id"]), "business_1")["payroll_shortfall_cents"]
+
+    class RecoveringBank:
+        provider, model = "offline_test", "assessment-recovery"
+
+        def __init__(self):
+            self.stages = []
+
+        def complete(self, messages, tools):
+            names = {tool["function"]["name"] for tool in tools}
+            self.stages.append(names)
+            if names == {"inspect_credit"}:
+                return model_call("inspect_credit", {})
+            if names == {"assess_credit"}:
+                amount = gap + 1 if len(self.stages) == 2 else gap
+                return model_call("assess_credit", {"amount_cents": amount})
+            assert names == {"assess_credit", "decide_credit"}
+            return model_call("decide_credit", {"approved": True, "amount_cents": gap, "rationale": "The corrected principal passed underwriting"})
+
+    bank = RecoveringBank()
+    monkeypatch.setattr(credit_agents, "credit_models", lambda body: {
+        "business": DemoCreditModel("business", body), "bank": bank})
+    report = client.post(endpoint, json=request(mode="live", human_approval_threshold_cents=1, auto_settle=True)).json()
+    assert bank.stages == [{"inspect_credit"}, {"assess_credit"}, {"assess_credit"}, {"assess_credit", "decide_credit"}]
+    rejected = [t for t in report["trace"] if t["status"] == "rejected"]
+    assert len(rejected) == 1 and rejected[0]["tool"] == "assess_credit"
+    assert str(gap) in rejected[0]["result"]["error"]
+    assert report["status"] == "needs_human_approval" and report["settlement"] is None
+    assert client.get(base).json() == before
+
+
 def test_workflow_validation_missing_credentials_and_bounded_failure(client, monkeypatch):
     base, endpoint = setup(client)
     monkeypatch.delenv("NEBIUS_API_KEY", raising=False)
