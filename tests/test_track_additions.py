@@ -93,9 +93,26 @@ def test_crs_credit_normalization_cache_and_no_pii(store, monkeypatch, tmp_path)
     first = crs_credit.pull_credit_report(store, "tracks", "business_1", "sponsor_a")
     second = crs_credit.pull_credit_report(store, "tracks", "business_1", "sponsor_a")
     assert first["score"] == 745 and first["risk_decision"] == "clear"
-    assert second["cached"] and len(calls) == 1
+    assert second["cached"] and calls == ["/api/experian/credit-report/standard/sponsor-config"]
     assert "PRIVATE_TEST_SSN" not in json.dumps(first) and "PRIVATE_TOKEN" not in json.dumps(first)
 
+
+
+@pytest.mark.parametrize("raw", [{"errorMessages": [{"code": "E1005"}]}, []])
+def test_crs_http_200_error_payload_never_becomes_evidence(store, monkeypatch, tmp_path, raw):
+    from backend.provider import ProviderError
+    profile = tmp_path / "profiles.json"
+    profile.write_text(json.dumps({"sponsor_a": {"sponsor_test_identity": True, "credit_request": {"test": "synthetic"}}}))
+    rules = tmp_path / "rules.json"
+    rules.write_text(json.dumps({"score_path": "scores.0.scoreValue", "risk_rules": []}))
+    for key, value in {"CRS_TEST_PROFILES_PATH": str(profile), "CRS_CREDIT_RULES_PATH": str(rules),
+                       "CRS_CREDIT_PRODUCT_CONFIG": "sponsor-config", "CRS_ACCESS_TOKEN": "TEST_TOKEN"}.items():
+        monkeypatch.setenv(key, value)
+    real = httpx.Client
+    monkeypatch.setattr(httpx, "Client", lambda **kw: real(transport=httpx.MockTransport(lambda req: httpx.Response(200, json=raw))))
+    with pytest.raises(ProviderError, match="underwriting remains held"):
+        crs_credit.pull_credit_report(store, "tracks", "business_1", "sponsor_a")
+    assert store.sponsor_reports("tracks", "credit_profile") == []
 
 def calibration():
     return {"calibration_id": "test_apify", "geography": "San Francisco, CA", "collected_at": "2026-10-24T00:00:00Z", "provider": "apify",

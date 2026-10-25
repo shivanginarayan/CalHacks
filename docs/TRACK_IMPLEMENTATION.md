@@ -36,7 +36,11 @@ The private credit-rules file contains `score_path` and `risk_rules`. `score_pat
 {"score_path":"YOUR.DOCUMENTED.SCORE.FIELD","risk_rules":[{"path":"YOUR.DOCUMENTED.RISK.FIELD","clear_values":[],"blocked_values":[]}]}
 ```
 
-No live CRS credit report has been pulled: credentials, product configuration, test identities and mappings are still required. Tests exercise the adapter, redaction, caching and downstream decisions using explicit fixtures. Do not describe fixtures as successful sponsor API usage.
+Live Cal Hacks verification completed October 25: authenticated sandbox HTTP200 and actual Experian CRS Standard Format report HTTP200 for sponsor synthetic P19 small-business owner. The live Nebius/Nemotron business and bank workflow pulled CRS before assessment, displayed score 770, and stopped at human review with no settlement or financial transactions added. Score path is `scores.0.scoreValue`, per the sponsor OpenAPI. No identity/fraud clearance is inferred: private risk rules are empty, so risk remains review.
+
+Demo: inspect Business 1 in a world with a payroll shortfall, open **Credit safeguards**, select **CRS sandbox: sponsor_p19_owner** under Owner credit evidence, keep Agent mode **live**, and select **Review with safeguards**. Show the redacted CRS score and recorded tool trace, then the separate human-approval gate. Use only sponsor synthetic profiles. Verified run: `credit_4300cc3429b747009a2ff1a2ab955f36`, world `world_005d442774c04101`.
+
+The adapter uses `POST /experian/credit-report/standard/{config}` with `exp-prequal-vantage4`. HTTP200 can contain `errorMessages`; these are rejected rather than treated as evidence. No separate TruValidate fraud integration is claimed as live verified.
 
 ## Full Fetch conversation
 

@@ -1,4 +1,4 @@
-"""Deploy a private fixed-source Actor; leaves account limits and other Actors untouched."""
+"""Deploy a fixed-source Actor; leaves account limits and other Actors untouched."""
 import json
 import os
 import re
@@ -13,7 +13,7 @@ def main():
         raise SystemExit("Set APIFY_TOKEN in private .env")
     root = Path(__file__).resolve().parent.parent / "apify_actor"
     files = [{"name": name, "format": "TEXT", "content": (root / name).read_text(encoding="utf-8")}
-             for name in ("Dockerfile", "main.py")]
+             for name in ("Dockerfile", "main.py", "README.md", ".actor/actor.json")]
     version = {"versionNumber": "0.1", "sourceType": "SOURCE_FILES", "buildTag": "latest", "sourceFiles": files}
     with httpx.Client(headers={"Authorization": "Bearer " + os.environ["APIFY_TOKEN"]}, timeout=40, trust_env=False) as client:
         actor = os.getenv("APIFY_ACTOR_ID", "").strip()
