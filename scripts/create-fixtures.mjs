@@ -33,3 +33,6 @@ console.log(`Bundled ${geo.features.length} countries, ${snapshots.length} snaps
 await import('./inspector-phases.mjs');
 
 await import('./normalize-layout.mjs');
+
+// Restore the enriched committed layout after the original fixture storyboard generator.
+await import('./update-city-layout.mjs');

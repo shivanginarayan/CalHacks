@@ -12,7 +12,7 @@ export function getSnapshot(tick:number,branch:Branch):Snapshot{return snapshots
 export function getFeed(tick:number):FeedItem[]{return feed.filter(f=>f.tick<=tick).sort((a,b)=>b.tick-a.tick||b.id.localeCompare(a.id)).slice(0,30) as FeedItem[];}
 export function getProposal(){return proposal;}
 export function getInspector(actorId:string){return inspectors.find(a=>a.id===actorId)??{...inspectors[0],id:actorId,name:layout.districts.some(d=>d.name===actorId)?actorId:'Local business',type:layout.districts.some(d=>d.name===actorId)?'District':'Business'};}
-export function getCityLayout():CityLayout{return layout;}
+export function getCityLayout():CityLayout{return layout as CityLayout;}
 export function getFork(){return fork;}
 export function getNetwork(){return network;}
 export function getPayment(actorId:string){return actorId===payment.actorId?payment:null;}
