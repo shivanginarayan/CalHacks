@@ -486,12 +486,14 @@ def create_treasury_macro_agent(
 
     @proto.on_message(TreasuryDataQuery, replies={TreasuryDataResponse})
     async def handle_treasury_query(ctx: Context, sender: str, msg: TreasuryDataQuery):
-        from backend.shock_stories import treasury_debt
+        from decimal import Decimal
+        from backend.shock_stories import debt_baseline
         try:
-            debt_info = treasury_debt()
-            rec_date = debt_info.get("record_date", "2026-10-24")
-            debt_cents = int(debt_info.get("debt_usd", 35_000_000_000_000) * 100)
-            src = debt_info.get("source", "US Treasury Debt to the Penny")
+            debt_info = debt_baseline()
+            rec_date = debt_info.get("observation_date", "2026-10-24")
+            val = Decimal(debt_info.get("value_usd", "35000000000000"))
+            debt_cents = int(val * 100)
+            src = debt_info.get("provider", "US Treasury Fiscal Data")
             retrieved = debt_info.get("retrieved_at", "2026-10-25T00:00:00Z")
         except Exception:
             rec_date = "2026-10-24"
