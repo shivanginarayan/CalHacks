@@ -42,10 +42,12 @@ def business_facts(source, business_id):
                      "reserves_cents": sheet["assets"].get("reserves", 0)}}
 
 
-def assess_credit(source, business_id, amount_cents):
+def assess_credit(source, business_id, amount_cents, controls=None):
     source.positive_amount(amount_cents)
     facts = business_facts(source, business_id)
     reasons = []
+    if controls and controls["blocked"]:
+        reasons.extend(controls["reasons"])
     if amount_cents > facts["payroll_shortfall_cents"]:
         reasons.append("Requested principal exceeds the observed payroll shortfall")
     if facts["loan_due_tick"] is not None and facts["loan_due_tick"] <= source.state["tick"] and facts["debt_cents"]:
@@ -65,4 +67,5 @@ def assess_credit(source, business_id, amount_cents):
     return {"eligible": not reasons, "amount_cents": amount_cents, "bank_id": facts["bank_id"],
             "due_tick": facts["loan_due_tick"] if facts["debt_cents"] else source.state["tick"] + 5,
             "projected_bank_health": projected, "reasons": reasons,
-            "terms": "Principal-only; an existing loan maturity is preserved. No collateral or interest is modeled."}
+            "terms": "Principal-only; an existing loan maturity is preserved. No collateral or interest is modeled.",
+            **({"controls": controls} if controls else {})}

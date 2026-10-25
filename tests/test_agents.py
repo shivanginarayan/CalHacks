@@ -207,6 +207,10 @@ def test_provider_posts_tool_schema_without_exposing_credentials(monkeypatch):
         assert request.headers["authorization"] == "Bearer test-secret-not-a-real-key"
         body = json.loads(request.content)
         assert body["tool_choice"] == "required"
+        assert body["chat_template_kwargs"] == {"enable_thinking": False}
+        assert body["max_tokens"] == 4096
+        assert "100 cents = 1 USD" in body["messages"][0]["content"]
+        assert "Keep public rationales qualitative" in body["messages"][0]["content"]
         assert "test-secret" not in json.dumps(body)
         return httpx.Response(200, json={"choices": [{"message": call("inspect_economy", {})}]})
     monkeypatch.setattr("backend.provider.httpx.Client", lambda **kwargs: original(transport=httpx.MockTransport(handle), **kwargs))

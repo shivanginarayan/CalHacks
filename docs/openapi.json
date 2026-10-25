@@ -6,6 +6,500 @@
     "version": "0.9.0"
   },
   "paths": {
+    "/api/integrations/status": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Status",
+        "operationId": "status_api_integrations_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/data-context": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Contexts",
+        "operationId": "contexts_api_worlds__simulation_id__data_context_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/research-input": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Research Input",
+        "operationId": "research_input_api_worlds__simulation_id__research_input_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calibrations": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Calibrations",
+        "operationId": "calibrations_api_calibrations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/data-context/research": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Run Research",
+        "operationId": "run_research_api_worlds__simulation_id__data_context_research_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/data-context/sources": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Source Data",
+        "operationId": "source_data_api_worlds__simulation_id__data_context_sources_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/fraud/profiles": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Profiles",
+        "operationId": "profiles_api_fraud_profiles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/credit/profiles": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Credit Profiles",
+        "operationId": "credit_profiles_api_credit_profiles_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/fraud/screens": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Screen",
+        "operationId": "screen_api_worlds__simulation_id__fraud_screens_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScreenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Screens",
+        "operationId": "screens_api_worlds__simulation_id__fraud_screens_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/fraud/payments": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Payment",
+        "operationId": "payment_api_worlds__simulation_id__fraud_payments_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuardedPayment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/spacetime/enable": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Enable",
+        "operationId": "enable_api_worlds__simulation_id__spacetime_enable_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/spacetime": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Sync Status",
+        "operationId": "sync_status_api_worlds__simulation_id__spacetime_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/spacetime/events": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Shared Events",
+        "operationId": "shared_events_api_worlds__simulation_id__spacetime_events_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -569,6 +1063,32 @@
               "minimum": 1,
               "default": 100,
               "title": "Limit"
+            }
+          },
+          {
+            "name": "entity_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Entity Id"
+            }
+          },
+          {
+            "name": "newest_first",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Newest First"
             }
           }
         ],
@@ -1685,6 +2205,55 @@
         }
       }
     },
+    "/api/credit-runs/{run_id}/approval": {
+      "post": {
+        "summary": "Approve Credit",
+        "operationId": "approve_credit_api_credit_runs__run_id__approval_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HumanCreditApproval"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/credit-runs/{run_id}/settle": {
       "post": {
         "summary": "Settle Credit",
@@ -2429,6 +2998,24 @@
             "minimum": 1.0,
             "title": "Max Experiments",
             "default": 2
+          },
+          "target_bank_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Bank Id"
+          },
+          "allow_paid_research": {
+            "type": "boolean",
+            "title": "Allow Paid Research",
+            "default": false
           }
         },
         "additionalProperties": false,
@@ -2704,7 +3291,8 @@
               "declined",
               "not_requested",
               "settled",
-              "failed"
+              "failed",
+              "needs_human_approval"
             ],
             "title": "Status"
           },
@@ -2798,6 +3386,37 @@
               }
             ],
             "title": "Error"
+          },
+          "risk_evidence": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Evidence"
+          },
+          "approval_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Approval Reasons"
+          },
+          "human_approval": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Human Approval"
           }
         },
         "type": "object",
@@ -2846,6 +3465,37 @@
             "type": "boolean",
             "title": "Auto Settle",
             "default": false
+          },
+          "require_crs": {
+            "type": "boolean",
+            "title": "Require Crs",
+            "default": false
+          },
+          "crs_profile_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Profile Id"
+          },
+          "human_approval_threshold_cents": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 500000.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Human Approval Threshold Cents"
           }
         },
         "additionalProperties": false,
@@ -3590,6 +4240,50 @@
         ],
         "title": "ForkSummary"
       },
+      "GuardedPayment": {
+        "properties": {
+          "transaction_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Transaction Id"
+          },
+          "payer_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Payer Id"
+          },
+          "receiver_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Receiver Id"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount Cents"
+          },
+          "fraud_report_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Fraud Report Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "transaction_id",
+          "payer_id",
+          "receiver_id",
+          "amount_cents",
+          "fraud_report_id"
+        ],
+        "title": "GuardedPayment"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -3602,6 +4296,31 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "HumanCreditApproval": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "decline"
+            ],
+            "title": "Decision"
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Rationale"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "decision",
+          "rationale"
+        ],
+        "title": "HumanCreditApproval"
       },
       "InterventionRequest": {
         "properties": {
@@ -4224,6 +4943,38 @@
         ],
         "title": "ResetResult"
       },
+      "ScreenRequest": {
+        "properties": {
+          "entity_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Entity Id"
+          },
+          "profile_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Profile Id"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "demo",
+              "live"
+            ],
+            "title": "Mode",
+            "default": "live"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "entity_id",
+          "profile_id"
+        ],
+        "title": "ScreenRequest"
+      },
       "ShockRequest": {
         "properties": {
           "transaction_id": {
@@ -4628,6 +5379,18 @@
             ],
             "title": "Production Model",
             "default": "legacy_unlimited"
+          },
+          "calibration": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration"
           }
         },
         "type": "object",
@@ -4682,6 +5445,18 @@
             ],
             "title": "Scenario",
             "default": "standard"
+          },
+          "calibration_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9_-]{1,64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Id"
           }
         },
         "additionalProperties": false,

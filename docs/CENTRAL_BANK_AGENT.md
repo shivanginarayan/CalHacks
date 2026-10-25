@@ -4,7 +4,7 @@ The central-bank workflow observes one financial snapshot, tests alternatives th
 
 ## Live and demo modes
 
-`mode: "live"` is the default. It requires `NEBIUS_API_KEY` and `NEBIUS_MODEL`. The adapter uses Nebius’s chat-completions API with function tools. Select an exact Nemotron model ID that your account supports; no model name is guessed or silently substituted. Provider/model access has not been verified with live credentials in this workspace.
+`mode: "live"` is the default. It requires `NEBIUS_API_KEY` and `NEBIUS_MODEL`. The adapter uses Nebius’s chat-completions API with function tools. Select an exact Nemotron model ID that your account supports; no model name is guessed or silently substituted. A real Nemotron 3 Nano policy-analysis run has completed with a validated recommendation; see [live setup and observed checks](./NEMOTRON.md).
 
 `mode: "demo"` is explicit, deterministic, and credential-free. Its provider is `deterministic_demo`, its model is `demo-policy-v1`, and its rationale says it is not AI-generated. It calls the same validated tools and simulation engine, testing the full cap and then smaller budgets within the requested experiment count. It is useful for UI integration and workflow testing, not evidence of live Nemotron inference.
 
@@ -28,7 +28,9 @@ The source is unchanged by analysis. The run publishes three isolated worlds per
 
 ## Configure live Nemotron access
 
-Set environment variables in the server’s terminal before starting/restarting Uvicorn. The application reads shell variables; an `.env` file is not automatically loaded.
+For local development, put `NEBIUS_API_KEY`, `NEBIUS_MODEL`, and optionally `NEBIUS_BASE_URL` in the ignored root `.env`, then run `python -m scripts.run_backend --reload`. The launcher reads only supported settings, preserves shell overrides, and keeps credentials on the backend. Plain Uvicorn continues to read shell variables without automatically loading the file.
+
+`python -m scripts.check_nebius` discovers available Nemotron IDs from the official API. Set the selected ID, then run `python -m scripts.check_nebius --probe` for a real function-call check. `python -m scripts.smoke_live` exercises all three live economic workflows without automatic financial settlement. Both live checks incur inference usage and keep key values out of output. Provider status indicates configuration presence, while these checks establish actual access.
 
 PowerShell can read the key without recording its value in command history:
 

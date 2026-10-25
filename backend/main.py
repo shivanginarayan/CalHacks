@@ -18,10 +18,12 @@ from backend.models import (Audit, Entity, EventPage, LoanRequest, Metrics, Paym
                             ShockRequest, Network, InterventionRequest, ForkRequest, ForkComparison, ForkSummary)
 from backend.store import Store
 from backend.agents import run_agent
-from backend.provider import ProviderNotConfigured, provider_status
+from backend.provider import ProviderError, ProviderNotConfigured, provider_status
+from backend.sponsor_routes import router as sponsor_router
+from backend.spacetime import mirror_worker
 from backend.models import AgentRunRequest, AgentReport, ApplyAgentRequest, AgentApplication
 from backend.credit_agents import run_credit
-from backend.models import CreditRunRequest, CreditReport, CreditSettlement
+from backend.models import CreditRunRequest, CreditReport, CreditSettlement, HumanCreditApproval
 from backend.procurement import run_procurement
 from backend.models import ProcurementRequest, ProcurementReport, ProcurementSettlement, SupplierContract
 from backend.models import PlayRequest, PlaybackStatus, ResetRequest, ResetResult
@@ -47,6 +49,7 @@ def create_app(db_path=None):
         stop = asyncio.Event()
         task = asyncio.create_task(scheduler(stop))
         workers = [asyncio.create_task(job_worker(store, stop)) for _ in range(2)]
+        workers.append(asyncio.create_task(mirror_worker(store, stop)))
         try:
             yield
         finally:
@@ -60,6 +63,7 @@ def create_app(db_path=None):
     default_db = Path(__file__).resolve().parent.parent / "data" / "economy.sqlite3"
     store = Store(db_path or os.getenv("ECONOMY_DB_PATH", str(default_db)))
     app.state.store = store
+    app.include_router(sponsor_router(store))
     origins = os.getenv("ECONOMY_CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173")
     app.add_middleware(CORSMiddleware, allow_origins=[s.strip() for s in origins.split(",") if s.strip()],
                        allow_methods=["GET", "POST"], allow_headers=["Content-Type", "Last-Event-ID"])
@@ -76,6 +80,10 @@ def create_app(db_path=None):
     async def unconfigured(request: Request, error: ProviderNotConfigured):
         return JSONResponse(status_code=503, content={"detail": str(error)})
 
+    @app.exception_handler(ProviderError)
+    async def provider_failed(request: Request, error: ProviderError):
+        return JSONResponse(status_code=502, content={"detail": str(error)})
+
     @app.exception_handler(QueueFull)
     async def queue_full(request: Request, error: QueueFull):
         return JSONResponse(status_code=429, content={"detail": str(error)}, headers={"Retry-After": "5"})
@@ -86,7 +94,7 @@ def create_app(db_path=None):
 
     @app.post("/api/worlds", response_model=World, status_code=201)
     def create_world(config: WorldConfig):
-        world = Economy.create(f"world_{uuid4().hex[:16]}", **config.model_dump())
+        world = Economy.create(f"world_{uuid4().hex[:16]}", **config.model_dump(exclude_none=True))
         store.create(world)
         return world.view()
 
@@ -149,8 +157,18 @@ def create_app(db_path=None):
 
     @app.get("/api/worlds/{simulation_id}/transactions", response_model=TransactionPage)
     def transactions(simulation_id: str, offset: int = Query(default=0, ge=0),
-                     limit: int = Query(default=100, ge=1, le=1000)):
-        journal = store.get(simulation_id).ledger.state["journal"]
+                     limit: int = Query(default=100, ge=1, le=1000),
+                     entity_id: str | None = None, newest_first: bool = False):
+        source = store.get(simulation_id)
+        if entity_id is not None:
+            source.entity_view(entity_id)
+        journal = source.ledger.state["journal"]
+        if entity_id is not None:
+            journal = [entry for entry in journal if any(
+                source.ledger.state["accounts"][line["account_id"]]["owner_id"] == entity_id
+                for line in entry["lines"])]
+        if newest_first:
+            journal = list(reversed(journal))
         page = journal[offset:offset + limit]
         return {"transactions": page, "next_offset": offset + len(page),
                 "has_more": offset + len(page) < len(journal)}
@@ -250,6 +268,10 @@ def create_app(db_path=None):
     @app.get("/api/credit-runs/{run_id}", response_model=CreditReport)
     def credit_report(run_id: str):
         return store.get_credit(run_id)
+
+    @app.post("/api/credit-runs/{run_id}/approval", response_model=CreditReport)
+    def approve_credit(run_id: str, body: HumanCreditApproval):
+        return store.approve_credit(run_id, body.decision, body.rationale)
 
     @app.post("/api/credit-runs/{run_id}/settle", response_model=CreditSettlement)
     def settle_credit(run_id: str, body: ApplyAgentRequest):

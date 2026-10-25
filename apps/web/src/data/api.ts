@@ -1,0 +1,49 @@
+export type Metrics = {simulation_tick:number; employment_rate:number; employed_households:number;
+ households:number; businesses:number; banks:number; household_cash_cents:number; business_defaults:number;
+ stressed_banks:number; public_support_disbursed_cents:number; finished_goods_units:number;
+ produced_units_this_tick:number; sold_units_this_tick:number; unmet_demand_units_this_tick:number};
+export type Entity = {id:string; name:string; kind:string; status:string; bank_id?:string|null;
+ employer_id?:string|null; employees?:string[]|null; materials_units?:number|null; goods_units?:number|null;
+ last_produced_units?:number|null; loan_due_tick?:number|null; capital_ratio?:number|null; liquidity_ratio?:number|null;
+ lending_available?:boolean|null; balance_sheet:{assets:Record<string,number>; liabilities:Record<string,number>;
+ assets_cents:number; liabilities_cents:number; equity_cents:number; balanced:boolean}};
+export type World = {simulation_id:string; simulation_tick:number; status:'paused'|'running';calibration?:{calibration_id:string;provider:string;sha256:string;collected_at:string}|null;
+ config:{seed:number; scenario:string}; entities:Entity[]; metrics:Metrics; latest_event_sequence:number; production_model:string};
+export type EconomyEvent = {sequence:number; simulation_id:string; simulation_tick:number; event_type:string;
+ agent_id:string|null; counterparty_id:string|null; amount_cents:number|null; transaction_id:string|null; details:Record<string,unknown>};
+export type Exposure = {kind:string; borrower_id:string; lender_id:string; amount_cents:number; due_tick:number|null};
+export type Network = {simulation_id:string; simulation_tick:number; exposures:Exposure[]};
+export type Contract = {contract_id:string; buyer_id:string; supplier_id:string; status:string;
+ quantity:number; total_cents:number; down_payment_cents:number; outstanding_cents:number; due_tick:number};
+export type Trace = {sequence:number; tool:string; role?:string; actor_id?:string; status:string; arguments:Record<string,unknown>; result:unknown};
+export type Offer = {offer_id:string; supplier_id:string; quantity:number; total_cents:number; down_payment_cents:number; due_in_ticks:number};
+export type Report = {run_id:string; simulation_id:string; status:string; source_tick:number; provider?:string; model?:string;
+ risk_evidence?:{provider:string;score:number|null;risk_decision:string;cached:boolean}|null;approval_reasons?:string[];human_approval?:{decision:string;rationale:string}|null;
+ providers?:Record<string,string>; models?:Record<string,string>; error?:string|null; business_id?:string; buyer_id?:string; trace:Trace[];
+ offers?:Offer[]; selected_offer?:Offer|null; settlement?:unknown;
+ recommendation?:{strategy:string; amount_cents:number; rationale:string; bank_id:string|null};
+ decision?:{approved:boolean; amount_cents:number; rationale:string}; business_accepted?:boolean|null};
+export type Job = {job_id:string; simulation_id:string; kind:'central_bank'|'credit'|'procurement'; actor_id:string|null;
+ status:string; error:string|null; report_url:string|null; report_status:string|null};
+export type Fork = {fork_id:string; source_tick:number; end_tick:number; snapshot_sha256:string;
+ recommended_strategy:string; recommendation_basis:string;
+ branches:{strategy:string; simulation_id:string; metrics:Metrics; timeline:Metrics[]}[]};
+export const API_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
+export async function api<T>(path:string, body?:unknown):Promise<T> {
+ const response = await fetch(API_URL+path, body === undefined ? undefined : {
+  method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+ if (!response.ok) { const error = await response.json().catch(()=>null);
+  throw new Error(typeof error?.detail === 'string' ? error.detail : `Request failed (${response.status})`); }
+ return response.json();
+}
+export const requestId = () => crypto.randomUUID();
+const pendingRequests = new Map<string,string>();
+// Preserve an uncertain request's key until its acknowledgement is received.
+export async function postOnce<T>(path:string,payload:Record<string,unknown>,field:'request_id'|'transaction_id'):Promise<T>{
+ const key=path+JSON.stringify(payload),id=pendingRequests.get(key)??requestId();
+ pendingRequests.set(key,id);
+ const result=await api<T>(path,{...payload,[field]:id});
+ pendingRequests.delete(key);
+ return result;
+}
+export const currency = (cents:number) => new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', maximumFractionDigits:2}).format(cents/100);

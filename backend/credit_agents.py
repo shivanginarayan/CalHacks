@@ -9,6 +9,7 @@ from backend.ledger import LedgerError
 from backend.models import (InspectArguments, CreditProposal, ContinueBusiness,
                             AssessCreditArguments, BankDecision)
 from backend.provider import NebiusModel, ProviderError
+from backend.crs_credit import pull_credit_report, credit_controls
 
 
 def tools_for(definitions):
@@ -59,13 +60,16 @@ class DemoCreditModel:
             else:
                 name, args = "continue_without_credit", {"rationale": "Deterministic demo: no payroll financing requested because there is no shortfall or the business is closed."}
         elif "assess_credit" in names:
-            if len(results) == 1:
+            if "pull_credit_report" in names and not any(r.get("provider") == "crs" for r in results):
+                return tool_call("pull_credit_report", {}, len(results))
+            assessed = [r for r in results if "eligible" in r]
+            if not assessed:
                 requested = results[0]["proposal"]["amount_cents"]
                 headroom = results[0]["facts"]["credit_headroom_cents"]
                 amount = min(requested, headroom) if headroom else requested
                 name, args = "assess_credit", {"amount_cents": amount}
             else:
-                assessment = results[-1]
+                assessment = assessed[-1]
                 name, args = "decide_credit", {"approved": assessment["eligible"],
                     "amount_cents": assessment["amount_cents"] if assessment["eligible"] else 0,
                     "rationale": "Deterministic demo: approve only principal passing recorded credit, capital, and liquidity constraints."}
@@ -133,6 +137,9 @@ def run_credit(store, simulation_id, business_id, request):
     report, source = store.claim_credit(simulation_id, business_id, request, models)
     inspected = False
     assessments = {}
+    evidence = None
+    require_crs = bool(request.get("require_crs") or request.get("crs_profile_id"))
+    bank_tools = BANK_TOOLS + (tools_for([("pull_credit_report", "Retrieve the bound business owner's CRS sandbox credit evidence before underwriting. Returns redacted score and risk flags; never raw identities.", InspectArguments)]) if require_crs else [])
 
     def business_handler(name, args):
         nonlocal inspected
@@ -158,18 +165,29 @@ def run_credit(store, simulation_id, business_id, request):
         raise LedgerError("Tool is not available to the business role")
 
     def bank_handler(name, args):
-        nonlocal inspected
+        nonlocal inspected, evidence
         if name == "inspect_credit":
             InspectArguments.model_validate(args)
             inspected = True
             return {"proposal": report["proposal"], "facts": report["facts"]}, False
         if not inspected:
             raise LedgerError("Inspect the credit request before underwriting")
+        if name == "pull_credit_report" and require_crs:
+            InspectArguments.model_validate(args)
+            if evidence is None:
+                if not request.get("crs_profile_id"):
+                    raise ProviderError("CRS underwriting requested without a sponsor test profile")
+                evidence = pull_credit_report(store, simulation_id, business_id, request["crs_profile_id"])
+                report["risk_evidence"] = evidence
+            return evidence, False
         if name == "assess_credit":
+            if require_crs and evidence is None:
+                raise LedgerError("Call pull_credit_report before assessing CRS-backed credit")
             amount = AssessCreditArguments.model_validate(args).amount_cents
             if amount > report["proposal"]["amount_cents"]:
                 raise LedgerError("Counteroffer cannot exceed the business proposal")
-            assessment = assess_credit(source, business_id, amount)
+            controls = credit_controls(request, evidence, amount)
+            assessment = assess_credit(source, business_id, amount, controls if require_crs or controls["reasons"] else None)
             assessments[amount] = assessment
             return assessment, False
         if name == "decide_credit":
@@ -202,6 +220,10 @@ def run_credit(store, simulation_id, business_id, request):
             report["business_accepted"] = name == "accept_offer"
             report["business_rationale"] = decision.rationale
             report["status"] = "approved" if report["business_accepted"] else "declined"
+            controls = credit_controls(request, evidence, report["decision"]["amount_cents"])
+            if report["business_accepted"] and controls["needs_human_approval"]:
+                report["status"] = "needs_human_approval"
+                report["approval_reasons"] = controls["reasons"]
             return {"accepted": report["business_accepted"], "amount_cents": report["decision"]["amount_cents"],
                     "rationale": decision.rationale}, True
         raise LedgerError("Tool is not available during business acceptance")
@@ -212,9 +234,10 @@ def run_credit(store, simulation_id, business_id, request):
                   f"The caller authorizes at most {request['max_amount_cents']} cents. Do not request settlement.")
         if report["proposal"] is not None:
             inspected = False
-            role_loop(store, report, "bank", models["bank"], BANK_TOOLS, bank_handler,
+            role_loop(store, report, "bank", models["bank"], bank_tools, bank_handler,
                       f"You manage {report['bank_id']}. Inspect the proposal, assess eligibility, then approve tested principal or decline. "
-                      "A lower principal is a counteroffer; collateral and interest are not modeled.")
+                      "A lower principal is a counteroffer; collateral and interest are not modeled. "
+                      + ("Call pull_credit_report before assess_credit. Cite the returned score and risk decisions. Blocked identity/fraud evidence cannot be overridden. Review flags or large loans require a human decision, not automatic settlement." if require_crs else ""))
             if report["decision"]["approved"]:
                 inspected = False
                 role_loop(store, report, "business", models["business"], ACCEPTANCE_TOOLS, acceptance_handler,

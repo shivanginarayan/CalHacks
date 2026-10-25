@@ -13,6 +13,7 @@ class WorldConfig(Request):
     businesses: int = Field(default=8, ge=1, le=150)
     banks: int = Field(default=5, ge=1, le=10)
     scenario: Literal["standard", "credit_crunch", "supply_crunch"] = "standard"
+    calibration_id: str | None = Field(default=None, pattern=r"^[a-zA-Z0-9_-]{1,64}$")
 
 
 class StepRequest(Request):
@@ -182,6 +183,7 @@ class World(BaseModel):
     latest_event_sequence: int
     lineage: ForkLineage | None = None
     production_model: Literal["finite_v1", "legacy_unlimited"] = "legacy_unlimited"
+    calibration: dict[str, Any] | None = None
 
 
 class Event(BaseModel):
@@ -281,6 +283,8 @@ class AgentRunRequest(Request):
     budget_cap_cents: int = Field(default=1_000_000, ge=1, le=10**12)
     ticks: int = Field(default=12, ge=1, le=100)
     max_experiments: int = Field(default=2, ge=1, le=3)
+    target_bank_id: str | None = Field(default=None, min_length=1, max_length=128)
+    allow_paid_research: bool = False
 
 
 class InspectArguments(Request):
@@ -350,6 +354,9 @@ class CreditRunRequest(Request):
     mode: Literal["live", "demo"] = "live"
     max_amount_cents: int = Field(default=500_000, ge=1, le=500_000)
     auto_settle: bool = False
+    require_crs: bool = False
+    crs_profile_id: str | None = Field(default=None, min_length=1, max_length=128)
+    human_approval_threshold_cents: int | None = Field(default=None, ge=1, le=500_000)
 
 
 class CreditProposal(Request):
@@ -398,7 +405,7 @@ class CreditReport(BaseModel):
     source_tick: int
     snapshot_sha256: str
     request: CreditRunRequest
-    status: Literal["running", "approved", "declined", "not_requested", "settled", "failed"]
+    status: Literal["running", "approved", "declined", "not_requested", "settled", "failed", "needs_human_approval"]
     providers: dict[str, str]
     models: dict[str, str]
     facts: dict[str, Any]
@@ -409,6 +416,15 @@ class CreditReport(BaseModel):
     decision: CreditDecision | None = None
     settlement: dict[str, Any] | None = None
     error: str | None = None
+
+    risk_evidence: dict[str, Any] | None = None
+    approval_reasons: list[str] = Field(default_factory=list)
+    human_approval: dict[str, Any] | None = None
+
+
+class HumanCreditApproval(Request):
+    decision: Literal["approve", "decline"]
+    rationale: str = Field(min_length=1, max_length=2000)
 
 
 class CreditSettlement(BaseModel):

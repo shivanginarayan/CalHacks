@@ -63,7 +63,16 @@ class JobStore:
                 WHERE source_id=? AND kind=? AND actor_id=? AND request_id=?""",
                 (simulation_id, kind, actor_id, request["request_id"])).fetchone()
             if row:
-                if json.loads(row[5]) != request:
+                saved = json.loads(row[5])
+                if kind == "credit":
+                    from backend.models import CreditRunRequest
+                    equivalent = CreditRunRequest.model_validate(saved) == CreditRunRequest.model_validate(request)
+                elif kind == "central_bank":
+                    from backend.models import AgentRunRequest
+                    equivalent = AgentRunRequest.model_validate(saved) == AgentRunRequest.model_validate(request)
+                else:
+                    equivalent = saved == request
+                if not equivalent:
                     raise LedgerError("Job request ID already used with different contents")
                 return self.job_view(connection, row)
             self.recover_jobs(connection, now)

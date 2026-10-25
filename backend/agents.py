@@ -51,7 +51,7 @@ class DemoModel:
         else:
             compared = [result for result in results if "fork_id" in result]
             if len(compared) < self.request["max_experiments"]:
-                bank = min(results[0]["banks"], key=lambda item: item["capital_ratio"])["bank_id"]
+                bank = self.request.get("target_bank_id") or min(results[0]["banks"], key=lambda item: item["capital_ratio"])["bank_id"]
                 budget = max(1, self.request["budget_cap_cents"] // (2 ** len(compared)))
                 name, args = "compare_interventions", {"bank_id": bank, "budget_cents": budget}
             else:
@@ -81,6 +81,11 @@ def run_agent(store, simulation_id, request):
     report, source = store.claim_agent(simulation_id, request, model)
     comparisons = {}
     inspected = False
+    tools = TOOLS
+    if request.get("allow_paid_research") and request["mode"] == "live":
+        tools = TOOLS + [{"type": "function", "function": {"name": "buy_market_forecast",
+            "description": "Optionally buy one external three-day trend analysis for at most 0.01 Base Sepolia test USDC. Uses a separate test wallet, never simulation balances. Purchase failures must not stop policy testing.",
+            "parameters": InspectArguments.model_json_schema()}}]
     messages = [{"role": "system", "content":
                  "You are the central bank in a simulated economy. First inspect_economy, then compare_interventions. "
                  "You may test revised budgets/targets within the supplied cap and experiment limit. Finish with "
@@ -91,7 +96,7 @@ def run_agent(store, simulation_id, request):
                  f"Limits: {json.dumps(request)}"}]
     try:
         for _ in range(10):
-            message = model.complete(messages, TOOLS)
+            message = model.complete(messages, tools)
             if not isinstance(message, dict):
                 raise ProviderError("Model returned an invalid tool-call message")
             calls = message.get("tool_calls")
@@ -123,6 +128,8 @@ def run_agent(store, simulation_id, request):
                             raise LedgerError("Inspect the economy before testing an intervention")
                         if args.budget_cents > request["budget_cap_cents"]:
                             raise LedgerError("Proposed budget exceeds the run's budget cap")
+                        if request.get("target_bank_id") and args.bank_id != request["target_bank_id"]:
+                            raise LedgerError("This run must test the caller's selected bank")
                         if len(comparisons) >= request["max_experiments"]:
                             raise LedgerError("Experiment limit reached; recommend a tested strategy")
                         params = {"request_id": f"agent:{report['run_id']}:{len(comparisons)}",
@@ -131,6 +138,15 @@ def run_agent(store, simulation_id, request):
                         comparisons[comparison["fork_id"]] = comparison
                         report["comparison_ids"].append(comparison["fork_id"])
                         result = compact_comparison(comparison)
+                    elif name == "buy_market_forecast" and request.get("allow_paid_research") and request["mode"] == "live":
+                        InspectArguments.model_validate(arguments)
+                        if not inspected:
+                            raise LedgerError("Inspect the economy before purchasing external research")
+                        from backend.paid_research import buy_market_forecast
+                        try:
+                            result = buy_market_forecast(store, report)
+                        except ProviderError as error:
+                            raise LedgerError(str(error)) from None
                     elif name == "recommend_intervention":
                         args = RecommendArguments.model_validate(arguments)
                         if args.fork_id not in comparisons:

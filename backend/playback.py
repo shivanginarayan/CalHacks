@@ -105,7 +105,7 @@ class PlaybackStore:
                                           (simulation_id, request_id)).fetchone()
             if previous:
                 return {"source_simulation_id": simulation_id, "simulation_id": previous[0]}
-            fresh = Economy.create(f"world_{uuid4().hex[:16]}", **source.state["config"])
+            fresh = Economy.create(f"world_{uuid4().hex[:16]}", **source.state["config"], calibration=source.state.get("calibration"))
             fresh.audit()
             connection.execute("INSERT INTO worlds VALUES (?, ?)",
                                (fresh.state["simulation_id"], json.dumps(fresh.state)))

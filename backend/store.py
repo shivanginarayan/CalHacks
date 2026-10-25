@@ -14,9 +14,10 @@ from backend.credit_store import CreditStore
 from backend.supply_store import SupplyStore
 from backend.playback import PlaybackStore
 from backend.jobs import JobStore
+from backend.sponsor_store import SponsorStore
 
 
-class Store(CreditStore, SupplyStore, PlaybackStore, JobStore):
+class Store(CreditStore, SupplyStore, PlaybackStore, JobStore, SponsorStore):
     def __init__(self, path):
         self.path = str(path)
         Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -37,6 +38,7 @@ class Store(CreditStore, SupplyStore, PlaybackStore, JobStore):
             self.init_supply_tables(connection)
             self.init_playback_tables(connection)
             self.init_job_tables(connection)
+            self.init_sponsor_tables(connection)
 
     @contextmanager
     def connection(self):
@@ -135,7 +137,8 @@ class Store(CreditStore, SupplyStore, PlaybackStore, JobStore):
                                      (simulation_id, request["request_id"])).fetchone()
             if row is None:
                 return None
-            if json.loads(row[0]) != request:
+            from backend.models import AgentRunRequest
+            if AgentRunRequest.model_validate(json.loads(row[0])) != AgentRunRequest.model_validate(request):
                 raise LedgerError("Agent request ID already used with different contents")
             report = json.loads(row[1])
             if report["status"] == "running":

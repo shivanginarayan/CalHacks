@@ -1,5 +1,9 @@
 # Frontend API Contract
 
+New optional track controls are documented in [the track guide](./TRACK_IMPLEMENTATION.md): world `calibration_id`, policy `target_bank_id`/`allow_paid_research`, credit `require_crs`/`crs_profile_id`/`human_approval_threshold_cents`, `POST /api/credit-runs/{id}/approval`, `GET /api/credit/profiles`, `GET /api/calibrations`, and `GET /api/worlds/{id}/research-input`. Credit may return `needs_human_approval`; approval takes `{decision: "approve" | "decline", rationale: string}` and never settles by itself. Existing clients can omit all new controls.
+
+Sponsor endpoints and setup are described in [the integration guide](./SPONSOR_INTEGRATIONS.md). New routes include `GET /api/integrations/status`, world-level `data-context`, `data-context/sources`, `data-context/research`, `fraud/screens`, `fraud/payments`, `spacetime`, `spacetime/enable`, and `spacetime/events`. `GET /api/fraud/profiles` lists only opaque profile IDs. POST routes use JSON bodies; data retrieval/enabling accepts `{}`. See the generated schema for exact request fields. Guarded payments require `fraud_report_id` in addition to ordinary payment fields.
+
 Base URL: `http://127.0.0.1:8000`. Interactive documentation: `/docs`. Generated schemas: [openapi.json](./openapi.json). Actual calculated samples: [examples.json](./examples.json).
 
 The example world ID is illustrative. Create a world and use its returned `simulation_id` in requests. All amounts are integer USD cents, and `employment_rate` is a fraction between zero and one.

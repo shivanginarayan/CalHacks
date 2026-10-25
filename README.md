@@ -1,17 +1,21 @@
 # Economy God Mode Backend
 
-Milestone 9 adds **finite goods production and inventory-constrained sales**. Businesses turn supplier materials into finished stock, households can only buy available goods, and retail settlement recognizes the cost of inventory sold. A `supply_crunch` scenario demonstrates supplier negotiation restoring production and sales. The backend also includes background agent jobs, Play/Pause, speed, reset, live financial events, contract payments, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live inference remains unverified, and external payment integrations remain unimplemented.
+Milestone 9 adds **finite goods production and inventory-constrained sales**. Businesses turn supplier materials into finished stock, households can only buy available goods, and retail settlement recognizes the cost of inventory sold. A `supply_crunch` scenario demonstrates supplier negotiation restoring production and sales. The backend also includes background agent jobs, Play/Pause, speed, reset, live financial events, contract payments, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live Nemotron function calling and all three economic agent workflows have been verified; see [Nemotron setup and checks](./docs/NEMOTRON.md). Successful external on-chain settlement remains unverified; the optional x402 testnet integration is described below.
 
-The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). Frontend integration details are in [docs/API.md](./docs/API.md).
+The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). The UI is connected to the backend; see [alignment, setup, and demo instructions](./docs/UI_INTEGRATION.md). The API contract is in [docs/API.md](./docs/API.md).
+
+The dashboard now includes sourced Census/FDIC reference data, a Fetch ACP gateway and optional ASI research, a CRS sandbox fraud-screened payment workflow, and a real SpacetimeDB shared event feed. See [setup, verified behavior and remaining credentials](./docs/SPONSOR_INTEGRATIONS.md). Public data and SpacetimeDB were verified live locally. CRS needs sponsor credentials/test profiles; the supplied Fetch credential returned HTTP 401. The economy's households, businesses, banks and balances remain seeded synthetic data.
+
+The next track milestone adds opt-in CRS bank underwriting, explicit human approval, a complete Fetch stress-test conversation, isolated Base Sepolia x402 research, and reproducible Apify price/wage samples. Setup and precise live/fixture status are in [the track implementation guide](./docs/TRACK_IMPLEMENTATION.md); [submission evidence](./docs/SUBMISSION_EVIDENCE.md) includes the real-versus-simulated matrix and Hyphenate/Microsoft demo outline. Existing workflows retain their defaults. The testnet wallet is unfunded; CRS, Agentverse and Apify still need valid sponsor credentials/configuration before those live claims can be made.
 
 ## Frontend demo
 
-The React frontend lives in [`apps/web`](./apps/web/README.md). It includes the local Earth globe, a Canvas miniature of San Francisco, and the full healthy-world → crisis → intervention → comparison UI path. Its economics and mock agent responses currently come from committed fixtures; it does not call the Python API yet. The backend integration contract is documented in [docs/API.md](./docs/API.md).
+The React frontend lives in [apps/web](./apps/web/README.md). It keeps the Earth globe and Canvas city while rendering backend metrics, institutions, events, shocks, agents, supplier contracts and calculated futures. Start both the API and Vite; see [the connected-app guide](./docs/UI_INTEGRATION.md).
 
 From the repository root, use Node 22 or 24 and run:
 
 ```sh
-npm install
+npm ci
 npm run dev
 npm test
 npm run build
@@ -54,7 +58,7 @@ Keep the server terminal open and use a second terminal for API requests. Stop t
 
 ## Environment configuration
 
-The optional [environment template](./.env.example) documents the available settings. The application reads shell environment variables; copying the template to `.env` does **not** load it automatically.
+The optional [environment template](./.env.example) documents the available settings. Plain Uvicorn reads shell variables. Start with `python -m scripts.run_backend --reload` to load supported settings from the ignored root `.env`; shell values take precedence.
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
@@ -169,7 +173,7 @@ The default database is [data/economy.sqlite3](./data/economy.sqlite3), created 
 .\.venv\Scripts\python.exe -m scripts.export_contract
 ```
 
-On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current suite contains 124 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
+On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current backend suite contains 127 tests; the frontend has 34 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
 
 Tests cover ledger invariants, reproducibility, reserve/deposit conservation, loan creation and repayment, rejected transactions, request validation, persistence, event pagination, CORS, concurrent requests, shock replay, clearing calculations, crisis propagation, defaults, and legacy checkpoints.
 

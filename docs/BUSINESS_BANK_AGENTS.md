@@ -2,7 +2,7 @@
 
 This workflow connects a business payroll decision to a bank underwriting decision, borrower acceptance, and a real simulated loan. Each role observes a captured financial state and can only call its own tools. The backend controls amounts, eligibility, maturity, and settlement.
 
-Live mode uses the existing Nebius adapter and configured Nemotron model. Explicit demo mode uses deterministic controllers and requires no credentials. These are separate model conversations with role-specific tools; they do not run thousands of model calls automatically in the simulation loop. Live model access remains unverified until account credentials are configured.
+Live mode uses the existing Nebius adapter and configured Nemotron model. Explicit demo mode uses deterministic controllers and requires no credentials. These are separate model conversations with role-specific tools; they do not run thousands of model calls automatically in the simulation loop. Live Nemotron credit negotiation has been verified; see [setup and observed checks](./NEMOTRON.md).
 
 ## Run a successful demo
 

@@ -35,7 +35,7 @@ The default example obtains two original quotes and one accepted revised quote. 
 
 Only `request_id` is required. Mode defaults to live. Quantity defaults to 20 and accepts integer values from 1–1,000. The full-invoice budget defaults to 100,000 cents and accepts up to 1,000,000,000 cents. If supplier IDs are omitted/null, choose the first two other active businesses by sorted ID. Explicit lists require two different supplier businesses, neither equal to the buyer. A world needs at least three active businesses for this workflow.
 
-Live mode uses [the existing Nebius configuration](./CENTRAL_BANK_AGENT.md), with separate buyer and supplier conversations on the configured model. Provider access remains unverified without live credentials. Demo mode uses `deterministic_demo` / `demo-supply-v1`; it is not an AI inference transcript. No automatic fallback is performed.
+Live mode uses [the existing Nebius configuration](./CENTRAL_BANK_AGENT.md), with separate buyer and supplier conversations on the configured model. Real Nemotron supplier workflows have completed, including valid selected terms and declines; see [observed live checks](./NEMOTRON.md). Demo mode uses `deterministic_demo` / `demo-supply-v1`; it is not an AI inference transcript. No automatic fallback is performed.
 
 ## Negotiation and policy
 

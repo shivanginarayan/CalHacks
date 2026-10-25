@@ -118,3 +118,17 @@ def test_storage_rolls_back_whole_operation_after_partial_work(client):
     with pytest.raises(RuntimeError):
         store.mutate(simulation_id, fail_after_payment)
     assert store.get(simulation_id).state == before
+
+
+def test_inspector_transactions_filter_and_newest_first(client):
+    world = create(client)
+    base = f"/api/worlds/{world['simulation_id']}"
+    client.post(base + "/step", json={"ticks": 3})
+    page = client.get(base + "/transactions?entity_id=business_1&newest_first=true&limit=2").json()
+    assert len(page["transactions"]) == 2 and page["has_more"]
+    assert all(any(line["account_id"].startswith("business_1:") for line in entry["lines"])
+               for entry in page["transactions"])
+    assert page["transactions"][0]["metadata"]["tick"] == 3
+    following = client.get(base + "/transactions?entity_id=business_1&newest_first=true&limit=2&offset=2").json()
+    assert following["transactions"][0]["transaction_id"] != page["transactions"][0]["transaction_id"]
+    assert client.get(base + "/transactions?entity_id=missing").status_code == 404

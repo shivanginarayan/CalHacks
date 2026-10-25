@@ -17,10 +17,15 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
         self.state["ledger"] = self.ledger.state
 
     @classmethod
-    def create(cls, simulation_id, seed=42, households=40, businesses=8, banks=5, scenario="standard"):
+    def create(cls, simulation_id, seed=42, households=40, businesses=8, banks=5, scenario="standard", calibration_id=None, calibration=None):
         if scenario not in ("standard", "credit_crunch", "supply_crunch"):
             raise LedgerError("Unknown starting scenario")
         rng = random.Random(seed)
+        if calibration_id is not None:
+            from backend.calibration import load, validate
+            calibration = validate(calibration) if calibration is not None else load(calibration_id)
+            if calibration["calibration_id"] != calibration_id:
+                raise LedgerError("Calibration does not match the requested ID")
         world = cls({"simulation_id": simulation_id, "seed": seed, "tick": 0,
                      "config": {"seed": seed, "households": households,
                                 "businesses": businesses, "banks": banks, "scenario": scenario},
@@ -28,6 +33,9 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
                      "production_model": "finite_v1",
                      "goods_flow": {"produced_units": 0, "sold_units": 0, "unmet_demand_units": 0},
                      "events": [], "history": []})
+        if calibration_id is not None:
+            world.state["config"]["calibration_id"] = calibration_id
+            world.state["calibration"] = deepcopy(calibration)
         for i in range(banks):
             entity = world.add_entity(f"bank_{i+1}", f"Bank {i+1}", "bank")
             reserves = world.ledger.account(entity["id"], "reserves", "asset")
@@ -40,7 +48,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
             entity = world.add_customer(f"business_{i+1}", f"Business {i+1}", "business",
                                         f"bank_{i % banks + 1}", rng.randint(500_000, 900_000))
             entity["employees"] = []
-            entity["price_cents"] = rng.randint(800, 1400)
+            entity["price_cents"] = rng.choice(calibration["price_cents"]) if calibration_id else rng.randint(800, 1400)
             entity["materials_units"] = 0 if scenario == "supply_crunch" and i == 0 else 1000
             entity["goods_units"] = 0
             entity["last_produced_units"] = 0
@@ -50,7 +58,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
             entity = world.add_customer(f"household_{i+1}", f"Household {i+1}", "household",
                                         f"bank_{rng.randrange(banks)+1}", rng.randint(50_000, 150_000))
             entity["employer_id"] = f"business_{i % businesses + 1}"
-            entity["wage_cents"] = rng.randint(6000, 10_000)
+            entity["wage_cents"] = rng.choice(calibration["daily_wage_cents"]) if calibration_id else rng.randint(6000, 10_000)
             entity["consumption_budget_cents"] = rng.randint(5000, 8500)
             world.state["entities"][entity["employer_id"]]["employees"].append(entity["id"])
         world.initialize_financial_network(scenario)
@@ -276,12 +284,20 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
         return view
 
     def view(self):
+        calibration = self.state.get("calibration")
+        if calibration:
+            from backend.calibration import checksum
+            calibration = {"calibration_id": calibration["calibration_id"], "geography": calibration["geography"],
+                           "collected_at": calibration["collected_at"], "provider": calibration["provider"],
+                           "sha256": checksum(calibration), "sources": calibration["sources"],
+                           "price_sample_count": len(calibration["price_cents"]), "wage_sample_count": len(calibration["daily_wage_cents"]),
+                           "rental_context": calibration["rental_context"]}
         return {"simulation_id": self.state["simulation_id"], "seed": self.state["seed"],
                 "simulation_tick": self.state["tick"], "status": "paused",
                 "config": self.state["config"], "metrics": self.metrics(), "lineage": self.state.get("lineage"),
                 "entities": [self.entity_view(key) for key in self.state["entities"]],
                 "production_model": self.state.get("production_model", "legacy_unlimited"),
-                "latest_event_sequence": len(self.state["events"])}
+                "latest_event_sequence": len(self.state["events"]), "calibration": calibration}
 
     def audit(self):
         result = self.ledger.audit()

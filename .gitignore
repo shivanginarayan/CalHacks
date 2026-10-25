@@ -1,4 +1,10 @@
 .venv/
+.venv-fetch/
+.venv-x402/
+# Fetch SDK may create these local identity and conversation files.
+private_keys.json
+agent*_data.json
+test-agent*_data.json
 __pycache__/
 .pytest_cache/
 *.pyc
@@ -17,3 +23,7 @@ playwright-report/
 test-results/
 *.log
 artifacts/
+spacetimedb/dist/
+
+# Credential-bearing local sponsor resource
+Free api resources cal hacks.docx
