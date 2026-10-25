@@ -81,7 +81,7 @@ In a world click **Enable shared event feed**, then advance a day. Inspect the t
 node scripts/qa-sponsors.mjs
 ```
 
-Verified locally: module built/published, public data retrieved, 20 events written/read from SpacetimeDB, duplicate replay unchanged, ledger balanced. Browser checks verified sourced data, blocked demo payment, automatic event catch-up, reload persistence and mobile layout. ACP validates against the actual SDK. No successful ASI inference, Agentverse registration or live CRS call is claimed.
+Verified locally: module built/published, public data retrieved, 20 events written/read from SpacetimeDB, duplicate replay unchanged, ledger balanced. Browser checks verified sourced data, blocked demo payment, automatic event catch-up, reload persistence and mobile layout. ACP validates against the actual SDK. Agentverse registration, active public discovery and a full ACP mailbox stress/evidence conversation are verified. No successful separate ASI inference, ASI:One UI conversation or live CRS call is claimed.
 
 Meaningful live CRS sandbox use is required by its [challenge](https://calhacks.crscreditapi.com/); mocked tests do not establish it. SpacetimeDB now has an actual database-backed feature to demonstrate. Sponsor eligibility/winning remains subject to their rubric.
 

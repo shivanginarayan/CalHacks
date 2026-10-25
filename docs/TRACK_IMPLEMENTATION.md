@@ -51,7 +51,7 @@ The first command creates a fresh credit-crunch world, applies the specified sho
 
 The running agent remembers the last job per sender using its local storage, so the follow-up works after a message boundary. Existing `data <world_id>`, `stress <world_id>` and `status <job_id>` commands remain supported. A still-running analysis returns a job ID and can be completed with `status` inside the conversation.
 
-The complete backend conversation was verified with live Nemotron: three futures, three public tool calls, and a saved-evidence follow-up, with no intervention applied. ACP validates against the installed SDK. Actual Agentverse registration and ASI:One discovery/conversation remain unverified because the supplied credential returned HTTP 401. See [the gateway setup](./FETCH_AGENT.md).
+The complete backend conversation was verified with live Nemotron: three futures, three public tool calls, and a saved-evidence follow-up, with no intervention applied. ACP validates against the installed SDK. Actual Agentverse mailbox registration, active public discovery, and the complete signed ACP mailbox workflow are now verified with the replacement credential. The ASI:One UI conversation still needs login and demonstration. See [the gateway setup](./FETCH_AGENT.md).
 
 ```powershell
 # Makes real model calls against the running backend

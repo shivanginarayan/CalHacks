@@ -28,7 +28,7 @@ For a deterministic recovery rehearsal, run `scripts/hyphenate_demo.py`. It deli
 | Apify price/wage calibration | Live private limited-permission Actor verified: 29 listed drink-price options at one SF cafe and the official general minimum wage, with run/dataset/source/date provenance. Values seed new worlds; remaining entities/balances/behavior are synthetic. See [Apify evidence and scope](./APIFY.md). |
 | CRS owner credit reports and fraud flags | Adapter and enforced underwriting controls implemented and fixture-tested; live credentials/config/test profiles still required. |
 | Agent decisions | Live Nemotron on Nebius verified. Demo and scripted rehearsal providers are labeled separately. |
-| Fetch conversation workflow | Complete backend conversation and evidence follow-up verified with live Nemotron; ACP SDK validated. Agentverse registration and ASI:One conversation remain unverified. |
+| Fetch conversation workflow | Complete backend conversation and evidence follow-up verified with live Nemotron; ACP SDK validated. Agentverse registration, active public discovery and full signed ACP mailbox workflow verified. ASI:One UI conversation remains unverified. |
 | x402 paid research | Real local 402 challenge and actual SDK path tested; facilitator/RPC tests are mocked. Fresh buyer wallet is unfunded, so no successful on-chain transaction yet. |
 | SpacetimeDB | Actual local database-backed event mirror verified, including replay and write authorization. |
 | Nessie | Optional and not implemented; no usage claimed. |
