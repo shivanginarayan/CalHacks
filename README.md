@@ -1,4 +1,4 @@
-markdown# Parallax
+### Parallax
 A small world. A big what if.
 Parallax is a living miniature economy of San Francisco. Start on a 3D globe, zoom into a hand-built isometric diorama of the city, trigger a bank or supply shock, and fork reality into three futures to see which policy actually saves jobs.
 Behind the diorama is a real simulation: 40 households, 8 businesses, 5 banks, a government and a central bank. Every wage, purchase, loan and default settles on a double-entry ledger, audited after every simulated day.
