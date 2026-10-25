@@ -59,7 +59,8 @@ class Store(CreditStore, SupplyStore, PlaybackStore, JobStore, SponsorStore):
         row = connection.execute("SELECT state FROM worlds WHERE id = ?", (simulation_id,)).fetchone()
         if row is None:
             raise KeyError(simulation_id)
-        return Economy(json.loads(row[0]))
+        # The parsed JSON is private to this call, so the defensive deep copies would only duplicate it.
+        return Economy(json.loads(row[0]), copy=False)
 
     def get(self, simulation_id):
         with self.connection() as connection:

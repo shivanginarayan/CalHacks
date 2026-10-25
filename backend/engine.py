@@ -8,12 +8,14 @@ from backend.crisis import CrisisRules
 from backend.interventions import InterventionRules
 from backend.contracts import ContractRules
 from backend.production import ProductionRules
+from backend.labor import LaborRules
 
 
-class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
-    def __init__(self, state):
-        self.state = deepcopy(state)
-        self.ledger = Ledger(self.state["ledger"])
+class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules, LaborRules):
+    def __init__(self, state, copy=True):
+        # copy=False is only for state that nothing else references, such as freshly parsed JSON.
+        self.state = deepcopy(state) if copy else state
+        self.ledger = Ledger(self.state["ledger"], copy=False)
         self.state["ledger"] = self.ledger.state
 
     @classmethod
@@ -61,6 +63,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
             entity["wage_cents"] = rng.choice(calibration["daily_wage_cents"]) if calibration_id else rng.randint(6000, 10_000)
             entity["consumption_budget_cents"] = rng.randint(5000, 8500)
             world.state["entities"][entity["employer_id"]]["employees"].append(entity["id"])
+        world.apply_baseline_unemployment()
         world.initialize_financial_network(scenario)
         world.emit("world_created", details={"seed": seed, "households": households,
                                               "businesses": businesses, "banks": banks})
@@ -218,6 +221,7 @@ class Economy(CrisisRules, InterventionRules, ContractRules, ProductionRules):
                                                         if business["id"] in failed_employers else 0)
                     if business["missed_payroll_ticks"] >= 2:
                         self.default_business(business, "Two consecutive days of incomplete payroll")
+            self.gradual_layoffs(businesses, failed_employers)
             if self.finite_production():
                 for business in businesses:
                     self.produce_goods(business)

@@ -21,7 +21,9 @@ let refreshTimer:ReturnType<typeof setTimeout>|undefined, refreshing=false, gene
 let eventTimer:ReturnType<typeof setTimeout>|undefined;
 export function disconnect(){generation++;stream?.close();stream=null;clearInterval(polling);clearTimeout(refreshTimer);clearTimeout(eventTimer);}
 function saveWorld(world:World){localStorage.setItem('economy-world',world.simulation_id);
- useStore.setState({world,tick:world.simulation_tick,maxTick:world.simulation_tick,playing:world.status==='running'});}
+ // Events can advance tick before the slower snapshot arrives; never step the same world backwards.
+ const prev=useStore.getState(),same=prev.world?.simulation_id===world.simulation_id,tick=same?Math.max(prev.tick,world.simulation_tick):world.simulation_tick;
+ useStore.setState({world,tick,maxTick:tick,playing:world.status==='running'});}
 async function guard(operation:()=>Promise<void>){if(useStore.getState().busy)return;
  useStore.setState({busy:true,error:''});try{await operation();}catch(error){useStore.setState({error:error instanceof Error?error.message:'Backend request failed'});}finally{useStore.setState({busy:false});}}
 async function connect(world:World){disconnect();
@@ -42,10 +44,12 @@ async function connect(world:World){disconnect();
   if(pending.size===1)eventTimer=setTimeout(()=>{
    if(currentGeneration!==generation)return;
    const incoming=[...pending.values()];pending.clear();
-   useStore.setState(s=>({events:[...s.events.filter(e=>!incoming.some(n=>n.sequence===e.sequence)),...incoming].sort((a,b)=>a.sequence-b.sequence).slice(-300),activityAt:Date.now(),crisis:s.crisis||incoming.some(e=>e.event_type==='bank_asset_loss')}));
+   const latest=Math.max(...incoming.map(e=>e.simulation_tick));
+   useStore.setState(s=>({tick:Math.max(s.tick,latest),maxTick:Math.max(s.maxTick,latest),events:[...s.events.filter(e=>!incoming.some(n=>n.sequence===e.sequence)),...incoming].sort((a,b)=>a.sequence-b.sequence).slice(-300),activityAt:Date.now(),crisis:s.crisis||incoming.some(e=>e.event_type==='bank_asset_loss')}));
    clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>{void useStore.getState().refresh();},100);
   },100);
- });polling=setInterval(()=>{void useStore.getState().refresh();},1500);
+ });// Events already trigger a refresh; this slower poll only catches state changes that emit no event.
+ polling=setInterval(()=>{void useStore.getState().refresh();},5000);
 }
 export const useStore=create<State>((set,get)=>({
  stage:'GLOBE',country:'',hoverCountry:'',tick:0,maxTick:0,branch:'baseline',playing:false,speed:1,mode:'city',

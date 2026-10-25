@@ -18,3 +18,71 @@ html,body,#root{height:100%;overflow:hidden}
 .app:has(.city-scene){overflow:clip}
 
 .district-landmark-name{font-size:14px;color:#486052;font-weight:600;margin:8px 0 12px}
+
+/* Minimal side panel: three plain actions and one result card, hairline dividers only. */
+.panel-actions{display:flex;flex-direction:column;border-top:1px solid #64717a25;margin-top:14px}
+.panel-actions .crisis-section{border-bottom:1px solid #64717a25}
+.panel-actions .crisis-heading{padding:15px 0}
+.panel-action{width:100%;display:flex;align-items:center;justify-content:flex-start;gap:11px;padding:15px 0;background:none;border:0;border-bottom:1px solid #64717a25;border-radius:0;color:#4e544c;font-size:13px;text-align:left;cursor:pointer}
+.panel-action:hover:not(:disabled){color:#1f2a2f}
+.panel-action:disabled{opacity:.5;cursor:default}
+.panel-actions .thinking{padding:15px 0;border-bottom:1px solid #64717a25}
+.result-card{padding:16px 0;border-bottom:1px solid #64717a25;display:flex;flex-direction:column;gap:9px}
+.result-status{margin:0;font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#55616d}
+.result-value{margin:0;font-size:15px;color:#1f2a2f}
+.result-card .button-row{margin:0}
+.data-source{margin:10px 0 0;font-size:10.5px;line-height:1.5;color:#5c6974}
+.result-source{font-size:10px;color:#6b7680}
+.result-why summary,.panel-sources>summary{cursor:pointer;font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#55616d;list-style:none}
+.result-why p{font-size:11px;color:#4e544c;line-height:1.5}
+.result-why pre{max-height:140px;overflow:auto;font-size:9px}
+.panel-sources{padding:14px 0;border-bottom:1px solid #64717a25;display:block}
+.panel-sources[open]{display:flex;flex-direction:column;gap:9px}
+.panel-sources label{display:flex;flex-direction:column;gap:4px;font-size:11px}
+.panel-sources label.muted{flex-direction:row;align-items:center;gap:6px}
+.panel-sources .sponsor-integrations{margin-top:4px}
+.panel-sources p,.panel-sources label.muted{font-size:11px;line-height:1.5;margin:0}
+.panel-sources select{font-size:11px;padding:5px 6px;border:1px solid #64717a40;border-radius:6px;background:#ffffff80}
+.data-loaded{font-size:11px;font-weight:600;color:#3f6b4f;margin:4px 0}
+/* Timeline: knob inset from both ends, day label clamped to the knob, ticks below the track. */
+.timeline{gap:18px}
+.timeline>select{margin-right:6px}
+.timeline-track{--knob:12px;--inset:8px;position:relative;padding:0 var(--inset)}
+.timeline-track>.timeline-day{position:relative;display:block;height:11px;font-size:7px;letter-spacing:1px;line-height:11px}
+.timeline-day>span{position:absolute;left:calc(var(--knob)/2 + var(--pct)*(100% - var(--knob)));transform:translateX(-50%);white-space:nowrap;color:#c0cbbd}
+.timeline-day>span.at-start{transform:translateX(calc(var(--knob)/2 + 2px))}
+.timeline-day>span.at-end{transform:translateX(calc(-100% - var(--knob)/2 - 2px))}
+.timeline-track input{-webkit-appearance:none;appearance:none;width:100%;height:2px;margin:6px 0;background:#718a9666;border-radius:2px;display:block}
+.timeline-track input::-webkit-slider-thumb{-webkit-appearance:none;width:var(--knob);height:var(--knob);border-radius:50%;background:#f0d379;border:0;cursor:pointer}
+.timeline-track input::-moz-range-thumb{width:var(--knob);height:var(--knob);border-radius:50%;background:#f0d379;border:0}
+.timeline-track>.timeline-ticks{display:flex;justify-content:space-between;font-size:6px;letter-spacing:1px;color:#718a96;line-height:1.6;margin-top:2px;padding:0 calc(var(--knob)/2 - 3px)}
+
+/* Fork Reality charts: axes, stacked series, tooltip, focusable legend and final values table. */
+.comparison-legend button{display:inline-flex;align-items:center;gap:7px;background:none;border:1px solid transparent;border-radius:999px;padding:3px 9px;color:#cfdadc;font-size:10px;cursor:pointer}
+.comparison-legend button[aria-pressed="true"]{border-color:#ffffff40}
+.comparison-legend button.dimmed{opacity:.35}
+.comparison-legend small{color:#6f8790;font-size:9px}
+.comparison-chart{position:relative;padding-bottom:4px}
+.chart-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:#d7e1e1;margin-top:8px}
+.identical-note{font-style:normal;font-size:9px;color:#9fb3b6;border:1px solid #ffffff26;border-radius:999px;padding:2px 8px}
+.chart-finals{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:10px;margin:5px 0 2px}
+.chart-finals span{display:inline-flex;align-items:center;gap:4px}
+.chart-finals small{color:#6f8790;font-size:9px}
+.chart-plot{position:relative}
+.chart-plot svg{display:block;width:100%;height:auto;cursor:crosshair}
+.chart-tooltip{position:absolute;top:6px;transform:translateX(-50%);min-width:190px;background:#0d1820f2;border:1px solid #ffffff2e;border-radius:8px;padding:8px 10px;font-size:10px;color:#dfe7e7;pointer-events:none;display:flex;flex-direction:column;gap:4px;z-index:3;box-shadow:0 6px 18px #0006}
+.chart-tooltip span{display:flex;align-items:center;gap:6px}
+.chart-tooltip i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.chart-tooltip strong{margin-left:auto;font-weight:600}
+.chart-tooltip small{color:#9fb3b6;font-size:9px}
+.final-table-wrap{overflow-x:auto;border-top:1px solid #d3e6e318;margin-top:4px}
+.final-table{width:100%;border-collapse:collapse;font-size:11px;color:#d7e1e1}
+.final-table caption{text-align:left;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:#8fa3ad;padding:10px 0 6px}
+.final-table th{text-align:left;font-weight:500;color:#8fa3ad;font-size:10px;padding:6px 8px;border-bottom:1px solid #ffffff1a}
+.final-table td{padding:7px 8px;border-bottom:1px solid #ffffff10;white-space:nowrap}
+.final-table td:first-child{display:flex;align-items:center;gap:6px}
+.comparison-chart>.chart-plot{display:block;padding:0}
+.comparison-chart>.chart-finals{justify-content:flex-start;padding:0;font-size:10px}
+.comparison-chart>.chart-head{padding:0;font-size:11px}
+.comparison-chart .chart-plot svg{max-height:none;width:100%;height:auto}
+.comparison-chart .chart-finals svg,.final-table svg,.comparison-legend svg{display:inline-block;width:auto;max-height:none;flex:none}

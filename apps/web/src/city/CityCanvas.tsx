@@ -2,7 +2,7 @@ import {drawOverviewLabels,type PlacedLabel} from './cityLabels';
 import {useEffect,useRef,useState} from 'react';
 import {Plus,Minus,ArrowLeft,MapPin,Maximize2} from 'lucide-react';
 import {getCityLayout} from '../data/fixtures';
-import {bindEntities,liveSnapshot,liveCityState} from '../data/liveCity';
+import {bindEntities,liveSnapshot,liveCityState,MOCK_PREFIX} from '../data/liveCity';
 import type {Building,CityLayout,Snapshot} from '../data/types';
 import {useStore} from '../state/store';
 import {useCityView} from '../state/cityView';
@@ -63,7 +63,7 @@ export default function CityCanvas(){
    }
    if(lod>0){const a=lerped.get('Mission District')!;for(let i=0;i<transactionRoutes.length;i++){if(i>Math.floor(a.retail*a.open*3))break;const route=transactionRoutes[i],phase=(visualTime*.28+i*.31)%1,x=route.from[0]+(route.to[0]-route.from[0])*phase,y=route.from[1]+(route.to[1]-route.from[1])*phase;if(x<viewport.x||x>viewport.x+viewport.width||y<viewport.y||y>viewport.y+viewport.height)continue;ctx.fillStyle='rgba(243,209,108,.7)';ctx.beginPath();ctx.arc(x,y,1.5,0,7);ctx.fill();}}
    const night=visualTime%60>=55?.28:0;if(night){const {center:[tx,ty],radius:tr,tilt}=layout.diorama;ctx.save();ctx.beginPath();ctx.ellipse(tx,ty,tr,tr*tilt,0,0,7);ctx.clip();ctx.fillStyle=`rgba(12,28,48,${night})`;ctx.fillRect(0,0,1440,940);ctx.restore();ctx.fillStyle='#fde68a';for(const b of layout.buildings){if(firms.get(b.id)===false||!intersects(buildingBounds(b),viewport))continue;for(const [i,p]of windowDots(b,1).entries())if((i*7+b.h)%3!==0)ctx.fillRect(p[0]-.6,p[1]-1,1.2,1.6);}}
-   const selected=useStore.getState().selected,selectedBuilding=layout.buildings.find(b=>entityOf(b)?.id===selected);if(selectedBuilding){const p=project(selectedBuilding.x+selectedBuilding.w/2,selectedBuilding.y+selectedBuilding.d/2);ctx.strokeStyle='#ffdc73';ctx.lineWidth=1.7/Math.sqrt(scale);ctx.beginPath();ctx.ellipse(p[0],p[1],22,11,0,0,7);ctx.stroke();}
+   const selected=useStore.getState().selected,selectedBuilding=layout.buildings.find(b=>(entityOf(b)?.id??MOCK_PREFIX+b.id)===selected);if(selectedBuilding){const p=project(selectedBuilding.x+selectedBuilding.w/2,selectedBuilding.y+selectedBuilding.d/2);ctx.strokeStyle='#ffdc73';ctx.lineWidth=1.7/Math.sqrt(scale);ctx.beginPath();ctx.ellipse(p[0],p[1],22,11,0,0,7);ctx.stroke();}
    if(hoveredBuilding){ctx.beginPath();buildingOutline(hoveredBuilding).forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.strokeStyle='#f5dfa1';ctx.lineWidth=1.3/Math.sqrt(scale);ctx.stroke();}
    ctx.restore();
    if(lod===0){const labels=overviewLabels=drawOverviewLabels(ctx,layout,(x,y)=>[camera.width/2+(x-camera.pose.x)*scale,camera.height/2+(y-camera.pose.y)*scale],camera.width,camera.height);canvas.dataset.labelCount=String(labels.length);}
@@ -77,9 +77,9 @@ export default function CityCanvas(){
    return null;
   };
   const focusHit=(h:Hit,p:Point,districtOnly=false)=>{
-   if(h?.kind==='mover'){const household=useStore.getState().world?.entities.find(e=>e.kind==='household');if(household)useStore.getState().set({selected:household.id});return;}
-   if(h?.kind==='building'){const b=h.building,p=project(b.x+b.w/2,b.y+b.d/2,b.h*.45+(b.elevation??0));camera.focus(p[0],p[1],6.8,true);const entity=entityOf(b);if(entity)useStore.getState().set({selected:entity.id});useCityView.setState({focusLabel:b.name});return;}
-   if(h?.kind==='landmark'){focusDistrict(h.district,h.x,h.y,h.name);const entity=bound.get(h.id);if(entity)useStore.getState().set({selected:entity.id});return;}
+   if(h?.kind==='mover'){const household=useStore.getState().world?.entities.find(e=>e.kind==='household');if(household){useStore.getState().set({selected:household.id});useCityView.setState({picked:{name:'Representative household',district:h.mover.homeDistrict}});}return;}
+   if(h?.kind==='building'){const b=h.building,p=project(b.x+b.w/2,b.y+b.d/2,b.h*.45+(b.elevation??0));camera.focus(p[0],p[1],6.8,true);useStore.getState().set({selected:entityOf(b)?.id??MOCK_PREFIX+b.id});useCityView.setState({picked:{name:b.name,district:b.district}});useCityView.setState({focusLabel:b.name});return;}
+   if(h?.kind==='landmark'){focusDistrict(h.district,h.x,h.y,h.name);useStore.getState().set({selected:bound.get(h.id)?.id??MOCK_PREFIX+h.id});useCityView.setState({picked:{name:h.name,district:h.district}});return;}
    if(districtOnly){const world=camera.screenToWorld(...p),district=districtAt(...world);focusDistrict(district,world[0],world[1],district);}
   };
   let clickTimer:ReturnType<typeof setTimeout>|undefined;let dragged=false,suppressUntil=0,pinchDistance=0;const pointers=new Map<number,Point>();

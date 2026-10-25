@@ -9,8 +9,8 @@ class LedgerError(ValueError):
 
 
 class Ledger:
-    def __init__(self, state=None):
-        self.state = deepcopy(state) if state is not None else {"accounts": {}, "journal": []}
+    def __init__(self, state=None, copy=True):
+        self.state = (deepcopy(state) if copy else state) if state is not None else {"accounts": {}, "journal": []}
         self._transactions = {item["transaction_id"]: item for item in self.state["journal"]}
         self._owners = defaultdict(list)
         for key, account in self.state["accounts"].items():

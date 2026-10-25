@@ -6,7 +6,7 @@ import {buildingFootprint,polygonDistance,isDry,pointInPolygon,inTable,distanceT
 const l=getCityLayout();
 const turning=(p:Point[])=>{let t=0;for(let i=2;i<p.length;i++){const a=Math.atan2(p[i-1][1]-p[i-2][1],p[i-1][0]-p[i-2][0]),b=Math.atan2(p[i][1]-p[i-1][1],p[i][0]-p[i-1][0]);t+=Math.abs(Math.atan2(Math.sin(b-a),Math.cos(b-a)));}return t;};
 describe('deterministic diorama layout',()=>{
- it('regenerates the committed seed and content hash exactly',()=>{expect(l.layoutSeed).toBe(4242);expect(l.layoutHash).toBe('sf-eb8c1527');expect(hashLayout(l)).toBe(l.layoutHash);expect(generateCityLayout(4242)).toEqual(l);expect(generateCityLayout(4242).layoutHash).toBe(l.layoutHash);});
+ it('regenerates the committed seed and content hash exactly',()=>{expect(l.layoutSeed).toBe(4242);expect(l.layoutHash).toBe('sf-3e1219b2');expect(hashLayout(l)).toBe(l.layoutHash);expect(generateCityLayout(4242)).toEqual(l);expect(generateCityLayout(4242).layoutHash).toBe(l.layoutHash);});
  it('varies scenery deterministically without varying the simulation seed',()=>{const a=generateCityLayout(4243);expect(a).toEqual(generateCityLayout(4243));expect(a.layoutHash).not.toBe(l.layoutHash);expect(a.simulationSeed).toBe(l.simulationSeed);});
  it('keeps precisely eight named landmarks and unique actor identities',()=>{expect(l.landmarks.map(a=>a.name).sort()).toEqual([...cityTemplate.landmarks].sort());expect(l.landmarks).toHaveLength(8);expect(new Set(l.buildings.map(b=>b.id)).size).toBe(l.buildings.length);expect(l.landmarks.find(a=>a.kind==='palace')?.district).toBe('Marina');expect(l.landmarks.find(a=>a.kind==='park')?.district).toBe('Richmond');for(const d of cityTemplate.districts)expect(l.buildings.some(b=>b.district===d),d).toBe(true);});
 });

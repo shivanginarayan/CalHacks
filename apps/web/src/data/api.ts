@@ -26,7 +26,7 @@ export type Report = {run_id:string; simulation_id:string; status:string; source
 export type Job = {job_id:string; simulation_id:string; kind:'central_bank'|'credit'|'procurement'; actor_id:string|null;
  status:string; error:string|null; report_url:string|null; report_status:string|null};
 export type Fork = {fork_id:string; source_tick:number; end_tick:number; snapshot_sha256:string;
- recommended_strategy:string; recommendation_basis:string;
+ recommended_strategy:string; recommendation_basis:string; request?:{budget_cents:number; ticks:number};
  branches:{strategy:string; simulation_id:string; metrics:Metrics; timeline:Metrics[]}[]};
 export const API_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
 export async function api<T>(path:string, body?:unknown):Promise<T> {
