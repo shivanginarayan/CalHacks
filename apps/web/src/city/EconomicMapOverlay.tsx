@@ -1,8 +1,9 @@
 import {useMemo} from 'react';
-import {Play,Pause,ArrowRight,Layers,Clock,Sparkles,AlertTriangle,Flame,ShieldCheck,Package,Users} from 'lucide-react';
+import {Play,Pause,ArrowRight,Layers,Clock,Sparkles,AlertTriangle,Flame,ShieldCheck,Package,Users,Volume2,VolumeX,Video,Thermometer} from 'lucide-react';
 import {useStore} from '../state/store';
 import {useCityView,type LayerFilter} from '../state/cityView';
 import {generateDailyNarrative,getCausalChain} from './economicDynamics';
+import {isAudioMuted,toggleAudioMute} from './economicAudio';
 import {currency} from '../data/api';
 
 export default function EconomicMapOverlay() {
@@ -118,7 +119,7 @@ export default function EconomicMapOverlay() {
     </div>
    )}
 
-   {/* Top Right: Economic Layer Filter Toolbar */}
+   {/* Top Right: Economic Layer Filter Toolbar & Mode Toggles */}
    <div className="map-layer-toolbar" role="toolbar" aria-label="Map Layer Filter">
     <div className="toolbar-label">
      <Layers size={11} /> LAYERS
@@ -135,6 +136,40 @@ export default function EconomicMapOverlay() {
        <span className="layer-text">{layer.label}</span>
       </button>
      ))}
+    </div>
+
+    <div className="toolbar-divider" />
+
+    <div className="map-quick-toggles">
+     <button
+      className={`quick-toggle-btn ${view.tourActive ? 'active' : ''}`}
+      onClick={() => view.setTourActive(!view.tourActive)}
+      title="Automated aerial camera tour highlighting macroeconomic contagion and recovery"
+     >
+      <Video size={11} />
+      <span>{view.tourActive ? 'STOP TOUR' : 'TOUR'}</span>
+     </button>
+
+     <button
+      className={`quick-toggle-btn ${view.heatmapActive ? 'active' : ''}`}
+      onClick={() => view.setHeatmapActive(!view.heatmapActive)}
+      title="Toggle district economic stress heatmap overlay"
+     >
+      <Thermometer size={11} />
+      <span>HEATMAP</span>
+     </button>
+
+     <button
+      className={`quick-toggle-btn ${view.soundEnabled ? 'active' : ''}`}
+      onClick={() => {
+       const muted = toggleAudioMute();
+       view.setSoundEnabled(!muted);
+      }}
+      title="Toggle procedural economic event audio feedback"
+     >
+      {view.soundEnabled ? <Volume2 size={11} /> : <VolumeX size={11} />}
+      <span>{view.soundEnabled ? 'SOUND ON' : 'MUTED'}</span>
+     </button>
     </div>
    </div>
 

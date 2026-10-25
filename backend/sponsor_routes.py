@@ -5,7 +5,7 @@ from typing import Literal
 from fastapi import APIRouter, BackgroundTasks
 from pydantic import Field
 
-from backend import fraud, research, spacetime
+from backend import fraud, research, spacetime, nessie
 from backend.forks import snapshot_hash
 from backend.models import Request, PaymentRequest
 from backend.provider import ProviderNotConfigured
@@ -160,5 +160,23 @@ def router(store):
     def shared_events(simulation_id: str):
         store.get(simulation_id)
         return spacetime.shared_events(simulation_id)
+
+    @api.get("/worlds/{simulation_id}/nessie")
+    def get_nessie(simulation_id: str):
+        world = store.get(simulation_id)
+        nessie.sync_world_entities(world.state)
+        return nessie.get_nessie_summary(simulation_id)
+
+    @api.get("/worlds/{simulation_id}/nessie/{entity_id}")
+    def get_entity_nessie(simulation_id: str, entity_id: str):
+        world = store.get(simulation_id)
+        nessie.sync_world_entities(world.state)
+        account = nessie.get_entity_nessie_account(simulation_id, entity_id)
+        return account or {"entity_id": entity_id, "status": "unmapped"}
+
+    @api.post("/worlds/{simulation_id}/nessie/sync")
+    def sync_nessie(simulation_id: str):
+        world = store.get(simulation_id)
+        return nessie.sync_world_entities(world.state)
 
     return api

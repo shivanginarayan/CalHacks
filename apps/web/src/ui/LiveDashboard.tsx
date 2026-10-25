@@ -75,10 +75,15 @@ function EventFeed(){const s=useStore(),{districtFilter,setDistrict}=useCityView
 
 function Inspector(){const s=useStore(),entity=s.world?.entities.find(e=>e.id===s.selected);
  const [transactions,setTransactions]=useState<{transaction_id:string;metadata:{type?:string;tick?:number}}[]>([]);
+ const [nessieAccount,setNessieAccount]=useState<{_id?:string;account_number?:string;balance?:number;status?:string}|null>(null);
  useEffect(()=>{let current=true;setTransactions([]);if(!s.world||!entity)return;const id=s.world.simulation_id;
   void api<{transactions:{transaction_id:string;metadata:{type?:string;tick?:number};lines:{account_id:string}[]}[]}>(`/api/worlds/${id}/transactions?entity_id=${encodeURIComponent(entity.id)}&newest_first=true&limit=12`).then(page=>{
    if(current)setTransactions(page.transactions);
   }).catch(()=>{});return()=>{current=false;};},[s.world?.simulation_id,s.tick,entity?.id]);
+ useEffect(()=>{let current=true;setNessieAccount(null);if(!s.world||!entity)return;const id=s.world.simulation_id;
+  void api<{_id?:string;account_number?:string;balance?:number;status?:string}>(`/api/worlds/${id}/nessie/${entity.id}`).then(data=>{
+   if(current&&data._id)setNessieAccount(data);
+  }).catch(()=>{});return()=>{current=false;};},[s.world?.simulation_id,entity?.id]);
  if(!entity)return <button className="text-action" onClick={()=>s.set({selected:null})}>Return to events</button>;
  const related=s.contracts.filter(c=>c.buyer_id===entity.id||c.supplier_id===entity.id);
  const sheet=entity.balance_sheet;
@@ -86,6 +91,16 @@ function Inspector(){const s=useStore(),entity=s.world?.entities.find(e=>e.id===
  <p className="eyebrow">{entity.kind} · DAY {s.tick}</p><h2>{entity.name}</h2><code>{entity.id}</code><p className="status-chip">{entity.status}</p>
  <div className="balance-grid">{[['Cash',sheet.assets.deposit??sheet.assets.reserves??0],['Assets',sheet.assets_cents],['Debt',sheet.liabilities_cents]].map(([name,value])=><div key={name}><span>{name}</span><strong>{currency(+value)}</strong></div>)}</div>
  <p>Equity {currency(sheet.equity_cents)} · Ledger {sheet.balanced?'balanced':'unbalanced'}</p>
+ {nessieAccount&&<div className="nessie-section" style={{margin:'10px 0',padding:'8px 10px',background:'rgba(239,68,68,0.06)',border:'1px solid rgba(239,68,68,0.2)',borderRadius:'8px'}}>
+  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'3px'}}>
+   <span style={{fontSize:'8.5px',fontWeight:700,letterSpacing:'0.8px',color:'#f87171'}}>CAPITAL ONE NESSIE ACCOUNT</span>
+   <span style={{fontSize:'8px',color:'#94a3b8'}}>{nessieAccount.status?.toUpperCase()??'ACTIVE'}</span>
+  </div>
+  <div style={{display:'flex',justifyContent:'space-between',fontSize:'10.5px'}}>
+   <span>Acct: <code>{nessieAccount.account_number}</code></span>
+   <strong>{currency((nessieAccount.balance??0)*100)}</strong>
+  </div>
+ </div>}
  {entity.kind==='bank'&&<p>Capital {((entity.capital_ratio??0)*100).toFixed(1)}% · Liquidity {((entity.liquidity_ratio??0)*100).toFixed(1)}% · Lending {entity.lending_available?'available':'constrained'}</p>}
  {entity.kind==='business'&&<><div className="detail-row"><span>Raw materials / finished goods</span><b>{entity.materials_units??'untracked'} / {entity.goods_units??'untracked'}</b></div><p>{entity.employees?.length??0} employees · Produced {entity.last_produced_units??'untracked'} goods today</p>
  <div className="button-row"><button className="primary small" disabled={s.busy||activeJob(s.job?.status)||entity.status!=='active'} onClick={()=>void s.startJob('credit',entity.id)}>Review payroll credit</button>

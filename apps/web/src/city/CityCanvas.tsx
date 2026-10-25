@@ -14,6 +14,7 @@ import {readDistrictActivity,type DistrictActivity} from './activity';
 import {createMoverPool,updateMovers,drawMover,shopDoor,type VisualMover} from './movers';
 import EconomicMapOverlay from './EconomicMapOverlay';
 import {buildEntityBuildingMap,buildDynamicParticles,getBuildingRoofPoint,type DynamicParticle} from './economicDynamics';
+import {playSalaryChime,playCreditSound,playCrisisShockRumble,playRescueHarmonic} from './economicAudio';
 
 let nextMount=0;
 const sceneCaches=new WeakMap<CityLayout,StaticSceneCache>();
@@ -50,11 +51,27 @@ export default function CityCanvas(){
    stressedIds=new Set([...bound].filter(([,e])=>bankIsStressed(e)).map(([id])=>id));
    firms=new Map(snapshot.firms.map(f=>[f.id,f.open]));
    for(const d of layout.districts){const next=readDistrictActivity(snapshot,baseline,d.name);activities.set(d.name,next);}
+
+   if(useCityView.getState().soundEnabled){
+    if(s.events.some(e=>e.simulation_tick===s.tick&&e.event_type==='bank_asset_loss'))playCrisisShockRumble();
+    else if(s.events.some(e=>e.simulation_tick===s.tick&&(e.event_type==='intervention_settled'||e.event_type==='agent_recommendation_applied')))playRescueHarmonic();
+    else if(s.events.some(e=>e.simulation_tick===s.tick&&e.event_type==='loan_issued'))playCreditSound();
+    else if(s.events.some(e=>e.simulation_tick===s.tick&&e.event_type==='salary'))playSalaryChime();
+   }
   }
   const lerped=new Map<string,DistrictActivity>();
 
   let dynamicParticles:DynamicParticle[]=[];
   let particleKey='';
+  let tourTimer=0,tourStep=0;
+  const tourStops=[
+   {district:'Financial District',x:997,y:480,label:'Bank 1 Capital',zoom:3.8},
+   {district:'Mission District',x:665,y:566,label:'Café Seventy8 Production',zoom:4.6},
+   {district:'Downtown',x:1199,y:593,label:'Central Bank Policy Authority',zoom:3.5},
+   {district:'North Beach',x:857,y:309,label:'Government Fiscal Treasury',zoom:3.5},
+   {district:'San Francisco',x:720,y:540,label:'Macro Living Miniature',zoom:1.0}
+  ];
+
   function refreshParticles(time:number){
    const s=useStore.getState();
    const activeLayer=useCityView.getState().activeLayer;
@@ -68,6 +85,21 @@ export default function CityCanvas(){
    elapsed+=dt;
    camera.update(now);
    refreshActivity();
+
+   const cityView=useCityView.getState();
+   if(cityView.tourActive){
+    tourTimer+=dt;
+    if(tourTimer>4.8){
+     tourTimer=0;
+     tourStep=(tourStep+1)%tourStops.length;
+     const stop=tourStops[tourStep];
+     if(stop.zoom<=1.01)home();
+     else focusDistrict(stop.district,stop.x,stop.y,stop.label,stop.zoom);
+    }
+   } else {
+    tourTimer=0;
+    tourStep=0;
+   }
 
    const s=useStore.getState();
    const activeLayer=useCityView.getState().activeLayer;
@@ -106,6 +138,25 @@ export default function CityCanvas(){
    ctx.translate(-camera.pose.x,-camera.pose.y);
 
    const tiles=cache.draw(ctx,Math.min(2,lod) as 0|1|2,viewport);
+
+   // District Economic Distress Heatmap
+   if(cityView.heatmapActive){
+    for(const d of layout.districts){
+     const a=lerped.get(d.name);
+     const stress=a?.bankStress?0.75:(100-(a?.employment??100))/100;
+     if(stress>0.04){
+      const dp=project(d.x,d.y);
+      const grad=ctx.createRadialGradient(dp[0],dp[1],10,dp[0],dp[1],130);
+      grad.addColorStop(0,`rgba(239,68,68,${Math.min(0.4,stress*0.5)})`);
+      grad.addColorStop(0.6,`rgba(245,158,11,${Math.min(0.25,stress*0.3)})`);
+      grad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=grad;
+      ctx.beginPath();
+      ctx.ellipse(dp[0],dp[1],130,68,0,0,7);
+      ctx.fill();
+     }
+    }
+   }
    const oldPositions=canvas.dataset.visualTime!==undefined;
    if(oldPositions)for(const m of pool)m.progress=((m.id*.61803398875)%1+visualTime*m.speed/m.length)%1;
    const stats=updateMovers(pool,oldPositions?0:dt,visualTime,lerped,firms,viewport);

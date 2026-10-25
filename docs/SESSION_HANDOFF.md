@@ -278,12 +278,13 @@ PowerShell exec often needed the normal escalation review in this environment; u
     - In `NetworkView`, upgraded SVG topology into a clear 3-tier hierarchy (Central Bank/Gov top, Commercial Banks arc, Businesses arc).
   - `PublicDataPanel.tsx` & `ShockStory.tsx`: Replaced shared `.sponsor-integrations` class with `.public-data-panel` and `.shock-story-panel` (inheriting identical styles) to eliminate Playwright strict-mode locator collisions in `scripts/qa-sponsors.mjs`.
 - **End-to-End Verification Status**:
-  - **187/187 backend tests passed** (1 optional skipped) via `pytest`.
+  - **188/188 backend tests passed** (1 optional skipped) via `pytest` (including Nessie API unit tests).
   - **74/74 Vitest frontend tests passed** in 5.1s.
-  - **Production build passed** (`tsc --noEmit && vite build`) in 7.07s.
+  - **Production build passed** (`tsc --noEmit && vite build`) in 6.75s.
   - **All live Playwright QA suites passed**:
     - `qa-integration.mjs` (all 11 groups passed).
     - `qa-live-city.mjs` (all 6 groups passed).
+    - `take_screenshots.mjs` (all 8 high-resolution 2x Retina screenshots captured).
     - `qa-comparison-report.mjs` (public and seeded downloads verified).
     - `qa-apify-auto.mjs` (zero-click automatic loading on open verified).
     - `qa-shock-story.mjs` (live Treasury preview, retry-safe apply verified).
@@ -341,7 +342,47 @@ PowerShell exec often needed the normal escalation review in this environment; u
     - `qa-live-city.mjs`: all 6 test groups passed (including Cafe 14 click, inspector zoom, district filter, bank shock, step 12 ticks, forks, report download, mobile layout).
     - `qa-integration.mjs`: all 11 test groups passed (including real world creation, speed, crisis, forks, central bank, network, supplier contract, reload, reset, mobile).
     - Vitest unit tests: **74/74 passed**.
-    - Backend pytest suite: **187 passed, 1 skipped**.
+    - Backend pytest suite: **188 passed, 1 skipped** (including Nessie API unit tests).
     - Schema validation suite (`scripts/test_all_fetch_schemas.py`): **27/27 passed**.
-    - Production build: `tsc --noEmit && vite build` built cleanly in 6.91s.
+    - Production build: `tsc --noEmit && vite build` built cleanly in 6.75s.
     - Pushed to branch `chetas` on GitHub.
+
+## Latest milestone: Capital One Nessie Integration, Synthesizer Audio, Cinematic Tour & High-Res Gallery
+
+- **Capital One Nessie API Mirror & Banking Integration**:
+  - Implemented `backend/nessie.py` providing an authoritative mirror mapping simulated commercial banks and enterprises to Nessie customer and checking account records.
+  - Mirrored banking transactions for payroll disbursements, loan originations, and procurement purchases.
+  - Added REST endpoints in `backend/sponsor_routes.py`:
+    - `GET /api/worlds/{id}/nessie`: Full multi-entity banking overview.
+    - `GET /api/worlds/{id}/nessie/{entity_id}`: Targeted checking account and balance lookup.
+    - `POST /api/worlds/{id}/nessie/sync`: On-demand state reconciliation.
+  - Frontend inspector in `apps/web/src/ui/LiveDashboard.tsx` displays the active Capital One Nessie account badge with account number and live balance.
+  - Pytest unit tests in `tests/test_nessie.py` passed cleanly (0.05s).
+- **Web Audio API Event Synthesizer**:
+  - Implemented `apps/web/src/city/economicAudio.ts` using zero-dependency browser Web Audio API:
+    - Dual-tone bell chime (523.25 Hz / 659.25 Hz) for daily salary payments.
+    - Ascending frequency chirp (440 Hz -> 880 Hz) for credit origination.
+    - Low-frequency filtered sub-bass rumble (65 Hz -> 30 Hz) for bank asset shock write-downs.
+    - Major triad harmonic chord (C4, E4, G4, C5) for central bank emergency liquidity interventions.
+  - Added sound toggle button `[SOUND ON/MUTED]` in the economic map overlay.
+- **Cinematic Aerial Camera Tour**:
+  - Smooth camera glide mode navigating across 5 key economic anchor points:
+    1. Financial District: Bank 1 Capital
+    2. Mission District: Café Seventy8 Production & Inventory
+    3. Downtown: Central Bank Macro Policy Authority
+    4. North Beach: Government Fiscal Treasury
+    5. San Francisco Overview: Living Macro Miniature
+  - Controlled by the `[TOUR]` button in `EconomicMapOverlay.tsx`.
+- **District Economic Distress Heatmap**:
+  - Isometric radial distress gradients drawn directly on the canvas under `[HEATMAP]` mode, highlighting areas experiencing bank capital haircuts or labor contractions.
+- **High-Resolution Screenshot Gallery Suite**:
+  - Created automated screenshot tool `scripts/take_screenshots.mjs` using Playwright at 2x Retina resolution (`1600x1000@2x`).
+  - Captured 8 verified screenshots in `artifacts/pics/`:
+    1. `01-live-economic-map-overview.png`: Full aerial bird's-eye view with live institution badges, particle flows, and causal banner.
+    2. `02-bank-shock-transmission.png`: Bank 2 asset haircut shockwave with illuminated borrower exposure links.
+    3. `03-causal-timeline-drawer.png`: Open Causal Chain Drawer showing Trigger -> Mechanism -> Consequence cascade.
+    4. `04-layer-filter-credit-mode.png`: Filtered view showing cyan interbank and corporate lending lines.
+    5. `05-cafe-seventy8-inspector.png`: Close-up inspection HUD for Café Seventy8 with Nessie checking account details.
+    6. `06-fork-reality-comparison.png`: 3-way fork simulation comparison matrix.
+    7. `07-financial-network-graph.png`: Systemic interbank exposure network diagram.
+    8. `08-mobile-responsive-city.png`: Responsive portrait orientation for mobile devices.
