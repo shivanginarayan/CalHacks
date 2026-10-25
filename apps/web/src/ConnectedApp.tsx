@@ -9,7 +9,7 @@ import cities from './data/cities.json';
 import './styles/integration.css';
 
 export default function ConnectedApp(){
- const s=useStore(),city=s.stage==='CITY',hasPanel=city||s.stage==='PIN_SELECTED';
+ const s=useStore(),city=s.stage==='CITY',hasPanel=(city&&!s.compare)||s.stage==='PIN_SELECTED';
  const stars=useMemo(()=>Array.from({length:1600},(_,i)=>({left:(((Math.sin(i*127.1+311.7)*43758.5453)%1+1)%1*100)+'%',top:(((Math.sin(i*269.5+183.3)*23421.631)%1+1)%1*100)+'%',opacity:.12+(i%9)/20,width:1,height:1})),[]);
  const starElements=useMemo(()=>stars.map((style,i)=><i key={i} style={style}/>),[stars]);
  useEffect(()=>{void initializePublicInputs();void useStore.getState().restore();return disconnect;},[]);
