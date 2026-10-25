@@ -6,7 +6,7 @@
 
 The dashboard now supports a [sourced debt-crisis story](./docs/SHOCK_STORIES.md): retrieve dated US Treasury debt, preview a hypothetical 25% increase, choose separate bond-yield/exposure assumptions, and explicitly apply the calculated bank investment loss before comparing rescue strategies. The real baseline and hypothetical assumptions remain clearly distinguished.
 
-Milestone 9 adds **finite goods production and inventory-constrained sales**. Businesses turn supplier materials into finished stock, households can only buy available goods, and retail settlement recognizes the cost of inventory sold. A `supply_crunch` scenario demonstrates supplier negotiation restoring production and sales. The backend also includes background agent jobs, Play/Pause, speed, reset, live financial events, contract payments, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live Nemotron function calling and all three economic agent workflows have been verified; see [Nemotron setup and checks](./docs/NEMOTRON.md). Successful external on-chain settlement remains unverified; the optional x402 testnet integration is described below.
+Milestone 9 adds **finite goods production and inventory-constrained sales**. Businesses turn supplier materials into finished stock, households can only buy available goods, and retail settlement recognizes the cost of inventory sold. A `supply_crunch` scenario demonstrates supplier negotiation restoring production and sales. The backend also includes background agent jobs, Play/Pause, speed, reset, live financial events, contract payments, Fork Reality, crisis propagation, and a balanced ledger. Live roles use configured Nemotron on Nebius; demo controllers are explicitly labeled. Live Nemotron function calling and all three economic agent workflows have been verified; see [Nemotron setup and checks](./docs/NEMOTRON.md). A real one-cent Base Sepolia x402 payment and independently verified receipt are documented in [the x402 evidence guide](./docs/X402_SUBMISSION.md).
 
 The product direction is saved in [UI_PLAN.md](./UI_PLAN.md). The UI is connected to the backend; see [alignment, setup, and demo instructions](./docs/UI_INTEGRATION.md). The API contract is in [docs/API.md](./docs/API.md).
 
@@ -183,7 +183,7 @@ The default database is [data/economy.sqlite3](./data/economy.sqlite3), created 
 .\.venv\Scripts\python.exe -m scripts.export_contract
 ```
 
-On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The backend baseline is 171 passing tests plus one optional skipped SDK module; the merged frontend has 74 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
+On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The backend baseline is 176 passing tests plus one optional skipped SDK module; the merged frontend has 74 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
 
 Tests cover ledger invariants, reproducibility, reserve/deposit conservation, loan creation and repayment, rejected transactions, request validation, persistence, event pagination, CORS, concurrent requests, shock replay, clearing calculations, crisis propagation, defaults, and legacy checkpoints.
 
@@ -204,3 +204,7 @@ Production tests verify material-cost conversion, inventory and rounding conserv
 The persistence approach stores complete world checkpoints, including history. It favors correctness and easy snapshots for the first milestone. Long runs and high-volume event retrieval will need normalized storage or incremental journal writes; the maximum input population is not a throughput guarantee.
 
 The [SpacetimeDB control-room demo](./docs/SPACETIME_SUBMISSION.md) adds shared proposals, independent-identity review, snapshot-bound execution and direct SDK subscriptions across browsers. SQLite remains the accounting engine.
+
+For transfer to another LLM, start with [the detailed continuation brief](./docs/LLM_CONTINUATION_BRIEF.md), then read [the chronological handoff](./docs/SESSION_HANDOFF.md).
+
+See [the detailed agent, API and track catalog](./docs/AGENTS_APIS_AND_TRACKS.md) for each implemented role's tasks, tools, safeguards and verified sponsor usage.

@@ -2,15 +2,28 @@
 
 This is durable repository context saved at the user's request. Read this before continuing; do not start a new implementation task until the user requests one. All tasks below marked complete are already implemented. Do not repeat external deployments/collections merely to recover context.
 
+## Current state ? October 25, 2026, 05:47 UTC
+
+Read [the consolidated cross-LLM brief](./LLM_CONTINUATION_BRIEF.md) for a self-contained, detailed transfer summary, exact run commands, code map, track status, verification evidence and continuation instructions.
+
+- **Implementation is pushed:** main/origin/main at `6cfdf86 Complete shared Spacetime control room and verified track demos`. Verified clean and 0 ahead/0 behind before writing this summary. The new brief and these summary corrections are local documentation changes until separately committed/pushed.
+- **Fetch complete technically:** real Agentverse registration/discovery, signed mailbox workflow and actual ASI:One UI stress-test + saved-evidence follow-up verified. Earlier 401/UI-unverified notes below are historical.
+- **SpacetimeDB complete locally:** shared control room with direct subscriptions, anonymous browser presence, second-identity approval, snapshot-checked execution, replay-safe receipts and real two-browser verification. SQLite remains the accounting source of truth.
+- **x402 real payment verified:** 0.01 Base Sepolia test USDC, actual SDK/facilitator and independent chain receipt. Earlier unfunded/no-on-chain notes are historical. Do not delete the saved attempt marker or repeat a payment just to recreate context.
+- **Verification:** 176 backend tests passed / one optional skip; 74 frontend tests passed; nine isolated x402 tests passed; real SpacetimeDB module check, browser QA and production build passed.
+- **Still blocked or separate:** CRS needs real sponsor credentials/product/test-profile/rule configuration; separate Nebius event needs team license/hosting/video choices; event submissions have not been made. Actor remains private, and Best Actor Store-publication requirements need confirmation.
+- At this summary check all five services listened on ports 5173, 8000, 3000, 8002 and 8402. Process IDs are historical; recheck before restarting anything.
+- The chronological milestones below retain earlier state for context. Prefer this section and the newest successful milestone when statuses conflict.
+
 ## Workspace and Git
 
 - Windows PowerShell, repository: `C:/Users/naray/Downloads/Calhacks`.
 - GitHub: https://github.com/shivanginarayan/CalHacks.git, branch `main`.
-- Latest fetched upstream commit: `2a3eba2 Rebuild San Francisco diorama to match demo reference`, following `9b4e73a Integrate live dashboard and optional sponsor workflows`.
+- Current pushed implementation HEAD: `6cfdf86`; earlier incoming city commit `2a3eba2` and local integration commits are included in its history.
 - Local checkpoint `17c00d0 Add sourced public inputs and verified track demonstrations` preserves the previously uncommitted Treasury/Apify/report/track work and handoff. Merge `05cdbcf` incorporates `origin/main` without rewriting either side. The live-city integration follow-up is described below; inspect current `git log`/status for its final identity.
 - The user subsequently requested pull then push: `git pull --no-rebase origin main` was already current, and four local commits through `da84403` were pushed successfully. Main was clean and 0 ahead/0 behind then. New SpacetimeDB/x402 work below remains local unless later Git history says otherwise. Private environment, ignored data, source credential document and generated artifacts remain excluded from Git. A credential-value scan before checkpointing found zero matches in publishable files, including DOCX XML.
 - Git identity previously verified: `shivanginarayan <narayan.shivangi@gmail.com>`. The user explicitly wants commits/pushes as them, without Codex coauthor attribution or collaborator invitations.
-- User's earlier push requests have been completed. No new push was requested for the latest work; do not assume it has reached GitHub.
+- User's implementation push requests have been completed through `6cfdf86`. Only the newly requested transfer-summary documentation is local after that push.
 
 ## User's direction and preferences
 
@@ -108,11 +121,11 @@ The user's Apify token is privately saved as `APIFY_TOKEN` in ignored root `.env
 ## Other sponsor integrations and real verification status
 
 - **Census/FDIC:** actual public SF population and bank-headquarters reference APIs implemented and previously verified. They do not replace simulated institutions/balances. Census vintage/date and FDIC headquarters-vs-branches distinction are explicit.
-- **Fetch:** bounded backend chat accepts stress-test sentence + saved-evidence why follow-up; live Nemotron verified, ACP SDK validated. Optional ASI adapter exists. Prior supplied credentials returned 401; Agentverse registration and ASI:One discovery/chat remain unverified. Separate `.venv-fetch`, private seed/token ignored.
+- **Fetch:** actual Agentverse registration, public discovery, signed ACP mailbox experiment and complete ASI:One UI stress/evidence conversation verified. Separate optional ASI inference remains unverified. Preserve the stable private seed/token. See the latest milestone and Fetch guide.
 - **CRS:** fraud screens, guarded $1 simulated payment, optional credit reports, redacted caching, vendor mappings, strict eligibility and human escalation implemented/tested. Real credentials, product config, sponsor test profiles and field mappings still needed. No successful live CRS report claimed.
 - **Human approval:** credit above configured thresholds or flagged evidence can require reasoned approve/decline. Approval moves no money; settlement separate, revalidates snapshot/evidence. Blocked identity cannot be overridden. Local operator is not authenticated production reviewer.
-- **SpacetimeDB:** actual TypeScript SDK 2.13 module with public immutable keyed events and private publisher; owner-only ingest. Backend durable cursor/retry mirror and SQL read UI. Previously live-verified 20 events, duplicate replay unchanged, unauthorized/conflicting writes denied, ledger balanced. SQLite remains source of truth. Optional local service may be stopped.
-- **x402:** actual Python SDK 2.25 isolated `.venv-x402`; optional 0.01 test USDC research on Base Sepolia only, unchecked opt-in UI, bounded buyer and at-most-one attempt/run, verified receipt/log logic. Real local 402 challenge verified; facilitator/RPC tests mocked. Buyer wallet unfunded; **no successful on-chain payment claimed**. Private wallets ignored. No mainnet or simulated-ledger debit.
+- **SpacetimeDB:** actual SDK/runtime 2.13, immutable event mirror and shared control room. Direct browser subscriptions, presence, second-identity review, guarded exactly-once execution and persistent receipts verified with two browsers. SQLite remains authoritative for accounting; anonymous identities are not verified humans.
+- **x402:** actual SDK 2.25, real one-cent Base Sepolia test-USDC purchase and independent receipt/transfer verification completed. The explicit SDK demonstration is separate from a live policy run that enabled but did not choose the purchase tool. No mainnet or simulated-ledger debit. Preserve the durable attempt marker.
 - **Nessie:** optional, not implemented. Track eligibility and broad production claims are not guaranteed by having adapters.
 
 ## Run locally
@@ -264,3 +277,7 @@ PowerShell exec often needed the normal escalation review in this environment; u
 ## Publication request after completed integrations
 
 The user explicitly requested pushing this milestone to GitHub. The publication includes the shared SpacetimeDB control room, verified x402/ASI:One evidence guides, generated SDK bindings and regression checks. All private environment/data/artifacts remain excluded. Check current Git HEAD and upstream state for the final publication result; earlier uncommitted/unpushed notes describe the state before this request.
+
+## Agent/API/track catalog requested by user
+
+Added [AGENTS_APIS_AND_TRACKS.md](./AGENTS_APIS_AND_TRACKS.md), based on actual policy/credit/procurement/gateway/research code. It inventories five economic AI role types, six typical role instances across the three workflows because procurement has two suppliers, one separate registered Fetch gateway and the optional unverified ASI research path. It distinguishes the default 55 financial entities, deterministic support services and visual movers from LLM agents. It documents each role's tools, tasks, inputs, permissions, APIs, verified evidence and sponsor-track mapping, including CRS and submission gaps. This document and the preceding transfer-summary changes are local documentation only after pushed implementation 6cfdf86. No paid calls, deployments or code behavior changes were needed.
