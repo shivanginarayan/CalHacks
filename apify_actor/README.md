@@ -1,6 +1,6 @@
-# Economy public SF Actor
+# Parallax public SF Actor
 
-Custom Python Actor for Economy God Mode. It collects public numerical observations that actually initialize business prices and household wage references in new simulations. It runs with limited permissions. No Apify SDK, browser, proxy, or general-purpose scraper is required.
+Custom Python Actor for Parallax. It collects public numerical observations that actually initialize business prices and household wage references in new simulations. It runs with limited permissions. No Apify SDK, browser, proxy, or general-purpose scraper is required.
 
 ## Input
 
@@ -43,7 +43,7 @@ Configure the private root environment as described in [setup](https://github.co
 
 This command creates or updates the configured Actor and starts a build. Use it for initial deployment or deliberate source updates, not each app launch. The app automatically loads saved observations and collects missing/stale inputs. Each new world freezes the complete sample and checksum; forks and resets preserve it. Financial identities, opening balances, employment relationships and behavior remain synthetic.
 
-## Use in Economy God Mode
+## Use in Parallax
 
 The app loads saved public observations automatically, refreshes stale sources, and freezes inputs in each new simulated world. Bank balances, households, employment relationships and rescue outcomes are synthetic simulation state, not observations collected by this Actor.
 

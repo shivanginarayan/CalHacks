@@ -1,4 +1,4 @@
-﻿# Parallax
+# Parallax
 
 A simulated economy where financial agents investigate bank shocks, negotiate credit, and compare rescue policies.
 
@@ -90,7 +90,7 @@ For a track-by-track speaking script, see [the plain-language judging guide](./d
 
 **Fetch.ai:** one registered uAgents/Agentverse gateway implements ACP and supports a stress-test request and evidence follow-up inside ASI:One. Both the messaging path and ASI:One workflow were verified. The ten local typed economic services are saved-state adapters, not ten separately verified public LLM agents.
 
-- Agent name: **economy-god-mode** — the preserved external identity predates the Parallax rename.
+- Agent: **Parallax financial gateway** — the registered profile and address below identify the running service.
 - Agent address: `agent1qwv9gf04ag4echzl3fpgnc889lpsk8vgatysq07yz7zpwm9480zxslyxkgm`
 - [Open agent in ASI:One](https://asi1.ai/ai/agent1qwv9gf04ag4echzl3fpgnc889lpsk8vgatysq07yz7zpwm9480zxslyxkgm)
 - Example: `stress-test bank 1 with a 40% loss and compare rescue plans`, followed by `why did you pick that?`
@@ -137,4 +137,4 @@ Use the explicit `tests` path for Python when ignored preview worktrees exist in
 - [Track setup and current CRS evidence](./docs/TRACK_IMPLEMENTATION.md)
 - [Session handoff](./docs/SESSION_HANDOFF.md) for dated implementation and verification history
 
-Some guides retain the earlier Economy God Mode name and historical results. Use the current branch's behavior and the newest dated verification notes when interpreting them. Taxes, rent modeling, a calibrated national macroeconomic model, production authentication, and continuous autonomous LLM scheduling are not implemented.
+Some linked guides contain historical results. Use the current branch's behavior and the newest dated verification notes when interpreting them. Taxes, rent modeling, a calibrated national macroeconomic model, production authentication, and continuous autonomous LLM scheduling are not implemented.

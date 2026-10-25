@@ -1,4 +1,4 @@
-﻿# Economy God Mode UI
+# Parallax UI
 
 The globe and San Francisco city are connected to the Python backend. Financial values, institutions, shocks, agent jobs, supplier contracts, and Fork Reality outcomes come from API responses. The original fixtures remain development references rather than the active economy.
 
