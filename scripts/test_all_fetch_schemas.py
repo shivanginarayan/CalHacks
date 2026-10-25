@@ -97,7 +97,7 @@ def validate_schema_fields(instance: Any, schema_cls: type) -> Dict[str, Any]:
     return data
 
 
-async def test_agent_handler(
+async def run_agent_handler(
     agent_name: str,
     handler_name_pattern: str,
     request_message: Any,
@@ -249,7 +249,7 @@ async def main():
     for agent_name, handler_pattern, req_msg, expected_cls in test_specs:
         test_title = f"{agent_name} -> {handler_pattern}"
         try:
-            res = await test_agent_handler(agent_name, handler_pattern, req_msg, expected_cls)
+            res = await run_agent_handler(agent_name, handler_pattern, req_msg, expected_cls)
             results.append(res)
             passed += 1
             out_schema_str = res["output_schema"] or "None (fire-and-forget)"

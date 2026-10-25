@@ -37,3 +37,132 @@ html,body,#root,.app{overflow:clip}
 .live-branch-result.winner{border:1px solid #e5bd6c;background:rgba(229,189,108,0.08);box-shadow:0 2px 12px rgba(229,189,108,0.12)}
 .district-active-badge{display:flex;align-items:center;justify-content:space-between;background:rgba(229,189,108,0.12);border:1px solid rgba(229,189,108,0.35);border-radius:8px;padding:6px 10px;font-size:11px;color:#ffe08a;margin:8px 0}
 .district-active-badge button{background:transparent;border:none;color:#e5bd6c;cursor:pointer;font-size:11px;text-decoration:underline;padding:0}
+
+/* Ensure city navigation and controls always sit above HUD overlays */
+.city-navigation{z-index:25!important}
+.city-zoom-controls{z-index:25!important}
+.city-district-filter{z-index:25!important}
+
+/* =========================================================================
+   LIVE ECONOMIC MAP OVERLAY — HIGH-DEFINITION CAUSAL & INSTITUTION VISUALS
+   ========================================================================= */
+.economic-map-overlay{position:absolute;inset:0;pointer-events:none;z-index:5;display:flex;flex-direction:column;justify-content:space-between;padding:12px;font-family:inherit}
+
+/* --- Top Center: Causal Narrative Banner --- */
+.causal-narrative-banner{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:max-content;max-width:min(520px,46vw);pointer-events:auto;background:rgba(10,19,28,0.92);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:9px 13px;box-shadow:0 8px 32px rgba(0,0,0,0.45);transition:all .25s ease}
+.causal-narrative-banner.border-cyan{border-color:rgba(56,189,248,0.35);box-shadow:0 4px 20px rgba(56,189,248,0.12)}
+.causal-narrative-banner.border-crimson{border-color:rgba(239,68,68,0.7);box-shadow:0 4px 24px rgba(239,68,68,0.25)}
+.causal-narrative-banner.border-amber{border-color:rgba(245,158,11,0.55);box-shadow:0 4px 20px rgba(245,158,11,0.18)}
+.causal-narrative-banner.border-red{border-color:rgba(220,38,38,0.6);box-shadow:0 4px 22px rgba(220,38,38,0.2)}
+.causal-narrative-banner.border-gold{border-color:rgba(243,209,108,0.65);box-shadow:0 4px 24px rgba(243,209,108,0.2)}
+.causal-narrative-banner.border-emerald{border-color:rgba(52,211,153,0.55);box-shadow:0 4px 20px rgba(52,211,153,0.18)}
+
+@keyframes shock-pulse-glow{0%{box-shadow:0 0 0 0 rgba(239,68,68,0.5)}50%{box-shadow:0 0 0 8px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+.causal-narrative-banner.shock-pulse{animation:shock-pulse-glow 2s infinite ease-in-out}
+
+.causal-topline{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.causal-day-pill{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:700;letter-spacing:1px;color:#d4e0e8;background:rgba(255,255,255,0.08);padding:3px 8px;border-radius:12px}
+.tiny-pulse-dot{width:5px;height:5px;border-radius:50%;background:#38bdf8;animation:pulse 1.8s infinite}
+.causal-category-tag{font-size:8.5px;font-weight:700;letter-spacing:1.2px;color:#9bb0c1;text-transform:uppercase}
+.causal-chain-toggle-btn{background:rgba(243,209,108,0.12);border:1px solid rgba(243,209,108,0.3);border-radius:12px;color:#f3d16c;font-size:10px;font-weight:600;padding:3px 9px;cursor:pointer;transition:all .15s ease}
+.causal-chain-toggle-btn:hover{background:rgba(243,209,108,0.22);border-color:rgba(243,209,108,0.6)}
+
+.causal-body{display:flex;align-items:flex-start;gap:10px}
+.causal-icon{font-size:18px;line-height:1.2;flex-shrink:0}
+.causal-text-block{flex:1;min-width:0}
+.causal-headline{font-size:12.5px;font-weight:650;color:#f1f5f9;margin:0 0 3px;line-height:1.35;overflow-wrap:anywhere}
+.causal-subtext{font-size:11px;color:#94a3b8;margin:0;line-height:1.45;overflow-wrap:anywhere}
+
+/* --- Expandable Causal Chain Drawer --- */
+.causal-chain-drawer{position:absolute;top:84px;left:50%;transform:translateX(-50%);max-width:min(860px,calc(100% - 24px));width:100%;pointer-events:auto;background:rgba(11,20,30,0.96);backdrop-filter:blur(20px);border:1px solid rgba(243,209,108,0.3);border-radius:14px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:10;animation:fade-in .2s ease-out}
+.causal-drawer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.drawer-title{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:1px;color:#f3d16c}
+.gold-icon{color:#f3d16c}
+.drawer-close-btn{background:transparent;border:none;color:#94a3b8;font-size:14px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.drawer-close-btn:hover{color:#fff;background:rgba(255,255,255,0.1)}
+
+.causal-cards-scroller{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.causal-cards-scroller::-webkit-scrollbar{height:4px}
+.causal-cards-scroller::-webkit-scrollbar-thumb{background:rgba(243,209,108,0.3);border-radius:4px}
+
+.causal-card{flex:0 0 240px;background:rgba(18,31,44,0.75);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;font-size:10.5px;display:flex;flex-direction:column;gap:6px}
+.causal-card.shock{border-color:rgba(239,68,68,0.5);background:rgba(35,18,22,0.8)}
+.causal-card.payroll_missed{border-color:rgba(245,158,11,0.5);background:rgba(35,26,16,0.8)}
+.causal-card.business_default{border-color:rgba(220,38,38,0.55);background:rgba(38,15,18,0.85)}
+.causal-card.rescue{border-color:rgba(243,209,108,0.5);background:rgba(33,29,18,0.85)}
+.causal-card.supply{border-color:rgba(52,211,153,0.45);background:rgba(16,33,26,0.8)}
+
+.card-topline{display:flex;justify-content:space-between;align-items:center;font-size:8.5px;font-weight:700}
+.card-step-badge{background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:8px;color:#cbd5e1}
+.card-tick-badge{color:#94a3b8}
+.card-header{display:flex;align-items:center;gap:6px;font-size:11px;color:#f8fafc;margin:2px 0}
+.card-icon{font-size:13px}
+.card-row{display:flex;flex-direction:column;gap:2px}
+.card-label{font-size:7.5px;font-weight:700;letter-spacing:0.8px;color:#64748b}
+.card-value{color:#cbd5e1;line-height:1.35}
+.card-row.consequence .card-label{color:#f59e0b}
+.card-row.consequence .card-value{color:#fde68a}
+
+/* --- Top Right: Layer Filter Toolbar --- */
+.map-layer-toolbar{position:absolute;top:12px;right:12px;pointer-events:auto;background:rgba(10,19,28,0.92);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:6px 8px;display:flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(0,0,0,0.35)}
+.toolbar-label{display:flex;align-items:center;gap:4px;font-size:8.5px;font-weight:700;letter-spacing:1px;color:#64748b;padding:0 4px}
+.layer-button-group{display:flex;gap:4px}
+.layer-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#cbd5e1;font-size:10px;font-weight:500;padding:4px 8px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;transition:all .15s ease}
+.layer-btn:hover{background:rgba(255,255,255,0.12);color:#fff}
+.layer-btn.active{background:rgba(243,209,108,0.18);border-color:rgba(243,209,108,0.55);color:#fde047;font-weight:650}
+.layer-emoji{font-size:11px}
+
+/* --- Bottom Center: Paced Playback & Speed Controls --- */
+.map-playback-toolbar{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);pointer-events:auto;background:rgba(10,19,28,0.92);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.14);border-radius:24px;padding:5px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+.map-play-btn{background:linear-gradient(135deg,rgba(56,189,248,0.2),rgba(14,165,233,0.1));border:1px solid rgba(56,189,248,0.4);border-radius:16px;color:#38bdf8;font-size:10px;font-weight:700;letter-spacing:0.8px;padding:5px 11px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .15s ease}
+.map-play-btn:hover:not(:disabled){background:rgba(56,189,248,0.3);color:#fff}
+.map-step-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;color:#cbd5e1;font-size:10px;font-weight:600;letter-spacing:0.8px;padding:5px 10px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .15s ease}
+.map-step-btn:hover:not(:disabled){background:rgba(255,255,255,0.14);color:#fff}
+.speed-pills{display:flex;gap:4px;border-left:1px solid rgba(255,255,255,0.12);padding-left:8px}
+.speed-pill{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:#94a3b8;font-size:9.5px;font-weight:600;padding:3px 7px;cursor:pointer;transition:all .15s ease}
+.speed-pill:hover{background:rgba(255,255,255,0.1);color:#fff}
+.speed-pill.active{background:rgba(243,209,108,0.2);border-color:rgba(243,209,108,0.5);color:#fde047;font-weight:700}
+
+/* --- Bottom Left: Interactive Quick HUD Card --- */
+.entity-quick-hud{position:absolute;bottom:58px;left:14px;max-width:320px;width:100%;pointer-events:auto;background:rgba(11,20,30,0.95);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:12px 14px;box-shadow:0 12px 32px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:8px;animation:fade-in .2s ease-out}
+.hud-topline{display:flex;justify-content:space-between;align-items:flex-start}
+.hud-kind{font-size:8px;font-weight:700;letter-spacing:1px;color:#94a3b8}
+.hud-name{font-size:14px;font-weight:700;color:#f8fafc;margin:2px 0 0}
+.hud-status-badge{font-size:8px;font-weight:700;letter-spacing:0.8px;padding:2px 6px;border-radius:6px;text-transform:uppercase}
+.hud-status-badge.active{background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.4)}
+.hud-status-badge.insolvent,.hud-status-badge.defaulted{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4)}
+
+.hud-metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:8px}
+.hud-metric{display:flex;flex-direction:column;gap:1px}
+.hud-metric span{font-size:7.5px;font-weight:700;letter-spacing:0.8px;color:#64748b}
+.hud-metric strong{font-size:11px;color:#e2e8f0;font-weight:600}
+
+.hud-bank-specifics{display:flex;flex-direction:column;gap:6px}
+.hud-car-bar-wrapper{display:flex;flex-direction:column;gap:3px}
+.hud-car-labels{display:flex;justify-content:space-between;font-size:8.5px;font-weight:700}
+.hud-car-labels span{color:#94a3b8}
+.hud-car-track{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+.hud-car-fill{height:100%;border-radius:2px;transition:width .3s ease}
+.hud-status-line{font-size:9.5px;color:#cbd5e1}
+.hud-status-line strong{color:#f8fafc}
+
+.hud-firm-specifics{margin-top:2px}
+.hud-stat-pills{display:flex;flex-wrap:wrap;gap:4px}
+.hud-pill{font-size:9px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:2px 6px;border-radius:6px;color:#cbd5e1}
+
+.hud-dismiss-btn{background:transparent;border:none;color:#94a3b8;font-size:9.5px;cursor:pointer;text-align:right;padding:4px 0 0;text-decoration:underline}
+.hud-dismiss-btn:hover{color:#fff}
+
+/* --- Mobile Breakpoints --- */
+@media(max-width:899px){
+ .causal-narrative-banner{top:8px;padding:8px 10px;max-width:calc(100% - 16px)}
+ .causal-headline{font-size:11px}
+ .causal-subtext{font-size:9.5px}
+ .map-layer-toolbar{top:auto;bottom:64px;right:8px;left:8px;justify-content:center;padding:4px 6px}
+ .toolbar-label{display:none}
+ .layer-btn{padding:3px 6px;font-size:8.5px}
+ .map-playback-toolbar{bottom:8px;padding:4px 8px;gap:6px;max-width:calc(100% - 16px)}
+ .map-play-btn,.map-step-btn{font-size:8.5px;padding:4px 7px}
+ .speed-pill{font-size:8px;padding:2px 5px}
+ .entity-quick-hud{bottom:110px;left:8px;right:8px;max-width:none}
+}
