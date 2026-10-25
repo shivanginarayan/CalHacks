@@ -246,8 +246,7 @@ PowerShell exec often needed the normal escalation review in this environment; u
 - **Still outstanding:** actual ASI:One UI conversation, public code availability and event submissions. Opened ASI:One in integrated browser tab `22c70fcc-684a-468b-8f53-4a1e178ab5c3`; logged-out page showed Sign up / Log in. Asked user asynchronously to log in and reply. Do not claim a platform UI conversation occurred from mailbox testing alone. After login, find agent by exact address, send `stress-test bank 1 with a 40% loss and compare rescue plans`, then `why did you pick that?`, and retain evidence. Do not submit to Devpost or submission agent without authorization.
 - Product gateway requires local backend and gateway processes to stay alive. Recheck ports 8000/8002/5173 before continuing. Early gateway logs contain pre-registration 401/404 and an unfunded optional Almanac-contract warning; later mailbox workflow proves real API-based operation without a chain payment. Private logs remain ignored.
 
-
-## Latest milestone: SpacetimeDB control room and real x402 settlement
+## Milestone: SpacetimeDB control room and real x402 settlement
 
 - User authorized completing SpacetimeDB and other started/partial integrations. Added direct SDK 2.13 browser subscriptions and generated bindings under `apps/web/src/data/spacetime/`. Published the existing local module non-destructively with `--delete-data=never`; old event rows and publisher identity preserved. New public tables: control_room, participant, proposal. Reducers own proposal creation/review/receipt state, require a different reviewing identity, and restrict context/receipt publishing to the backend publisher.
 - Shared UI is inside Data, fraud & shared events. Open shared control room, join by name, share `?room=<world_id>` to a second browser profile. Share URLs restore that existing world. Presence, proposals, approvals, receipts and latest financial events come directly through SpacetimeDB subscriptions; reconnect is enabled. Browser identities are anonymous, not verified independent people. The API remains unauthenticated; do not claim production role security.
@@ -274,10 +273,60 @@ PowerShell exec often needed the normal escalation review in this environment; u
 - One earlier attempt targeted a stale textbox ref and clicked send on an existing short user draft; it elicited the bounded help response, with no world/action. Acknowledged this. Subsequent sends checked textarea inputValue exactly against our prompt/mention-only placeholder before clicking. Do not use innerText to detect textarea drafts. The new separate browser tab was logged out; authentication was scoped to the existing tab. The visible send button needed force-click to avoid a continual stability wait; it was enabled and the exact draft was checked first.
 - Updated current Fetch status docs and added required badges to root README. Earlier blocked/UI-unverified statements are historical. Fetch technical demonstration is complete; event submission remains outstanding. No separate ASI inference key success is claimed.
 
-## Publication request after completed integrations
+## Latest milestone: Backend transaction concurrency and UI navigation polish
 
+<<<<<<< HEAD
 The user explicitly requested pushing this milestone to GitHub. The publication includes the shared SpacetimeDB control room, verified x402/ASI:One evidence guides, generated SDK bindings and regression checks. All private environment/data/artifacts remain excluded. Check current Git HEAD and upstream state for the final publication result; earlier uncommitted/unpushed notes describe the state before this request.
 
 ## Agent/API/track catalog requested by user
 
 Added [AGENTS_APIS_AND_TRACKS.md](./AGENTS_APIS_AND_TRACKS.md), based on actual policy/credit/procurement/gateway/research code. It inventories five economic AI role types, six typical role instances across the three workflows because procurement has two suppliers, one separate registered Fetch gateway and the optional unverified ASI research path. It distinguishes the default 55 financial entities, deterministic support services and visual movers from LLM agents. It documents each role's tools, tasks, inputs, permissions, APIs, verified evidence and sponsor-track mapping, including CRS and submission gaps. This document and the preceding transfer-summary changes are local documentation only after pushed implementation 6cfdf86. No paid calls, deployments or code behavior changes were needed.
+=======
+- **SQLite Concurrency & Thread-Local Connection Pool**:
+  - Replaced per-operation `sqlite3.connect()` / `close()` churn in `backend/store.py` with thread-local connection reuse (`threading.local()`) and `PRAGMA busy_timeout = 30000`. This eliminated connection contention, file descriptor exhaustion, and lock wait latency (benchmarked 500 queries across 10 threads in 0.023s, 100 write transactions in 0.021s).
+  - Fixed re-entrant SQLite transaction deadlock in `backend/playback.py:step_paused()` by checking `playback_row` outside the `self.mutate()` write transaction.
+  - Eliminated continuous write lock contention in `backend/jobs.py:claim_job()` by performing a fast read-check for queued/expired jobs before acquiring `BEGIN IMMEDIATE`.
+  - Added `connection.execute("BEGIN IMMEDIATE")` to `Store.create()` to avoid deferred-to-reserved lock upgrade collisions during world creation.
+  - Offloaded synchronous SQLite queries in `backend/spacetime.py:mirror_worker()` to `asyncio.to_thread()` to prevent Uvicorn asyncio event loop blocking.
+- **Frontend Layout and Side-Panel Polish**:
+  - `apps/web/src/ConnectedApp.tsx`: Full-width Fork Reality comparison view (`hasPanel = (city && !s.compare) || s.stage === 'PIN_SELECTED'`), expanding charts and branch cards across the viewport without side panel cramping.
+  - `apps/web/src/ui/LiveDashboard.tsx`:
+    - Added sticky quick-navigation bar (`[⚡ Policy]`, `[💥 Crisis]`, `[📊 Public Data]`, `[🏛️ Institutions]`, `[📜 Feed]`) with smooth scrolling to sections without hiding DOM elements or breaking QA selectors.
+    - Added animated gold pulse (`.apply-action-button`) on `Apply recommendation` / `Settle accepted credit` to draw immediate visual attention to the confirmed AI proposal.
+    - Added `#1 Ranked` gold badge styling to the winning branch card in `BranchCompare`.
+    - Added clean visual card boundaries and distinct styling for `.agent-section`, `.crisis-section`, and `.proposal`.
+    - In `NetworkView`, upgraded SVG topology into a clear 3-tier hierarchy (Central Bank/Gov top, Commercial Banks arc, Businesses arc).
+  - `PublicDataPanel.tsx` & `ShockStory.tsx`: Replaced shared `.sponsor-integrations` class with `.public-data-panel` and `.shock-story-panel` (inheriting identical styles) to eliminate Playwright strict-mode locator collisions in `scripts/qa-sponsors.mjs`.
+- **End-to-End Verification Status**:
+  - **187/187 backend tests passed** (1 optional skipped) via `pytest`.
+  - **74/74 Vitest frontend tests passed** in 5.1s.
+  - **Production build passed** (`tsc --noEmit && vite build`) in 7.07s.
+  - **All live Playwright QA suites passed**:
+    - `qa-integration.mjs` (all 11 groups passed).
+    - `qa-live-city.mjs` (all 6 groups passed).
+    - `qa-comparison-report.mjs` (public and seeded downloads verified).
+    - `qa-apify-auto.mjs` (zero-click automatic loading on open verified).
+    - `qa-shock-story.mjs` (live Treasury preview, retry-safe apply verified).
+    - `qa-credit-safeguards.mjs` (approval gate and separate settlement verified).
+    - `qa-live-ui.mjs` (live Nebius `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` verified).
+
+## Latest milestone: 10-Agent Autonomous Fetch.ai Economic Ecosystem
+
+- **Implementation of 10 Autonomous Fetch.ai Agents**:
+  - Built `backend/fetch_agents/` with full Pydantic/uagents message protocols, individual agent factories, multi-agent Bureau orchestration, and end-to-end conversation workflows:
+    1. `central_bank`: Macro-prudential authority, systemic risk analysis, 3-future forks.
+    2. `commercial_bank`: Credit underwriting officer, capital buffer and CAR rules.
+    3. `corporate_borrower`: Enterprise liquidity management, payroll shortfall detection.
+    4. `procurement_buyer`: Supply chain inventory replenishment, bidding, counter-offers.
+    5. `supplier_quotation`: Dynamic stock pricing, deferred payment terms, margin defense.
+    6. `treasury_macro`: Sovereign debt oracle, modified duration bond repricing.
+    7. `apify_wage_oracle`: Statutory wage baseline ($19.61/hr) and menu basket pricing.
+    8. `clearinghouse_settlement`: Interbank reserve clearing, multilateral netting matrices.
+    9. `household_welfare`: Household purchasing power, demand multiplier, Gini tracking.
+    10. `auditor_inspector`: Real-time double-entry invariance proof, zero money leakage verification.
+- **Verification and Multi-Agent Workflows**:
+  - CLI runner `scripts/run_fetch_ecosystem.py`: supports `--list`, `--bureau`, `--agent`, and `--workflow`.
+  - Ecosystem verifier `scripts/verify_fetch_ecosystem.py`: verified all 10 Bech32 Fetch agent addresses, protocol message schemas, and all 3 multi-agent workflows. Saved evidence to `artifacts/fetch-ecosystem-verification.json`.
+  - Added unit test suite `tests/test_fetch_ecosystem.py`: 11 targeted tests passed cleanly in pytest. Total backend suite now stands at **187 passed, 1 skipped**.
+  - Documented in `docs/FETCH_ECOSYSTEM.md`.
+>>>>>>> origin/shivangi

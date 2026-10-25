@@ -111,6 +111,12 @@ class JobStore:
     def claim_job(self, owner, now=None):
         now = time.time() if now is None else now
         with self.connection() as connection:
+            has_work = connection.execute(
+                "SELECT 1 FROM agent_jobs WHERE status='queued' OR (status='running' AND lease_until <= ?) LIMIT 1",
+                (now,)
+            ).fetchone()
+            if not has_work:
+                return None
             connection.execute("BEGIN IMMEDIATE")
             self.recover_jobs(connection, now)
             if connection.execute("SELECT COUNT(*) FROM agent_jobs WHERE status='running'").fetchone()[0] >= 2:
@@ -151,9 +157,11 @@ def execute_job(store, job):
 async def job_worker(store, stop):
     owner = uuid4().hex
     while not stop.is_set():
+        had_job = False
         try:
             job = await asyncio.to_thread(store.claim_job, owner)
             if job:
+                had_job = True
                 task = asyncio.create_task(asyncio.to_thread(execute_job, store, job))
                 while not task.done():
                     await asyncio.wait({task}, timeout=5)
@@ -171,6 +179,6 @@ async def job_worker(store, stop):
         except Exception:
             logging.getLogger(__name__).exception("Agent job worker could not access storage")
         try:
-            await asyncio.wait_for(stop.wait(), timeout=0.2)
+            await asyncio.wait_for(stop.wait(), timeout=0.05 if had_job else 0.5)
         except TimeoutError:
             pass

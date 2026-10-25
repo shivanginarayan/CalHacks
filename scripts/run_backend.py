@@ -37,6 +37,11 @@ def load_environment(path=ENV_PATH, environ=None):
 
 
 def main():
+    import faulthandler
+    import signal
+    faulthandler.enable()
+    if hasattr(signal, "SIGUSR1"):
+        faulthandler.register(signal.SIGUSR1, all_threads=True)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
