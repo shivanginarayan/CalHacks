@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react';
 import {api,postOnce} from '../data/api';
 import {useStore} from '../state/store';
+import ControlRoom from './ControlRoom';
 
 type Status={fetch:{configured:boolean};crs:{configured:boolean};spacetime:{configured:boolean;database:string|null}};
 type Observation={tool:string;source?:string;source_url?:string;population_estimate?:number;reference_period?:string;total_institutions?:number;scope?:string;error?:string;institutions?:{name:string;fdic_certificate:number}[]};
@@ -44,6 +45,7 @@ export default function IntegrationsPanel(){
   {screen&&<p role="status"><b>{screen.decision.toUpperCase()} · {screen.provider}</b><br/>{screen.explanation}</p>}
   <label>Payer<select aria-label="Screened payment payer" value={payer} onChange={e=>setPayer(e.target.value)}>{customers.map(e=><option key={e.id} value={e.id}>{e.name}</option>)}</select></label>
   <button disabled={busy||!canPay||payer===receiver||s.playing} onClick={()=>void run(async()=>{await postOnce(base+'/fraud/payments',{fraud_report_id:screen!.report_id,payer_id:payer,receiver_id:receiver,amount_cents:100},'transaction_id');setNotice('Screened $1 payment settled.');await s.refresh();})}>Confirm screened $1 payment</button>
+  <ControlRoom/>
   <h3>SpacetimeDB shared feed</h3><p className="muted">Mirrors committed financial events into a shared database.</p>
   <button disabled={busy||!status?.spacetime.configured} onClick={()=>void run(async()=>setSync(await api<Sync>(base+'/spacetime/enable',{})))}>Enable shared event feed</button>
   <p>{sync?.enabled?`${sync.last_sequence} / ${sync.source_sequence} events delivered`:'Feed not enabled'}{status?.spacetime.database?` · ${status.spacetime.database}`:''}</p>

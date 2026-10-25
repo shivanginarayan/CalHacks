@@ -51,7 +51,7 @@ The first command creates a fresh credit-crunch world, applies the specified sho
 
 The running agent remembers the last job per sender using its local storage, so the follow-up works after a message boundary. Existing `data <world_id>`, `stress <world_id>` and `status <job_id>` commands remain supported. A still-running analysis returns a job ID and can be completed with `status` inside the conversation.
 
-The complete backend conversation was verified with live Nemotron: three futures, three public tool calls, and a saved-evidence follow-up, with no intervention applied. ACP validates against the installed SDK. Actual Agentverse mailbox registration, active public discovery, and the complete signed ACP mailbox workflow are now verified with the replacement credential. The ASI:One UI conversation still needs login and demonstration. See [the gateway setup](./FETCH_AGENT.md).
+The complete backend conversation was verified with live Nemotron: three futures, three public tool calls, and a saved-evidence follow-up, with no intervention applied. ACP validates against the installed SDK. Actual Agentverse mailbox registration, active public discovery, and the complete signed ACP mailbox workflow are now verified with the replacement credential. The complete ASI:One UI experiment and saved-evidence follow-up are now verified as well. See [the gateway setup](./FETCH_AGENT.md).
 
 ```powershell
 # Makes real model calls against the running backend
@@ -78,9 +78,9 @@ python -m venv .venv-x402
 
 The wallet helper does not overwrite existing configured identities. It saves the buyer key only in ignored `.env` and a newly generated merchant key only under ignored `data/`. It prints public addresses, never private keys. `X402_PYTHON` can select another isolated Python executable; otherwise the backend locates `.venv-x402` automatically. `X402_FORECAST_URL` defaults to localhost:8402.
 
-On the current development machine the generated buyer address is `0xfdd50b3fCF1457DaeC03D2A1Fa3A087e98C81683`. It is not funded. Use the [Circle faucet](https://faucet.circle.com/) with **USDC → Base Sepolia** and that buyer address. Restart the backend after configuring wallet variables, then authorize paid research on a live policy run. A facilitator may also need operational availability; do not claim success until the transfer receipt is verified.
+On the current development machine the generated buyer address is `0xfdd50b3fCF1457DaeC03D2A1Fa3A087e98C81683`. It received 20 Base Sepolia test USDC from Circle and completed one verified 0.01 test-USDC purchase. See [the chain receipt and evidence](./X402_SUBMISSION.md). To fund another authorized test, use the [Circle faucet](https://faucet.circle.com/) with **USDC → Base Sepolia** and that buyer address. Restart the backend after configuring wallet variables, then authorize paid research on a live policy run. A facilitator may also need operational availability; do not claim success until the transfer receipt is verified.
 
-Verified: a real local HTTP 402 challenge; the actual SDK's challenge/signing/retry/receipt path against a mocked facilitator; mainnet/asset/recipient/spend restrictions; and matching on-chain receipt validation against mocked RPC results. No successful on-chain payment is claimed. The unfunded test wallet remains the blocking prerequisite for that demonstration.
+Verified: a real local HTTP 402 challenge; the actual SDK's challenge/signing/retry/receipt path against a mocked facilitator; mainnet/asset/recipient/spend restrictions; and matching on-chain receipt validation against mocked RPC results. The earlier mocked checks are now supplemented by an actual successful testnet payment and independent receipt verification; see [the x402 guide](./X402_SUBMISSION.md). The explicit SDK demonstration is separate from the optional tool choice of a live model.
 
 ## Apify price and wage samples
 

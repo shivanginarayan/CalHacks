@@ -9,6 +9,58 @@ from urllib.parse import urlsplit
 import httpx
 
 from backend.provider import ProviderError, ProviderNotConfigured
+from backend.forks import snapshot_hash
+from backend.ledger import LedgerError
+
+
+def call_reducer(name, args):
+    base, headers = settings()
+    try:
+        with httpx.Client(timeout=15, trust_env=False, follow_redirects=False) as client:
+            response = client.post(base + '/call/' + name, headers=headers, json=args)
+            response.raise_for_status()
+    except httpx.HTTPError:
+        raise ProviderError('Shared control room update failed; retry with the same proposal ID') from None
+
+
+def open_room(store, simulation_id):
+    world = store.get(simulation_id)
+    banks = [e['id'] for e in world.state['entities'].values() if e['kind'] == 'bank']
+    call_reducer('publish_context', [simulation_id, snapshot_hash(world.state), world.state['tick'], json.dumps(banks)])
+    enable(store, simulation_id)
+    base, _ = settings()
+    return {'uri': base.split('/v1/database/')[0], 'database': os.environ['SPACETIMEDB_DATABASE'],
+            'simulation_id': simulation_id, 'banks': banks}
+
+
+def execute_proposal(store, simulation_id, proposal_id):
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,64}', proposal_id) or not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', simulation_id):
+        raise LedgerError('Invalid room or proposal ID')
+    base, headers = settings()
+    try:
+        with httpx.Client(timeout=15, trust_env=False, follow_redirects=False) as client:
+            response = client.post(base + '/sql', headers=headers, content=
+                f"SELECT simulation_id, snapshot, bank_id, loss_bps, status FROM proposal WHERE id = '{proposal_id}'")
+            response.raise_for_status()
+            rows = response.json()[0]['rows']
+    except (httpx.HTTPError, KeyError, ValueError, IndexError):
+        raise ProviderError('Could not verify the shared approval; nothing executed') from None
+    if len(rows) != 1 or rows[0][0] != simulation_id or rows[0][4] not in ('approved', 'executed'):
+        raise LedgerError('A second participant must approve this world proposal first')
+    _, digest, bank_id, loss_bps, status = rows[0]
+    transaction_id = 'room_' + proposal_id
+
+    def apply(world):
+        # The ledger receipt is authoritative if the database acknowledgement
+        # was interrupted. Replaying the same proposal cannot apply a second loss.
+        if transaction_id not in world.ledger._transactions and snapshot_hash(world.state) != digest:
+            raise LedgerError('World changed since proposal: refresh the room and propose again')
+        return world.shock(transaction_id=transaction_id, bank_id=bank_id, loss_bps=loss_bps)
+
+    receipt = store.mutate(simulation_id, apply)
+    call_reducer('complete_proposal', [proposal_id, transaction_id])
+    sync_world(store, simulation_id)
+    return receipt
 
 
 def settings():

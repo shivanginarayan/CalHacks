@@ -144,6 +144,14 @@ def router(store):
     def enable(simulation_id: str):
         return spacetime.enable(store, simulation_id)
 
+    @api.post("/worlds/{simulation_id}/control-room")
+    def open_control_room(simulation_id: str):
+        return spacetime.open_room(store, simulation_id)
+
+    @api.post("/worlds/{simulation_id}/control-room/{proposal_id}/execute")
+    def execute_control_proposal(simulation_id: str, proposal_id: str):
+        return spacetime.execute_proposal(store, simulation_id, proposal_id)
+
     @api.get("/worlds/{simulation_id}/spacetime")
     def sync_status(simulation_id: str):
         return spacetime.sync_status(store, simulation_id)

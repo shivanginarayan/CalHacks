@@ -6,7 +6,7 @@ This is a separate online hackathon, not a Cal Hacks sponsor category. Its [offi
 | --- | --- |
 | Runtime call to Token Factory or AI Cloud and an NVIDIA open model | Verified: actual Nebius Token Factory calls to `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B`. See [integration evidence](./NEMOTRON.md). |
 | Working coherent application | Local prototype and live recorded credit/policy flows verified; supplier workflow previously verified live. |
-| Repository with an open-source license visible to judges | Current intended changes remain uncommitted/unpushed. A team-approved license has not been selected in this task. Do not add a license on behalf of all contributors without resolving ownership and their choice. |
+| Repository with an open-source license visible to judges | The earlier integration source was pushed to GitHub through `da84403`. The subsequent SpacetimeDB/x402 milestone has local changes; check Git status before publishing. A team-approved license has not been selected. Do not add a license on behalf of all contributors without resolving ownership and their choice. |
 | Working demo, hosted app or test-build URL | Localhost is insufficient for remote judges. A judge-accessible test build or hosted deployment remains unverified. |
 | Free unrestricted judging access through the end of judging | A funding/hosting/access arrangement remains outstanding; do not expose the current unauthenticated local API as a production service. The rules list judging through December 15, 2026. |
 | Public YouTube video under three minutes | A 1:49 silent local recording exists. It shows actual live calls and the model label; public YouTube upload and a track-specific explanation remain outstanding. |

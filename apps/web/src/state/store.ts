@@ -55,7 +55,7 @@ export const useStore=create<State>((set,get)=>({
  agentMode:'demo',selectedScenario:'credit_crunch',selectedCalibration:'latest',playbackError:'',providerStatus:null,set,
  back:()=>set({stage:get().stage==='PIN_SELECTED'?'COUNTRY':'GLOBE',selected:null,compare:false}),
  createWorld:()=>guard(async()=>{let calibration=get().selectedCalibration;if(calibration==='latest'){calibration=(await readyPublicInputs()).calibration_id;}if(get().world)await get().pause();const world=await api<World>('/api/worlds',{seed:42,scenario:get().selectedScenario,...(calibration?{calibration_id:calibration}:{})});await connect(world);set({stage:'CITY'});}),
- restore:async()=>{const id=localStorage.getItem('economy-world');if(!id)return;
+ restore:async()=>{const requested=new URLSearchParams(location.search).get('room');const id=requested&&/^[A-Za-z0-9_-]{1,128}$/.test(requested)?requested:localStorage.getItem('economy-world');if(!id)return;
   try{await connect(await api<World>(`/api/worlds/${id}`));const jobs=await api<Job[]>(`/api/worlds/${id}/agent-jobs`);set({job:jobs[0]??null,stage:'CITY'});await get().refresh();}
   catch{set({error:'Saved world could not be loaded. Start the backend or create a new world.'});}},
  refresh:async()=>{const id=get().world?.simulation_id;if(!id||refreshing)return;refreshing=true;
