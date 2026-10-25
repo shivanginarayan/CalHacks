@@ -4,10 +4,13 @@ import {generateCityLayout,hashLayout,MIN_BUILDING_GAP} from '../apps/web/src/ci
 import {cityTemplate} from '../apps/web/src/data/cityTemplates';
 import {buildingFootprint,polygonDistance,isDry,pointInPolygon,inTable,distanceToPath,pathLength,polygonArea,boundsOf,unproject,type Point} from '../apps/web/src/city/cityGeometry';
 const l=getCityLayout();
+// Full regeneration and thousands of geometric assertions exceed Vitest's
+// default five-second budget on this machine. Keep every correctness assertion.
+const geometryTimeout=20_000;
 const turning=(p:Point[])=>{let t=0;for(let i=2;i<p.length;i++){const a=Math.atan2(p[i-1][1]-p[i-2][1],p[i-1][0]-p[i-2][0]),b=Math.atan2(p[i][1]-p[i-1][1],p[i][0]-p[i-1][0]);t+=Math.abs(Math.atan2(Math.sin(b-a),Math.cos(b-a)));}return t;};
 describe('deterministic diorama layout',()=>{
- it('regenerates the committed seed and content hash exactly',()=>{expect(l.layoutSeed).toBe(4242);expect(l.layoutHash).toBe('sf-eb8c1527');expect(hashLayout(l)).toBe(l.layoutHash);expect(generateCityLayout(4242)).toEqual(l);expect(generateCityLayout(4242).layoutHash).toBe(l.layoutHash);});
- it('varies scenery deterministically without varying the simulation seed',()=>{const a=generateCityLayout(4243);expect(a).toEqual(generateCityLayout(4243));expect(a.layoutHash).not.toBe(l.layoutHash);expect(a.simulationSeed).toBe(l.simulationSeed);});
+ it('regenerates the committed seed and content hash exactly',()=>{expect(l.layoutSeed).toBe(4242);expect(l.layoutHash).toBe('sf-eb8c1527');expect(hashLayout(l)).toBe(l.layoutHash);expect(generateCityLayout(4242)).toEqual(l);expect(generateCityLayout(4242).layoutHash).toBe(l.layoutHash);},geometryTimeout);
+ it('varies scenery deterministically without varying the simulation seed',()=>{const a=generateCityLayout(4243);expect(a).toEqual(generateCityLayout(4243));expect(a.layoutHash).not.toBe(l.layoutHash);expect(a.simulationSeed).toBe(l.simulationSeed);},geometryTimeout);
  it('keeps precisely eight named landmarks and unique actor identities',()=>{expect(l.landmarks.map(a=>a.name).sort()).toEqual([...cityTemplate.landmarks].sort());expect(l.landmarks).toHaveLength(8);expect(new Set(l.buildings.map(b=>b.id)).size).toBe(l.buildings.length);expect(l.landmarks.find(a=>a.kind==='palace')?.district).toBe('Marina');expect(l.landmarks.find(a=>a.kind==='park')?.district).toBe('Richmond');for(const d of cityTemplate.districts)expect(l.buildings.some(b=>b.district===d),d).toBe(true);});
 });
 describe('circular tabletop and natural island',()=>{
@@ -29,6 +32,6 @@ describe('road network',()=>{
 describe('trees and park furniture',()=>{
  it('plants trees beside roads, paths and houses, never on them or in water',()=>{expect(l.trees.length).toBeGreaterThan(1000);expect(l.trees.filter(t=>pointInPolygon(t.x,t.y,l.island.park)).length).toBeGreaterThan(450);const roads=l.paths.filter(p=>p.kind==='road'&&p.role!=='bridge'),park=l.paths.filter(p=>p.kind==='park');for(const t of l.trees){expect(isDry(l,[t.x,t.y])).toBe(true);expect(t.size).toBeLessThan(7);}
   for(const t of l.trees.filter((_,i)=>i%3===0)){for(const r of roads)expect(distanceToPath([t.x,t.y],r.points),'tree on '+r.id).toBeGreaterThan(r.width/2);for(const p of park)expect(distanceToPath([t.x,t.y],p.points),'tree on '+p.id).toBeGreaterThan(p.width/2);for(const b of l.buildings)expect(pointInPolygon(t.x,t.y,buildingFootprint(b)),'tree in '+b.id).toBe(false);}
-  const w=l.decor.windmill;for(const t of l.trees)expect(Math.hypot((t.x-w.x)*.6,t.y-w.y)).toBeGreaterThan(12);});
+  const w=l.decor.windmill;for(const t of l.trees)expect(Math.hypot((t.x-w.x)*.6,t.y-w.y)).toBeGreaterThan(12);},geometryTimeout);
  it('keeps canopies from merging into a solid mass',()=>{for(let i=0;i<l.trees.length;i+=2)for(let j=i+1;j<l.trees.length;j++){const a=l.trees[i],b=l.trees[j];if(Math.abs(a.x-b.x)>16)continue;expect(Math.hypot(a.x-b.x,(a.y-b.y)*1.4),i+'/'+j).toBeGreaterThan((a.size+b.size)*.8);}});
 });

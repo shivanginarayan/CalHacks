@@ -1,6 +1,8 @@
 import {useEffect,useState} from 'react';
 import {Play,Pause,Plus,RotateCcw,GitFork,ArrowLeft,ArrowRight,Building2,Network as NetworkIcon} from 'lucide-react';
 import {useStore} from '../state/store';
+import {useCityView} from '../state/cityView';
+import {districtEntityIds} from '../data/liveCity';
 import {api,currency} from '../data/api';
 import type {Metrics,Entity,Report,ComparisonEvidence,EconomyEvent} from '../data/api';
 import {comparisonReport,downloadComparison} from '../data/comparisonReport';
@@ -63,8 +65,11 @@ function AgentProgress(){const s=useStore(),report=s.report,job=s.job;const [app
  </section>;}
 
 function eventText(type:string){return type.replaceAll('_',' ');}
-function EventFeed(){const s=useStore();return <section className="feed"><div className="section-heading"><span>THE RIPPLE EFFECT</span><span className="live-label">{s.connection}</span></div>
- <div className="feed-items">{[...s.events].reverse().slice(0,25).map(e=><button className="feed-item" key={e.sequence} onClick={()=>s.set({selected:e.agent_id??e.counterparty_id})}>
+function EventFeed(){const s=useStore(),{districtFilter,setDistrict}=useCityView(),ids=districtFilter?districtEntityIds(districtFilter):null;
+ const events=[...s.events].reverse().filter(e=>!ids||ids.has(e.agent_id??'')||ids.has(e.counterparty_id??'')).slice(0,25);
+ return <section className="feed"><div className="section-heading"><span>THE RIPPLE EFFECT</span><span className="live-label">{s.connection}</span></div>
+ {districtFilter&&<div className="district-feed-filter"><span>Showing {districtFilter} · visual grouping</span><button onClick={()=>setDistrict(null)}>Show whole-city events ×</button></div>}
+ <div className="feed-items">{districtFilter&&!events.length&&<p>No recorded events for this visual district.</p>}{events.map(e=><button className="feed-item" key={e.sequence} onClick={()=>s.set({selected:e.agent_id??e.counterparty_id})}>
  <span><span className="feed-meta">DAY {e.simulation_tick} · #{e.sequence}</span><span className="feed-text">{eventText(e.event_type)}{e.amount_cents!==null?` · ${currency(e.amount_cents)}`:''}</span>
  <small>{e.agent_id}{e.counterparty_id?` → ${e.counterparty_id}`:''}</small>{typeof e.details.reason==='string'&&<small>{e.details.reason}</small>}</span></button>)}</div></section>;}
 

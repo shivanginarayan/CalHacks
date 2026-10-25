@@ -179,7 +179,7 @@ The default database is [data/economy.sqlite3](./data/economy.sqlite3), created 
 .\.venv\Scripts\python.exe -m scripts.export_contract
 ```
 
-On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The current backend suite contains 171 passing tests plus one optional skipped SDK module; the frontend has 42 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
+On macOS/Linux, use `.venv/bin/python` in place of `.\.venv\Scripts\python.exe`. The backend baseline is 171 passing tests plus one optional skipped SDK module; the merged frontend has 74 tests. Contract export regenerates the schema and calculated examples in [docs/](./docs/), including [the crisis demo](./docs/crisis_demo.json), [the fork comparison](./docs/fork_demo.json), [the central-bank demo trace](./docs/agent_demo.json), [the credit demo traces](./docs/credit_demo.json), [the supplier payment demo](./docs/procurement_demo.json), and [the production recovery demo](./docs/production_demo.json).
 
 Tests cover ledger invariants, reproducibility, reserve/deposit conservation, loan creation and repayment, rejected transactions, request validation, persistence, event pagination, CORS, concurrent requests, shock replay, clearing calculations, crisis propagation, defaults, and legacy checkpoints.
 

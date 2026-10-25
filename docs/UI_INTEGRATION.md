@@ -63,3 +63,10 @@ The integration QA needs both servers and installed Google Chrome. It exercises 
 Use `python -m scripts.check_nebius` to list your account's Nemotron models, and `python -m scripts.check_nebius --probe` to make one real tool-call check. `python -m scripts.smoke_live` verifies the three full live workflows without automatically settling their proposed financial actions; it incurs inference usage. These commands never print the key. The launcher is optional: plain Uvicorn still reads shell variables and does not load `.env` itself.
 
 External payments, rent/tax/interest-rate economics, continuous autonomous agent scheduling, authentication and production deployment remain outside this integration.
+# Rebuilt city integration
+
+The current San Francisco diorama keeps its decorative geometry, path IDs, eight landmarks, camera detail levels and static cache while binding selected buildings to real backend entity IDs. Featured banks inspect banks; featured shops inspect businesses. Bindings refresh when backend world objects change, so same-day bank losses and subsequent business closures appear without remounting the canvas. Resetting into a new world may remount it.
+
+District navigation filters recorded backend events using the building-to-entity bindings. Districts are visual groupings, not measured neighborhood economies. The 400 pooled movers are decorative activity indicators, not additional households or independent model agents. The app's financial metrics, reports and settlements still come from the backend. Automatic public-input loading and frozen world provenance remain active.
+
+Run `node scripts/qa-live-city.mjs` against the running API and Vite to check live building inspection, same-day bank stress, closure updates, district filtering, static-cache preservation, forks/report export and mobile layout. It creates separate test worlds, makes no model or payment calls, and uses saved public observations; normal app-open refresh rules still apply. The older visual-only QA scripts assume legacy fixture entry flows and should not be used to claim current live-backend verification.

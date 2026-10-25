@@ -6,9 +6,9 @@ This is durable repository context saved at the user's request. Read this before
 
 - Windows PowerShell, repository: `C:/Users/naray/Downloads/Calhacks`.
 - GitHub: https://github.com/shivanginarayan/CalHacks.git, branch `main`.
-- Last observed commit: `9b4e73a Integrate live dashboard and optional sponsor workflows`.
-- That commit was pushed successfully. The previous commit `3fe0b4e` adds background jobs/finite production.
-- **Substantial newer work remains uncommitted and unpushed**: Treasury shock stories, live Apify Actor/deployment/collection, automatic public-input loading, associated tests/docs/schema, and this handoff. Inspect `git status`; preserve all changes.
+- Latest fetched upstream commit: `2a3eba2 Rebuild San Francisco diorama to match demo reference`, following `9b4e73a Integrate live dashboard and optional sponsor workflows`.
+- Local checkpoint `17c00d0 Add sourced public inputs and verified track demonstrations` preserves the previously uncommitted Treasury/Apify/report/track work and handoff. Merge `05cdbcf` incorporates `origin/main` without rewriting either side. The live-city integration follow-up is described below; inspect current `git log`/status for its final identity.
+- These local commits have **not been pushed**. The user asked to get latest GitHub code and integrate it, not to publish local changes. Private environment, ignored data, source credential document and generated artifacts remain excluded from Git. A credential-value scan before checkpointing found zero matches in publishable files, including DOCX XML.
 - Git identity previously verified: `shivanginarayan <narayan.shivangi@gmail.com>`. The user explicitly wants commits/pushes as them, without Codex coauthor attribution or collaborator invitations.
 - User's earlier push requests have been completed. No new push was requested for the latest work; do not assume it has reached GitHub.
 
@@ -172,8 +172,10 @@ Runtime state is ephemeral. At handoff save, Vite listened on 5173, but **no bac
 
 ## Last verification
 
+See the latest GitHub integration milestone below for the current frontend and browser results; earlier recorded demos show the previous miniature and remain historical evidence of the workflows.
+
 - **171 backend tests passed**, one optional SDK module skipped; existing Starlette/httpx deprecation warning.
-- **42 frontend tests passed**, production TypeScript/Vite build passed after adding report export. Existing large-bundle warning remains.
+- **74 frontend tests passed**, production TypeScript/Vite build passed after merging and integrating the rebuilt diorama. Existing large-bundle warning remains.
 - Earlier isolated x402 SDK suite: nine tests passed with mocked facilitator/RPC.
 - `qa-apify.mjs`: real bounded collection, actual values used in new worlds, source world unchanged, default selection, reload, balanced tick, mobile.
 - `qa-apify-auto.mjs`: no collection click, auto load, public world creation, reload no new crawl, frozen preservation.
@@ -197,9 +199,22 @@ Browser scripts use installed Chrome headlessly. QA screenshots/reports are igno
 
 ## Documentation and next work
 
+### Latest GitHub integration
+
+- The user requested latest GitHub code and completion of integration. Used sync/commit skills to create the local checkpoint, fetched `origin`, and merged the one incoming diorama commit. A merge preserved both histories; no existing commit was rewritten and no push was made.
+- Incoming work rebuilds city geometry, landmarks, camera/LOD, static caching and 400 pooled visual movers. `ConnectedApp` remains the active app; the source fixtures provide scenery only, not live financial results.
+- Found/fixed stale object bindings in the new canvas: bindings refresh from current backend objects on financial events/state changes. Featured bank buildings bind bank IDs, street shops bind businesses, remaining banks use available towers/offices, households bind homes, and public institutions retain landmark bindings. Layout/path IDs remain decorative and unchanged. Active-but-lending-constrained banks now show stress; closures come from actual business status.
+- Bound business closures and activity update without remounting the canvas or rebuilding static scenery. Visual demand/movement indices are explicitly proxies for simulated employment; they are not actual neighborhood observations. The 400 visual movers are not 400 independent financial/LLM agents.
+- Connected incoming district navigation to the **active live** event feed. Filtering uses bound agent/counterparty IDs, has a clear-empty state, and labels the districts visual groupings. It does not substitute old fixture events or fake district financial reports.
+- Added regressions for featured bindings, identity uniqueness, preserving decorative IDs, visual district membership, replacement world objects, business closures and active-but-constrained banks. Added `scripts/qa-live-city.mjs` for actual current-backend startup, café inspection, same-day stress overlays, closures, source preservation, camera/cache continuity, forks/export and mobile.
+- Broader `node scripts/qa-integration.mjs` passed playback/speed/step, shock, calculated forks, demo policy application, real institution selection, supplier settlement/production recovery, reload/reset, mobile and zero browser errors. **Final `node scripts/qa-live-city.mjs` also passed all six check groups**, including district-feed filtering and clearing. Reports/screenshots are under ignored `artifacts/integration-*` and `artifacts/live-city-integration/`. No new live model calls, testnet payments, collections or credential changes were required.
+- Geometry correctness checks exceeded Vitest's default five-second budget even in a standalone run (roughly 5.5–9.8 seconds for the slow cases). Gave only three expensive regeneration/tree-geometry tests a bounded 20-second timeout, retaining all assertions. **All 74 frontend tests and the final production build passed** afterward. The existing large-bundle warning remains.
+- Incoming older visual-only browser scripts still assume legacy fixture entry buttons/inspectors. Use the current live-city check for the connected app instead of changing the product back to fixture state.
+- Fetch authentication remains blocked by the supplied key's HTTP 401 results. Incoming GitHub changes do not alter Fetch code or credentials; do not claim the visual merge resolves that.
+
 Read `README.md`, `UI_PLAN.md`, `docs/API.md`, `docs/UI_INTEGRATION.md`, `docs/APIFY.md`, `docs/SHOCK_STORIES.md`, `docs/TRACK_IMPLEMENTATION.md`, `docs/SUBMISSION_EVIDENCE.md` and specific sponsor guides as needed. `docs/openapi.json` includes current routes.
 
-The user most recently requested two more tracks; Microsoft and technical-complexity preparation is complete as described above. Hyphenate/Apify preparation and automatic loading are complete. Subsequent work, **only when requested**: commit/push local changes, publish or submit prepared materials, choose/finalize a separate Nebius entry, broader validated datasets, separate oil/war/policy models, remaining sponsor credentials/live demos, deployment/authentication. Do not overwrite current worlds to make them look real or claim current work is already on GitHub.
+The latest user request is to get the latest GitHub code and complete integration; see the GitHub milestone above. Microsoft/technical and Hyphenate/Apify preparation remain complete. Subsequent work, **only when requested**: push local commits, publish or submit prepared materials, choose/finalize a separate Nebius entry, broader validated datasets, separate oil/war/policy models, remaining sponsor credentials/live demos, deployment/authentication. Do not overwrite current worlds to make them look real or claim local work has been pushed.
 
 ## Tool/environment notes
 
