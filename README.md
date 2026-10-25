@@ -1,4 +1,6 @@
-# Economy God Mode Backend
+# Parallax
+
+A simulated economy where financial agents investigate bank shocks, negotiate credit, and compare rescue policies.
 
 ![tag:innovationlab](https://img.shields.io/badge/innovationlab-3D8BD3)
 ![tag:hackathon](https://img.shields.io/badge/hackathon-5F43F1)
