@@ -2,7 +2,6 @@
 
 import json
 import sqlite3
-import threading
 from contextlib import contextmanager
 from pathlib import Path
 from uuid import uuid4
@@ -21,7 +20,6 @@ from backend.sponsor_store import SponsorStore
 class Store(CreditStore, SupplyStore, PlaybackStore, JobStore, SponsorStore):
     def __init__(self, path):
         self.path = str(path)
-        self._local = threading.local()
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         with self.connection() as connection:
             mode = connection.execute("PRAGMA journal_mode").fetchone()[0]
@@ -46,13 +44,14 @@ class Store(CreditStore, SupplyStore, PlaybackStore, JobStore, SponsorStore):
 
     @contextmanager
     def connection(self):
-        conn = getattr(self._local, "connection", None)
-        if conn is None:
-            conn = sqlite3.connect(self.path, timeout=30)
-            conn.execute("PRAGMA busy_timeout = 30000")
-            self._local.connection = conn
-        with conn:
-            yield conn
+        # Each scope owns its transaction. Reusing a thread-local connection
+        # lets an inner context commit an outer financial mutation prematurely.
+        conn = sqlite3.connect(self.path, timeout=30)
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
 
     def create(self, world):
         with self.connection() as connection:

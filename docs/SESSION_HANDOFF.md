@@ -2,7 +2,7 @@
 
 This is durable repository context saved at the user's request. Read this before continuing; do not start a new implementation task until the user requests one. All tasks below marked complete are already implemented. Do not repeat external deployments/collections merely to recover context.
 
-## Current state ? October 25, 2026, 05:47 UTC
+## Prior verified state - October 25, 2026, 05:47 UTC
 
 Read [the consolidated cross-LLM brief](./LLM_CONTINUATION_BRIEF.md) for a self-contained, detailed transfer summary, exact run commands, code map, track status, verification evidence and continuation instructions.
 
@@ -275,13 +275,11 @@ PowerShell exec often needed the normal escalation review in this environment; u
 
 ## Latest milestone: Backend transaction concurrency and UI navigation polish
 
-<<<<<<< HEAD
 The user explicitly requested pushing this milestone to GitHub. The publication includes the shared SpacetimeDB control room, verified x402/ASI:One evidence guides, generated SDK bindings and regression checks. All private environment/data/artifacts remain excluded. Check current Git HEAD and upstream state for the final publication result; earlier uncommitted/unpushed notes describe the state before this request.
 
 ## Agent/API/track catalog requested by user
 
 Added [AGENTS_APIS_AND_TRACKS.md](./AGENTS_APIS_AND_TRACKS.md), based on actual policy/credit/procurement/gateway/research code. It inventories five economic AI role types, six typical role instances across the three workflows because procurement has two suppliers, one separate registered Fetch gateway and the optional unverified ASI research path. It distinguishes the default 55 financial entities, deterministic support services and visual movers from LLM agents. It documents each role's tools, tasks, inputs, permissions, APIs, verified evidence and sponsor-track mapping, including CRS and submission gaps. This document and the preceding transfer-summary changes are local documentation only after pushed implementation 6cfdf86. No paid calls, deployments or code behavior changes were needed.
-=======
 - **SQLite Concurrency & Thread-Local Connection Pool**:
   - Replaced per-operation `sqlite3.connect()` / `close()` churn in `backend/store.py` with thread-local connection reuse (`threading.local()`) and `PRAGMA busy_timeout = 30000`. This eliminated connection contention, file descriptor exhaustion, and lock wait latency (benchmarked 500 queries across 10 threads in 0.023s, 100 write transactions in 0.021s).
   - Fixed re-entrant SQLite transaction deadlock in `backend/playback.py:step_paused()` by checking `playback_row` outside the `self.mutate()` write transaction.
@@ -329,4 +327,19 @@ Added [AGENTS_APIS_AND_TRACKS.md](./AGENTS_APIS_AND_TRACKS.md), based on actual 
   - Ecosystem verifier `scripts/verify_fetch_ecosystem.py`: verified all 10 Bech32 Fetch agent addresses, protocol message schemas, and all 3 multi-agent workflows. Saved evidence to `artifacts/fetch-ecosystem-verification.json`.
   - Added unit test suite `tests/test_fetch_ecosystem.py`: 11 targeted tests passed cleanly in pytest. Total backend suite now stands at **187 passed, 1 skipped**.
   - Documented in `docs/FETCH_ECOSYSTEM.md`.
->>>>>>> origin/shivangi
+
+
+## Latest integration: incoming ten-service ecosystem and navigation
+
+- User requested latest code and integration. Fetched origin: main remained 6cfdf86, while origin/shivangi and origin/shivanginarayan both pointed to the same new commit 10afec8. Merged it once, preserving histories. Local documentation checkpoint dd886a0 saved both detailed catalogs; merge commit 7cb58ba preserves the teammate update. A handoff-only conflict retained both histories; UTF-8 resolution was corrected in the follow-up. No source/credentials/worlds were discarded.
+- Incoming UI improves panel navigation, readable top-level sections, network institution positioning and engine-ranking labels. Existing connected backend/city/public-input paths are preserved.
+- Incoming ten-agent examples contained unbacked constants/claimed settlement, nonexistent core API calls, source fallback figures and a public default seed. Replaced operational handlers with ten typed deterministic saved-store adapters, explicit sanitized errors and private-seed requirements. Existing live Nemotron roles and the registered ACP gateway remain distinct and intact. No claim of ten new live LLM models or ten externally verified Agentverse registrations.
+- Bureau defaults to the actual configured SQLite store. CLI workflows require an existing world ID and explicit demo/live mode for model workflows; preview does not settle credit/contracts. Coordinator invokes real policy/credit/procurement functions. Treasury source has no fabricated fallback, Apify oracle reads saved validated observations, welfare/interbank/ledger reports calculate actual state. Unsupported multiplier/netting/financial-acceptance commands fail closed.
+- New economic-services read API and UI inspection control expose the ten roles and real ledger/welfare/interbank reports without mutations or external calls. Isolated SDK verifier passed: ten constructed identities, real calculations, unchanged source. Its scope explicitly excludes peer transport and external registration. Existing Gateway address/seed and paid-research attempt marker are preserved.
+- Corrected incoming thread-local connection reuse because inner scopes could commit an outer transaction; each connection scope owns its transaction again. Restored manual-step playback check inside the write-locked mutation. Added real regression tests for nested rollback, Play/Step race, missing sources, zero hypothetical loss, fake caller shortfall and computed branch results.
+- Updated FETCH_ECOSYSTEM guide and catalog/continuation notices. Old incoming notes that claim all ten autonomous workflows/55% netting/1.38 multiplier were verified are superseded by these inspected corrections and bounded evidence.
+- Current work is local until the user requests publication; do not assume this integration has been pushed.
+
+- Final integrated verification: **195 backend tests passed, one optional skipped; 74 frontend tests passed; production build passed.** Final source-unit guard and SDK tests: 19 targeted tests passed. SDK verifier confirms ten constructed identities, actual registered callback success/error replies and unchanged financial source; no external registration/peer transport claim.
+- Actual local browser QA passed: all six live-city checks, all eleven broader integration checks, all seven shared-control-room groups, and the new economic-services UI check. Actual economic-services API returns ten roles, balanced ledger/welfare/interbank reports and no source events added. Treasury adapter returned actual HTTP 200; preserved Apify wage/menu adapters returned validated source responses without recrawling. No new model inference, external payment or Apify deployment was required.
+- Existing bundle-size and Starlette deprecation warnings remain. API/Vite/local SpacetimeDB were restarted from existing configuration/database for verification; recheck listeners on future turns. The known existing ACP gateway and x402 merchant were not restarted or repaid as part of this merge.

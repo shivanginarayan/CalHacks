@@ -1,11 +1,11 @@
-"""Multi-Agent Bureau Orchestrator for the 10-Agent Economic Ecosystem.
+"""Local Bureau for ten typed saved-state economic services.
 
-Hosts and coordinates all 10 autonomous Fetch.ai agents within a single
-high-performance Bureau container with local routing and external endpoints.
+External registration and chat discoverability require separate verification.
 """
 
 import asyncio
 import os
+from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 try:
@@ -27,9 +27,13 @@ class EconomyBureau:
         loop: Optional[asyncio.AbstractEventLoop] = None,
         agent_names: Optional[List[str]] = None,
     ):
+        if store_getter is None:
+            from backend.store import Store
+            store = Store(os.getenv('ECONOMY_DB_PATH', str(Path(__file__).resolve().parents[2]/'data'/'economy.sqlite3')))
+            store_getter = lambda: store
         self.store_getter = store_getter
         self.base_port = base_port
-        self.loop = loop or asyncio.get_event_loop_policy().get_event_loop()
+        self.loop = loop or asyncio.new_event_loop()
         self.agents: Dict[str, Agent] = {}
         target_names = agent_names or list(AGENT_FACTORIES.keys())
 

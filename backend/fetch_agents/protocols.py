@@ -291,6 +291,11 @@ class FraudAuditReport(Model):
 # ---------------------------------------------------------------------------
 # Generic Agent Echo / Status Protocols
 # ---------------------------------------------------------------------------
+class EconomicAgentError(Model):
+    world_id: str = ''
+    message: str
+
+
 class AgentIdentityInquiry(Model):
     query_id: str
 

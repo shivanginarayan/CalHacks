@@ -55,10 +55,11 @@ class PlaybackStore:
             return self.playback_row(connection, simulation_id)
 
     def step_paused(self, simulation_id, ticks):
-        with self.connection() as connection:
-            if self.playback_row(connection, simulation_id)["status"] == "running":
-                raise LedgerError("Pause the world before stepping manually")
         def operation(world):
+            # mutate already holds the writer lock; Play cannot race this check.
+            with self.connection() as connection:
+                if self.playback_row(connection, simulation_id)["status"] == "running":
+                    raise LedgerError("Pause the world before stepping manually")
             world.step(ticks)
             return world.view()
         return self.mutate(simulation_id, operation)

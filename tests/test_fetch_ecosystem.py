@@ -47,7 +47,8 @@ def test_agent_factories_registry():
     assert set(AGENT_FACTORIES.keys()) == expected_agents
 
 
-def test_stable_seeds():
+def test_stable_seeds(monkeypatch):
+    monkeypatch.setenv('FETCH_AGENT_SEED', 'unit-test-only-private-seed')
     seed1 = default_seed("central_bank")
     seed2 = default_seed("central_bank")
     seed3 = default_seed("commercial_bank")

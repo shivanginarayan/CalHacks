@@ -1,4 +1,4 @@
-"""Fetch.ai Autonomous 10-Agent Economic Ecosystem."""
+"""Ten typed, deterministic Fetch economic services backed by saved state."""
 
 from backend.fetch_agents.agents import AGENT_FACTORIES, default_seed
 from backend.fetch_agents.bureau import EconomyBureau

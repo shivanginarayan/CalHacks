@@ -148,6 +148,17 @@ def router(store):
     def open_control_room(simulation_id: str):
         return spacetime.open_room(store, simulation_id)
 
+    @api.get("/worlds/{simulation_id}/economic-services")
+    def economic_services(simulation_id: str):
+        from backend.fetch_agents.agents import ROLES
+        from backend.fetch_agents.service import EconomyAgentService
+        from backend.fetch_agents import protocols as p
+        service = EconomyAgentService(store)
+        return {"mode": "deterministic_saved_state", "services": list(ROLES), "funds_applied": False,
+                "reports": {name: service.handle(model(world_id=simulation_id)).model_dump() for name, model in [
+                    ("ledger", p.InvarianceAuditRequest), ("welfare", p.WelfareAuditRequest),
+                    ("interbank", p.InterbankExposureAuditRequest)]}}
+
     @api.post("/worlds/{simulation_id}/control-room/{proposal_id}/execute")
     def execute_control_proposal(simulation_id: str, proposal_id: str):
         return spacetime.execute_proposal(store, simulation_id, proposal_id)

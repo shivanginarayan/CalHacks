@@ -1,5 +1,7 @@
 # Economy God Mode: agents, responsibilities, APIs and tracks
 
+> Latest integration: teammate commit `10afec8` has been merged locally from the identical `origin/shivangi` and `origin/shivanginarayan` branches. It adds ten typed deterministic Fetch service adapters, in addition to the live AI roles described here. They now use actual saved-world calculations and explicit errors rather than sample outcomes. They are not ten additional live LLM models or ten verified externally registered agents. See [the current ecosystem guide](./FETCH_ECOSYSTEM.md). Existing implementation and documentation checkpoints are preserved; check current Git history for the final integration commit and publication state.
+
 This document describes the implemented project as of October 25, 2026. The implementation through Git commit `6cfdf86` is pushed. This catalog was prepared afterward as documentation. It inventories actual code and verified evidence; it does not claim that event entries have been submitted.
 
 ## 1. Direct answer: which agents do we have?

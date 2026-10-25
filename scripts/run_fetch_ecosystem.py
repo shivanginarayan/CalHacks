@@ -1,4 +1,4 @@
-"""Run and orchestrate the 10-Agent Autonomous Fetch.ai Economic Ecosystem.
+"""Run and orchestrate the 10 typed Fetch economic services.
 
 Usage:
     # List all 10 economic agents with their derived Fetch Bech32 addresses
@@ -10,7 +10,7 @@ Usage:
     # Run a specific agent standalone
     python -m scripts.run_fetch_ecosystem --agent central_bank
 
-    # Execute a verified multi-agent inter-agent workflow
+    # Execute a saved-state backend workflow (not peer-transport evidence)
     python -m scripts.run_fetch_ecosystem --workflow [credit|procurement|crisis]
 """
 
@@ -26,7 +26,7 @@ def list_agents():
     from backend.fetch_agents.bureau import EconomyBureau
     bureau = EconomyBureau()
     print("=" * 70)
-    print("ECONOMY GOD MODE — 10 AUTONOMOUS FETCH.AI ECONOMIC AGENTS")
+    print("ECONOMY GOD MODE — 10 TYPED FETCH ECONOMIC SERVICES")
     print("=" * 70)
     addresses = bureau.addresses()
     for idx, (name, addr) in enumerate(addresses.items(), start=1):
@@ -42,8 +42,9 @@ def run_standalone_agent(agent_name: str, port: int):
     if agent_name not in AGENT_FACTORIES:
         print(f"Unknown agent: '{agent_name}'. Available: {list(AGENT_FACTORIES.keys())}")
         sys.exit(1)
-    factory = AGENT_FACTORIES[agent_name]
-    agent = factory(port=port)
+    from backend.fetch_agents.bureau import EconomyBureau
+    group = EconomyBureau(base_port=port-1, agent_names=[agent_name])
+    agent = group.get_agent(agent_name)
     print(f"Starting standalone Fetch agent '{agent_name}' on port {port}...")
     print(f"Fetch address: {agent.address}")
     agent.run()
@@ -64,7 +65,7 @@ def run_bureau(port: int):
         bureau.stop()
 
 
-def run_workflow(name: str):
+def run_workflow(name: str, world_id: str, mode: str):
     from backend.fetch_agents.bureau import EconomyBureau
     from backend.fetch_agents.workflows import MultiAgentWorkflowCoordinator
 
@@ -73,12 +74,11 @@ def run_workflow(name: str):
     bureau = EconomyBureau(loop=loop)
     coordinator = MultiAgentWorkflowCoordinator(bureau)
 
-    world_id = "world_simulation_demo"
     print(f"Running multi-agent workflow '{name}'...")
     if name == "credit":
-        result = loop.run_until_complete(coordinator.run_credit_negotiation(world_id))
+        result = loop.run_until_complete(coordinator.run_credit_negotiation(world_id, mode=mode))
     elif name == "procurement":
-        result = loop.run_until_complete(coordinator.run_procurement_negotiation(world_id))
+        result = loop.run_until_complete(coordinator.run_procurement_negotiation(world_id, mode=mode))
     elif name == "crisis":
         result = loop.run_until_complete(coordinator.run_systemic_crisis_orchestration(world_id))
     else:
@@ -97,6 +97,8 @@ def main():
     parser.add_argument("--port", type=int, default=8100, help="Port or base port (default: 8100)")
     parser.add_argument("--workflow", type=str, choices=["credit", "procurement", "crisis"],
                         help="Run an end-to-end multi-agent workflow")
+    parser.add_argument("--world-id", help="Existing saved economy world; required for a workflow")
+    parser.add_argument("--mode", choices=["demo", "live"], default="demo", help="Explicit model mode for credit/procurement; never settles funds")
     args = parser.parse_args()
 
     if args.list:
@@ -106,7 +108,9 @@ def main():
     elif args.bureau:
         run_bureau(args.port)
     elif args.workflow:
-        run_workflow(args.workflow)
+        if not args.world_id:
+            parser.error("--workflow requires --world-id for an existing saved world")
+        run_workflow(args.workflow, args.world_id, args.mode)
     else:
         list_agents()
 
