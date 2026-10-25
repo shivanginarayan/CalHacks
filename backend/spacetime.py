@@ -137,17 +137,24 @@ def shared_events(simulation_id):
         raise ProviderError("Could not read the SpacetimeDB shared event feed") from None
 
 
+def _enabled_ids(store):
+    with store.connection() as connection:
+        return [r[0] for r in connection.execute("SELECT source_id FROM spacetime_sync WHERE enabled=1")]
+
+
 async def mirror_worker(store, stop):
     while not stop.is_set():
-        with store.connection() as connection:
-            ids = [r[0] for r in connection.execute("SELECT source_id FROM spacetime_sync WHERE enabled=1")]
-        for simulation_id in ids:
-            if stop.is_set():
-                break
-            try:
-                await asyncio.to_thread(sync_world, store, simulation_id)
-            except (ProviderError, KeyError):
-                pass
+        try:
+            ids = await asyncio.to_thread(_enabled_ids, store)
+            for simulation_id in ids:
+                if stop.is_set():
+                    break
+                try:
+                    await asyncio.to_thread(sync_world, store, simulation_id)
+                except (ProviderError, KeyError):
+                    pass
+        except Exception:
+            pass
         try:
             await asyncio.wait_for(stop.wait(), timeout=2)
         except TimeoutError:
