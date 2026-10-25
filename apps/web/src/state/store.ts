@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import type {Stage,Branch,Scenario} from '../data/types';
 import {api,API_URL,postOnce} from '../data/api';
+import {readyPublicInputs} from './publicInputs';
 import type {World,Metrics,EconomyEvent,Network,Fork,Job,Report,Contract} from '../data/api';
 type State = {
  stage:Stage; country:string; hoverCountry:string; tick:number; maxTick:number; branch:Branch;
@@ -55,10 +56,10 @@ export const useStore=create<State>((set,get)=>({
  stage:'GLOBE',country:'',hoverCountry:'',tick:0,maxTick:0,branch:'baseline',playing:false,speed:1,mode:'city',
  selected:null,compare:false,crisis:false,crisisTick:0,scenario:null,notice:'',world:null,history:[],events:[],network:null,
  fork:null,job:null,report:null,contracts:[],busy:false,error:'',connection:'not connected',activityAt:0,
- agentMode:'demo',selectedScenario:'credit_crunch',selectedCalibration:'',playbackError:'',providerStatus:null,set,
+ agentMode:'demo',selectedScenario:'credit_crunch',selectedCalibration:'latest',playbackError:'',providerStatus:null,set,
  back:()=>set({stage:get().stage==='PIN_SELECTED'?'COUNTRY':'GLOBE',selected:null,compare:false}),
- createWorld:()=>guard(async()=>{if(get().world)await get().pause();const world=await api<World>('/api/worlds',{seed:42,scenario:get().selectedScenario,...(get().selectedCalibration?{calibration_id:get().selectedCalibration}:{})});await connect(world);set({stage:'CITY'});}),
- restore:async()=>{const id=localStorage.getItem('economy-world');if(!id)return;
+ createWorld:()=>guard(async()=>{let calibration=get().selectedCalibration;if(calibration==='latest'){calibration=(await readyPublicInputs()).calibration_id;}if(get().world)await get().pause();const world=await api<World>('/api/worlds',{seed:42,scenario:get().selectedScenario,...(calibration?{calibration_id:calibration}:{})});await connect(world);set({stage:'CITY'});}),
+ restore:async()=>{const requested=new URLSearchParams(location.search).get('room');const id=requested&&/^[A-Za-z0-9_-]{1,128}$/.test(requested)?requested:localStorage.getItem('economy-world');if(!id)return;
   try{await connect(await api<World>(`/api/worlds/${id}`));const jobs=await api<Job[]>(`/api/worlds/${id}/agent-jobs`);set({job:jobs[0]??null,stage:'CITY'});await get().refresh();}
   catch{set({error:'Saved world could not be loaded. Start the backend or create a new world.'});}},
  refresh:async()=>{const id=get().world?.simulation_id;if(!id||refreshing)return;refreshing=true;

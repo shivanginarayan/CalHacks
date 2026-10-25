@@ -82,7 +82,7 @@ def test_demo_observes_tests_revises_and_persists_without_touching_source(client
 def test_apply_settles_once_and_rejects_second_transaction_id(client):
     base = world(client)
     report = client.post(base + "/agent-runs", json=request()).json()
-    assert report["recommendation"]["strategy"] == "household_cash"
+    assert report["recommendation"]["strategy"] == "bank_lending"
     before = client.get(base).json()["metrics"]
     endpoint = f"/api/agent-runs/{report['run_id']}/apply"
     result = client.post(endpoint, json={"transaction_id": "apply-1"})

@@ -2,7 +2,7 @@ import {drawOverviewLabels,type PlacedLabel} from './cityLabels';
 import {useEffect,useRef,useState} from 'react';
 import {Plus,Minus,ArrowLeft,MapPin,Maximize2} from 'lucide-react';
 import {getCityLayout} from '../data/fixtures';
-import {bindEntities,liveSnapshot,liveCityState,MOCK_PREFIX} from '../data/liveCity';
+import {bindEntities,liveSnapshot,liveCityState,MOCK_PREFIX,bankIsStressed} from '../data/liveCity';
 import type {Building,CityLayout,Snapshot} from '../data/types';
 import {useStore} from '../state/store';
 import {useCityView} from '../state/cityView';
@@ -22,7 +22,7 @@ export default function CityCanvas(){
  useEffect(()=>{
   useCityView.setState({lod:0,zoomed:false,districtFilter:null,focusLabel:null});
   const canvas=ref.current!,ctx=canvas.getContext('2d')!,layout=getCityLayout(),cache=cachedScene(layout),camera=new CityCamera(),pool=createMoverPool(layout);
-  const bound=bindEntities(layout.buildings),entityOf=(b:Building)=>bound.get(b.id),baseActivity=Math.max(.5,liveCityState().activity),baseline=liveSnapshot(layout,baseActivity,bound);let snapshot=liveSnapshot(layout,baseActivity,bound);let key='';let stressedIds=new Set<string>();let firms=new Map<string,boolean>(),activities=new Map<string,DistrictActivity>();
+  let bound=bindEntities(layout.buildings);const entityOf=(b:Building)=>bound.get(b.id),baseActivity=1,baseline=liveSnapshot(layout,baseActivity,bound);for(const district of Object.values(baseline.districts))district.employmentRate=100;let snapshot=liveSnapshot(layout,baseActivity,bound);let key='';let stressedIds=new Set<string>();let firms=new Map<string,boolean>(),activities=new Map<string,DistrictActivity>();
   let frame=0,last=performance.now(),elapsed=0,lastDiagnostics=0,disposed=false,lastLod=-1,lastZoomed=false;const dpr=Math.min(devicePixelRatio,1.75);let hoveredBuilding:Building|null=null;let overviewLabels:PlacedLabel[]=[];
   const mountId=++nextMount;canvas.dataset.mountId=String(mountId);canvas.dataset.moverCount=String(pool.length);canvas.dataset.staticRenders=String(cache.renderCount);
   const outlines=layout.buildings.map(b=>({building:b,bounds:buildingBounds(b),outline:buildingOutline(b)}));
@@ -32,7 +32,7 @@ export default function CityCanvas(){
   const home=()=>{camera.home();useCityView.setState({districtFilter:null,focusLabel:null});};
   navigation.current={home,step:direction=>{const stops=[1,2.55,4.6,6.8];const next=direction>0?stops.find(z=>z>camera.target.zoom+.1)??8:[...stops].reverse().find(z=>z<camera.target.zoom-.1)??1;if(next===1)home();else {camera.zoomAt(camera.width/2,camera.height/2,next);const district=districtAt(camera.pose.x,camera.pose.y);useCityView.setState({districtFilter:district,focusLabel:district});}},district:kind=>{if(kind==='shops'){const b=layout.buildings.find(b=>b.id==='cafe-14')!,p=buildingCenter(b);focusDistrict(b.district,p[0],p[1]-7,'Mission shops',4.6);}else {const landmark=layout.landmarks.find(l=>l.kind===kind)!;focusDistrict(landmark.district,landmark.x,landmark.y,landmark.name);}}};
   const occluded=(x:number,y:number)=>cache.occluded(x,y);
-  function refreshActivity(){const s=useStore.getState(),nextKey=s.tick+'|'+s.world?.simulation_id+'|'+s.world?.metrics.employment_rate+'|'+s.world?.entities.map(e=>e.status).join('');if(key===nextKey)return;key=nextKey;snapshot=liveSnapshot(layout,baseActivity,bound);stressedIds=new Set([...bound].filter(([,e])=>e.kind==='bank'&&e.status!=='active').map(([id])=>id));firms=new Map(snapshot.firms.map(f=>[f.id,f.open]));for(const d of layout.districts){const next=readDistrictActivity(snapshot,baseline,d.name);activities.set(d.name,next);}}
+  function refreshActivity(){const s=useStore.getState(),nextKey=s.tick+'|'+s.world?.simulation_id+'|'+s.world?.latest_event_sequence+'|'+s.world?.metrics.employment_rate+'|'+s.world?.entities.map(e=>e.status+':'+e.lending_available).join('');if(key===nextKey)return;key=nextKey;bound=bindEntities(layout.buildings);snapshot=liveSnapshot(layout,baseActivity,bound);stressedIds=new Set([...bound].filter(([,e])=>bankIsStressed(e)).map(([id])=>id));firms=new Map(snapshot.firms.map(f=>[f.id,f.open]));for(const d of layout.districts){const next=readDistrictActivity(snapshot,baseline,d.name);activities.set(d.name,next);}}
   const lerped=new Map<string,DistrictActivity>();
   const transactionRoutes:Array<{from:Point;to:Point;key:string}>=[];
   // Live worlds carry no fixture ledger, so transaction particles are only drawn for the recorded fixture story.
@@ -57,7 +57,7 @@ export default function CityCanvas(){
     if(isClosed||b.kind==='shop'&&(a.dimShops&&Number(b.id.replace(/\D/g,''))%5===0||a.shutters)){
      const p=shopDoor(b);const roof=buildingOutline(b);polygon(ctx,roof,isClosed?'rgba(28,43,43,.61)':'rgba(38,54,47,.28)');ctx.fillStyle=isClosed?'#6b7770':'#7f8b7e';ctx.fillRect(p[0]-6,p[1]-13,12,12);if(lod>0&&isClosed){for(let y=3;y<12;y+=3){ctx.strokeStyle='#4d6158';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(p[0]-6,p[1]-y);ctx.lineTo(p[0]+6,p[1]-y);ctx.stroke();}}if(isClosed)closed++;
     }
-    if(b.kind==='bank'&&a.bankStress||stressedIds.has(b.id)){
+    if(stressedIds.has(b.id)){
      const p=project(b.x+b.w/2,b.y+b.d/2);const pulse=(Math.sin(visualTime*Math.PI*2/3)+1)/2;ctx.strokeStyle=`rgba(239,68,68,${.3+.6*pulse})`;ctx.lineWidth=1.5/Math.sqrt(scale);ctx.beginPath();ctx.ellipse(p[0],p[1],25+pulse*5,12+pulse*3,0,0,7);ctx.stroke();ctx.fillStyle='#ef4444';ctx.beginPath();ctx.arc(p[0],p[1]-b.h-6,2,0,7);ctx.fill();
     }
    }
@@ -67,7 +67,7 @@ export default function CityCanvas(){
    if(hoveredBuilding){ctx.beginPath();buildingOutline(hoveredBuilding).forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.strokeStyle='#f5dfa1';ctx.lineWidth=1.3/Math.sqrt(scale);ctx.stroke();}
    ctx.restore();
    if(lod===0){const labels=overviewLabels=drawOverviewLabels(ctx,layout,(x,y)=>[camera.width/2+(x-camera.pose.x)*scale,camera.height/2+(y-camera.pose.y)*scale],camera.width,camera.height);canvas.dataset.labelCount=String(labels.length);}
-   if(now-lastDiagnostics>200){lastDiagnostics=now;Object.assign(canvas.dataset,{cameraX:camera.pose.x.toFixed(3),cameraY:camera.pose.y.toFixed(3),cameraZoom:camera.pose.zoom.toFixed(4),baseScale:camera.baseScale.toFixed(5),visibleTiles:String(tiles),visibleMovers:String(visibleMovers),activeMovers:String(stats.active),queueCount:String(stats.queued),closedShops:String(closed),tick:String(snapshot.tick),branch:snapshot.branch});}
+   if(now-lastDiagnostics>200){lastDiagnostics=now;Object.assign(canvas.dataset,{cameraX:camera.pose.x.toFixed(3),cameraY:camera.pose.y.toFixed(3),cameraZoom:camera.pose.zoom.toFixed(4),baseScale:camera.baseScale.toFixed(5),visibleTiles:String(tiles),visibleMovers:String(visibleMovers),activeMovers:String(stats.active),queueCount:String(stats.queued),closedShops:String(closed),boundEntities:String(bound.size),stressedBanks:String(stressedIds.size),closedBusinesses:String([...firms.values()].filter(open=>!open).length),tick:String(snapshot.tick),branch:snapshot.branch});}
    frame=requestAnimationFrame(loop);
   };frame=requestAnimationFrame(loop);
   const local=(e:{clientX:number;clientY:number}):Point=>{const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*canvas.clientWidth/r.width,(e.clientY-r.top)*canvas.clientHeight/r.height];};

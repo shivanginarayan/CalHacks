@@ -13,7 +13,7 @@ ALLOWED.update({"ASI1_API_KEY", "ASI1_MODEL", "CRS_USERNAME", "CRS_PASSWORD", "C
                 "FETCH_AGENT_SEED", "FETCH_AGENTVERSE_TOKEN", "FETCH_AGENT_ENDPOINT"})
 ALLOWED.update({"CRS_CREDIT_PRODUCT_CONFIG", "CRS_CREDIT_REPORT_VARIANT", "CRS_CREDIT_RULES_PATH",
                 "CREDIT_APPROVAL_THRESHOLD_CENTS", "APIFY_TOKEN", "APIFY_CALIBRATION_DIR",
-                "X402_WALLET_PRIVATE_KEY", "X402_MERCHANT_ADDRESS", "X402_FORECAST_URL", "X402_PYTHON"})
+                "X402_WALLET_PRIVATE_KEY", "X402_MERCHANT_ADDRESS", "X402_FORECAST_URL", "X402_PYTHON", "APIFY_ACTOR_ID"})
 
 
 def load_environment(path=ENV_PATH, environ=None):
@@ -37,6 +37,11 @@ def load_environment(path=ENV_PATH, environ=None):
 
 
 def main():
+    import faulthandler
+    import signal
+    faulthandler.enable()
+    if hasattr(signal, "SIGUSR1"):
+        faulthandler.register(signal.SIGUSR1, all_threads=True)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)

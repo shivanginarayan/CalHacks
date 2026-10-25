@@ -2,13 +2,15 @@
 import os
 from typing import Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, BackgroundTasks
 from pydantic import Field
 
 from backend import fraud, research, spacetime
 from backend.forks import snapshot_hash
 from backend.models import Request, PaymentRequest
 from backend.provider import ProviderNotConfigured
+from backend import shock_stories
+from backend import apify_collection
 
 
 class ScreenRequest(Request):
@@ -23,6 +25,47 @@ class GuardedPayment(PaymentRequest):
 
 def router(store):
     api = APIRouter(prefix="/api", tags=["Sponsor integrations"])
+    apify_collection.init(store)
+
+    @api.get("/calibrations/collection/status")
+    def collection_status():
+        return {"configured": apify_collection.configured(), "latest": apify_collection.get(store)}
+
+    @api.post("/calibrations/collect", status_code=202)
+    def start_collection(body: apify_collection.CollectRequest, background: BackgroundTasks):
+        job, started = apify_collection.enqueue(store, body.request_id)
+        if started:
+            background.add_task(apify_collection.execute, store, job["job_id"])
+        return job
+
+    @api.post("/calibrations/ensure")
+    def ensure_public_inputs(background: BackgroundTasks):
+        result, started = apify_collection.ensure(store)
+        if started:
+            background.add_task(apify_collection.execute, store, result["job"]["job_id"])
+        return result
+
+    @api.get("/calibrations/collection/{job_id}")
+    def collection_job(job_id: str):
+        return apify_collection.get(store, job_id)
+
+    @api.get("/calibrations/{calibration_id}")
+    def calibration_detail(calibration_id: str):
+        from backend.calibration import load, checksum
+        value = load(calibration_id)
+        return {**value, "sha256": checksum(value)}
+
+    @api.post("/worlds/{simulation_id}/shock-stories/preview")
+    def preview_shock_story(simulation_id: str, body: shock_stories.DebtStress):
+        return shock_stories.preview(store, simulation_id, body)
+
+    @api.get("/worlds/{simulation_id}/shock-stories")
+    def shock_story_history(simulation_id: str):
+        return shock_stories.history(store, simulation_id)
+
+    @api.post("/worlds/{simulation_id}/shock-stories/apply")
+    def apply_shock_story(simulation_id: str, body: shock_stories.ApplyStory):
+        return shock_stories.apply(store, simulation_id, body.report_id)
 
     @api.get("/integrations/status")
     def status():
@@ -100,6 +143,25 @@ def router(store):
     @api.post("/worlds/{simulation_id}/spacetime/enable")
     def enable(simulation_id: str):
         return spacetime.enable(store, simulation_id)
+
+    @api.post("/worlds/{simulation_id}/control-room")
+    def open_control_room(simulation_id: str):
+        return spacetime.open_room(store, simulation_id)
+
+    @api.get("/worlds/{simulation_id}/economic-services")
+    def economic_services(simulation_id: str):
+        from backend.fetch_agents.agents import ROLES
+        from backend.fetch_agents.service import EconomyAgentService
+        from backend.fetch_agents import protocols as p
+        service = EconomyAgentService(store)
+        return {"mode": "deterministic_saved_state", "services": list(ROLES), "funds_applied": False,
+                "reports": {name: service.handle(model(world_id=simulation_id)).model_dump() for name, model in [
+                    ("ledger", p.InvarianceAuditRequest), ("welfare", p.WelfareAuditRequest),
+                    ("interbank", p.InterbankExposureAuditRequest)]}}
+
+    @api.post("/worlds/{simulation_id}/control-room/{proposal_id}/execute")
+    def execute_control_proposal(simulation_id: str, proposal_id: str):
+        return spacetime.execute_proposal(store, simulation_id, proposal_id)
 
     @api.get("/worlds/{simulation_id}/spacetime")
     def sync_status(simulation_id: str):

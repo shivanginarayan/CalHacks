@@ -39,8 +39,22 @@ Keep that process running. In another terminal, register/connect the mailbox thr
 
 Alternatively configure `FETCH_AGENT_ENDPOINT` with a reachable `/submit` URL and register that external agent. The inspector runs on port 8002; keep it private and use the mailbox for external access.
 
-## Remaining live evidence
+## Verified registration and conversation transport
 
-The SDK protocol validates locally. The full backend chat workflow has been verified with live Nemotron, three futures and a saved-evidence follow-up. The supplied credential returned HTTP 401 from ASI:One and the authorized Agentverse probe. No Agentverse registration or ASI:One conversation has been verified. Supply a valid service-specific token, record the actual agent address here, and demonstrate the workflow inside ASI:One before claiming the track is complete.
+Public agent address: `agent1qwv9gf04ag4echzl3fpgnc889lpsk8vgatysq07yz7zpwm9480zxslyxkgm`.
+
+On October 25, 2026 UTC, a replacement Agentverse credential authenticated successfully. The SDK mailbox registration succeeded. Public Agentverse discovery returns this agent as active and searchable with the actual ACP protocol. The stable identity seed and token are stored only in ignored private configuration. This token is not an ASI inference key.
+
+The entire workflow also passed through the real Agentverse mailbox: signed ACP delivery and acknowledgement, a fresh synthetic bank-loss experiment, three futures, completed live Nebius/Nemotron analysis and a saved-evidence follow-up. No recommendation was applied. Reproduce this bounded integration check while the backend and gateway are running:
+
+```powershell
+.\.venv-fetch\Scripts\python.exe -m scripts.verify_fetch_mailbox
+```
+
+The check uses port 8003 for a temporary local peer and writes ignored `artifacts/fetch-mailbox-verification.json`. It creates a separate synthetic world and consumes live inference. The peer publishes only an ephemeral Almanac callback, not a marketplace profile. The product agent and backend must stay running to answer external conversations.
+
+**ASI:One UI verification completed:** opened the agent's actual profile by address, sent the full stress-test prompt, received a completed live Nemotron response with three futures, then asked why and received the same job's three-call saved trace. Job `job_9f21d7b98d9e41c697effc754e7a04da`, synthetic world `world_c4824167313f4dbe`, no funds applied. Evidence is ignored `artifacts/fetch-asi-one/evidence.json`. The model's prose is a recommendation; the returned metrics remain the quantitative evidence. This does not establish real-world policy effectiveness.
+
+Open [the agent on ASI:One](https://asi1.ai/ai/agent1qwv9gf04ag4echzl3fpgnc889lpsk8vgatysq07yz7zpwm9480zxslyxkgm) to reproduce it. The recipient autocomplete did not find the address; the direct profile did. An account login is required, and chat history is account-scoped. The optional separate ASI inference API remains unverified and is not needed for this ACP workflow. Event submissions and publication of subsequent local changes remain outstanding.
 
 The [official hackpack](https://www.fetch.ai/events/hackathons/calhacks-13-0/hackpack) requires Agentverse registration, ACP, ASI:One discoverability, the primary workflow within the conversation, public code/run instructions and its additional submission process. An inference call alone is insufficient.

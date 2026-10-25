@@ -2,10 +2,13 @@ import {useEffect,useState} from 'react';
 import {Play,Pause,Plus,RotateCcw,GitFork,GitBranch,ArrowLeft,ArrowRight,ArrowUpRight,ArrowDownRight,ChevronRight,Building2,Landmark,Users,MapPin,Globe2,Sparkles,AlertTriangle,Check,X,Network as NetworkIcon} from 'lucide-react';
 import {useStore} from '../state/store';
 import {api,currency} from '../data/api';
-import type {Metrics,Entity,Report,Exposure,Fork} from '../data/api';
+import type {Metrics,Entity,Report,Exposure,Fork,ComparisonEvidence,EconomyEvent} from '../data/api';
+import {comparisonReport,downloadComparison} from '../data/comparisonReport';
+import PublicDataPanel from './PublicDataPanel';
+import ShockStory from './ShockStory';
 import IntegrationsPanel from './IntegrationsPanel';
 import {useCityView} from '../state/cityView';
-import {MOCK_PREFIX,mockProfile} from '../data/liveCity';
+import {districtEntityIds,MOCK_PREFIX,mockProfile} from '../data/liveCity';
 import {WorldDataOptions,CreditSafeguards} from './TrackControls';
 
 export const strategyName:Record<string,string> = {no_intervention:'No intervention',bank_lending:'Emergency bank lending',household_cash:'Direct household support'};
@@ -59,9 +62,9 @@ function AgentProgress(){const s=useStore(),report=s.report,job=s.job;const [app
   {SHOW_AGENT_SOURCE&&(source||model)&&<small className="result-source">via {source||s.agentMode}{model?` · ${model}`:''}</small>}
   {(job.error||report?.error)&&<p role="alert" className="request-error">{job.error||report?.error}</p>}
   {report&&(why||report.trace.length>0)&&<details className="result-why"><summary>Why · {report.trace.length} tool steps</summary>{why&&<p>{why}</p>}
-   {report.risk_evidence&&<p>CRS score {report.risk_evidence.score??'unavailable'} · {report.risk_evidence.risk_decision}</p>}
+   {report.risk_evidence&&<p>CRS sandbox score: {report.risk_evidence.score??'unavailable'} · {report.risk_evidence.risk_decision}</p>}
    {report.trace.map(t=><div className="live-trace" key={t.sequence}><b>{t.sequence}. {t.role??'central bank'} · {t.tool} · {t.status}</b><pre>{JSON.stringify(t.result,null,2)}</pre></div>)}</details>}
-  {report?.status==='needs_human_approval'&&<><input aria-label="Credit approval rationale" placeholder="Review rationale" value={reason} maxLength={2000} onChange={e=>setReason(e.target.value)}/>
+  {report?.status==='needs_human_approval'&&<><h3>Human approval required</h3><input aria-label="Credit approval rationale" placeholder="Review rationale" value={reason} maxLength={2000} onChange={e=>setReason(e.target.value)}/>
    <div className="button-row">{(['approve','decline'] as const).map(decision=><button key={decision} className={decision==='approve'?'primary small':'quiet'} disabled={deciding||!reason.trim()} onClick={async()=>{setDeciding(true);setApprovalError('');try{await api(`/api/credit-runs/${report.run_id}/approval`,{decision,rationale:reason.trim()});await s.refresh();}catch(e){setApprovalError(String(e));}finally{setDeciding(false);}}}>{decision==='approve'?'Approve':'Decline'}</button>)}</div>{approvalError&&<p role="alert">{approvalError}</p>}</>}
   {job.status==='queued'&&<button className="quiet" onClick={s.cancelJob}>Cancel</button>}
   {applied===report?.run_id?<p className="success-line"><Check size={15}/> {job.kind==='central_bank'?'Policy accepted':'Settled'}</p>
@@ -91,34 +94,32 @@ const NEGATIVE=/default|loss|lost|rejected|writeoff|status_changed/,POSITIVE=/is
 const MACRO=/world_created|bank_|interbank|public_intervention|agent_|tick_completed/;
 function eventText(type:string){const t=type.replaceAll('_',' ');return t.charAt(0).toUpperCase()+t.slice(1);}
 // Original ripple-effect feed: macro/micro filter, direction arrows and a link to the actor, fed by live backend events.
-function EventFeed(){const s=useStore(),[filter,setFilter]=useState('All events');const name=(id:string|null)=>id?s.world?.entities.find(e=>e.id===id)?.name??id:'';
- const items=[...s.events].reverse().filter(e=>e.event_type!=='tick_completed').filter(e=>filter==='All events'||(MACRO.test(e.event_type)?'Macro':'Micro')===filter).slice(0,30);
- return <section className="feed"><div className="section-heading"><span>THE RIPPLE EFFECT</span><span className="live-label"><span className="tiny-dot"/> {s.connection==='connected'?'LIVE':s.connection.toUpperCase()}</span></div>
- <div className="segmented feed-filter">{['All events','Macro','Micro'].map(t=><button className={filter===t?'active':''} onClick={()=>setFilter(t)} key={t}>{t}</button>)}</div>
- <div className="feed-items">{items.length===0&&<p className="district-feed-empty">No {filter==='All events'?'events':filter.toLowerCase()+' events'} yet at day {s.tick}.</p>}{items.map(e=>{const bad=NEGATIVE.test(e.event_type)&&!(e.event_type==='bank_status_changed'&&e.details.status==='active'),good=!bad&&POSITIVE.test(e.event_type);
-  return <button className="feed-item fade-in" key={e.sequence} onClick={()=>s.set({selected:e.agent_id??e.counterparty_id})}><span className={'feed-direction '+(good?'positive':bad?'negative':'')}>{good?<ArrowUpRight size={17}/>:bad?<ArrowDownRight size={17}/>:<span>—</span>}</span>
-  <span><span className="feed-meta">DAY {e.simulation_tick} <b>·</b> {MACRO.test(e.event_type)?'MACRO':'MICRO'}</span><span className="feed-text">{eventText(e.event_type)}{e.amount_cents!==null?` · ${currency(e.amount_cents)}`:''}{typeof e.details.reason==='string'?`. ${e.details.reason}`:''}</span>
-  {e.agent_id&&<span className="feed-link">{name(e.agent_id)}{e.counterparty_id?` → ${name(e.counterparty_id)}`:''} <ArrowUpRight size={10}/></span>}</span><ChevronRight className="feed-chevron" size={12}/></button>;})}</div></section>;}
-// Profile for map buildings that no backend institution backs; shown as illustrative, never as ledger data.
+function EventFeed(){const s=useStore(),{districtFilter,setDistrict}=useCityView(),ids=districtFilter?districtEntityIds(districtFilter):null;
+ const events=[...s.events].reverse().filter(e=>!ids||ids.has(e.agent_id??'')||ids.has(e.counterparty_id??'')).slice(0,25);
+ return <section className="feed"><div className="section-heading"><span>THE RIPPLE EFFECT</span><span className="live-label">{s.connection}</span></div>
+ {districtFilter&&<div className="district-feed-filter"><span>Showing {districtFilter} · visual grouping</span><button onClick={()=>setDistrict(null)}>Show whole-city events ×</button></div>}
+ <div className="feed-items">{districtFilter&&!events.length&&<p>No recorded events for this visual district.</p>}{events.map(e=><button className="feed-item" key={e.sequence} onClick={()=>s.set({selected:e.agent_id??e.counterparty_id})}>
+ <span><span className="feed-meta">DAY {e.simulation_tick} · #{e.sequence}</span><span className="feed-text">{eventText(e.event_type)}{e.amount_cents!==null?` · ${currency(e.amount_cents)}`:''}</span>
+ <small>{e.agent_id}{e.counterparty_id?` → ${e.counterparty_id}`:''}</small>{typeof e.details.reason==='string'&&<small>{e.details.reason}</small>}</span></button>)}</div></section>;}
+
 function MockInspector({m}:{m:NonNullable<ReturnType<typeof mockProfile>>}){const s=useStore();const Icon=m.role==='Household'?Users:m.role==='Public landmark'?Landmark:Building2;
  return <div className="inspector fade-in"><div className="inspector-top"><button className="text-action" onClick={()=>s.set({selected:null})}><ArrowLeft size={14}/> Back to live events</button><button className="icon-button" aria-label="Close inspector" onClick={()=>s.set({selected:null})}><X size={16}/></button></div>
  <div className="actor-icon"><Icon size={25}/></div><p className="eyebrow">{m.role} · DAY {s.tick}</p><h2>{m.name}</h2><p className="muted">{m.district}</p><span className={'status-chip '+(s.crisis?'distress':'')}>{s.crisis?'▼ Feeling the credit squeeze':'● Operating · healthy city'}</span>
  <div className="balance-grid">{[['Cash',m.cash],['Assets',m.assets],['Debt',m.debt]].map(([k,v])=><div key={k}><span>{k}</span><strong>{currency(+v)}</strong></div>)}</div>
  {m.employees>0&&<p>{m.employees} people work here.</p>}<p className="representative-note">Illustrative figures. This building is scenery and isn't linked to a backend institution, so nothing here is on the simulated ledger.</p>
  <div className="section-heading"><span>LINKED INSTITUTIONS</span></div>{s.world?.entities.filter(e=>e.kind==='bank').slice(0,2).map(e=><button className="relationship" key={e.id} onClick={()=>s.set({selected:e.id})}>{e.name} →</button>)}</div>;}
-function Inspector(){const s=useStore(),entity=s.world?.entities.find(e=>e.id===s.selected);const picked=useCityView(v=>v.picked);const [pickedFor,setPickedFor]=useState<string|null>(null);
- useEffect(()=>{setPickedFor(useCityView.getState().picked?s.selected:null);},[picked]);
+function Inspector(){const s=useStore(),entity=s.world?.entities.find(e=>e.id===s.selected);
  const [transactions,setTransactions]=useState<{transaction_id:string;metadata:{type?:string;tick?:number}}[]>([]);
  useEffect(()=>{let current=true;setTransactions([]);if(!s.world||!entity)return;const id=s.world.simulation_id;
   void api<{transactions:{transaction_id:string;metadata:{type?:string;tick?:number};lines:{account_id:string}[]}[]}>(`/api/worlds/${id}/transactions?entity_id=${encodeURIComponent(entity.id)}&newest_first=true&limit=12`).then(page=>{
    if(current)setTransactions(page.transactions);
   }).catch(()=>{});return()=>{current=false;};},[s.world?.simulation_id,s.tick,entity?.id]);
- if(!entity){const m=s.selected?.startsWith(MOCK_PREFIX)?mockProfile(s.selected):null;return m?<MockInspector m={m}/>:<button className="text-action" onClick={()=>s.set({selected:null})}>Return to events</button>;}
+ if(!entity){const m=s.selected?.startsWith(MOCK_PREFIX)?mockProfile(s.selected):null;if(m)return <MockInspector m={m}/>;}
+ if(!entity)return <button className="text-action" onClick={()=>s.set({selected:null})}>Return to events</button>;
  const related=s.contracts.filter(c=>c.buyer_id===entity.id||c.supplier_id===entity.id);
  const sheet=entity.balance_sheet;
- const Icon=entity.kind==='bank'||entity.kind==='central_bank'?Landmark:entity.kind==='household'?Users:Building2;
- return <div className="inspector fade-in"><div className="inspector-top"><button className="text-action" onClick={()=>s.set({selected:null})}><ArrowLeft size={14}/> Back to live events</button><button className="icon-button" aria-label="Close inspector" onClick={()=>s.set({selected:null})}><X size={16}/></button></div>
- <div className="actor-icon"><Icon size={25}/></div><p className="eyebrow">{entity.kind.replaceAll('_',' ')} · DAY {s.tick}</p><h2>{picked&&s.selected===pickedFor?picked.name:entity.name}</h2><p className="muted">{picked&&s.selected===pickedFor?`${entity.name} · ${picked.district}`:entity.id}</p><span className={'status-chip '+(entity.status!=='active'?'distress':'')}>{entity.status==='active'?'● Operating · active':'▼ '+entity.status}</span>
+ return <div className="inspector"><button className="text-action" onClick={()=>s.set({selected:null})}><ArrowLeft size={14}/> Back to live events</button>
+ <p className="eyebrow">{entity.kind} · DAY {s.tick}</p><h2>{entity.name}</h2><code>{entity.id}</code><p className="status-chip">{entity.status}</p>
  <div className="balance-grid">{[['Cash',sheet.assets.deposit??sheet.assets.reserves??0],['Assets',sheet.assets_cents],['Debt',sheet.liabilities_cents]].map(([name,value])=><div key={name}><span>{name}</span><strong>{currency(+value)}</strong></div>)}</div>
  <p>Equity {currency(sheet.equity_cents)} · Ledger {sheet.balanced?'balanced':'unbalanced'}</p>
  {entity.kind==='bank'&&<p>Capital {((entity.capital_ratio??0)*100).toFixed(1)}% · Liquidity {((entity.liquidity_ratio??0)*100).toFixed(1)}% · Lending {entity.lending_available?'available':'constrained'}</p>}
@@ -135,7 +136,7 @@ const scenarioLabel:Record<string,string>={credit_crunch:'Credit crunch',standar
 const scenarioQuestion:Record<string,string>={credit_crunch:'What happens when a bank takes heavy losses and credit tightens across San Francisco?',standard:'How does a healthy, well-capitalized San Francisco economy evolve day by day?',supply_crunch:'What happens when supplier shortages squeeze inventories across San Francisco?'};
 const scenarioChoices:Array<[string,string]>=[['credit_crunch','Banks take a credit hit'],['standard','A healthy, well-capitalized city'],['supply_crunch','Suppliers run short']];
 // Minimal side panel: sections gated by !MINIMAL are hidden, not removed; flip to false to restore them.
-const MINIMAL=true,SHOW_SOURCE_LINE=false,SHOW_AGENT_SOURCE=false;
+const MINIMAL=true,SHOW_SOURCE_LINE=false,SHOW_AGENT_SOURCE=true;
 function CityHeading(){return <><div className="city-heading">{!MINIMAL&&<MapPin size={24} strokeWidth={1.6}/>}<div><h1>San Francisco</h1><p>United States{!MINIMAL&&<> <span>·</span> 808,988 people</>}</p></div></div>{!MINIMAL&&<div className="city-profile"><span>Coastal economy</span><span>Technology & services</span></div>}</>;}
 // Original policy assistant card; the button starts the backend central-bank agent job.
 function PolicyAssistant({paid,setPaid}:{paid:boolean;setPaid:(v:boolean)=>void}){const s=useStore();const running=activeJob(s.job?.status);
@@ -157,10 +158,10 @@ function SourcesPanel({paid,setPaid}:{paid:boolean;setPaid:(v:boolean)=>void}){c
  useEffect(()=>{if(s.providerStatus?.live_configured&&s.agentMode!=='live')s.set({agentMode:'live'});},[s.providerStatus?.live_configured]);
  return <details className="panel-sources"><summary>Sources & agents</summary>
  {c&&<p className="muted">Prices and wages calibrated from {c.provider} ({c.calibration_id}, {c.collected_at.slice(0,10)}).</p>}
- <label>Policy agent<select aria-label="Agent mode" disabled={running} value="live" onChange={()=>{}}><option value="live">Live Nemotron via Nebius</option></select></label>
+ <label>Policy agent<select aria-label="Agent mode" disabled={running} value={s.agentMode} onChange={e=>s.set({agentMode:e.target.value as 'demo'|'live'})}><option value="demo">Deterministic demo</option><option value="live" disabled={!s.providerStatus?.live_configured}>Live Nemotron via Nebius</option></select></label>
  <p className="muted">{s.providerStatus?.live_configured?`Configured model: ${s.providerStatus.model}.`:'Live mode needs backend NEBIUS_API_KEY and NEBIUS_MODEL.'} Credit and supplier agents run from a business's inspector.</p>
  {!MINIMAL&&<label className="muted"><input aria-label="Allow paid testnet research" type="checkbox" checked={paid} disabled={s.agentMode!=='live'||running} onChange={e=>setPaid(e.target.checked)}/> Allow one paid research purchase (≤0.01 test USDC)</label>}
- <IntegrationsPanel key={s.world?.simulation_id}/></details>;}
+ <PublicDataPanel/><ShockStory/><IntegrationsPanel key={s.world?.simulation_id}/><details className="institution-list"><summary>Inspect institutions ({s.world?.entities.length})</summary>{s.world?.entities.map(e=><button className="relationship" key={e.id} onClick={()=>s.set({selected:e.id})}>{e.name}<small>{e.kind} · {e.status}</small></button>)}</details></details>;}
 export default function LivePanel(){const s=useStore(),city=s.stage==='CITY';const [paid,setPaid]=useState(false),[follow,setFollow]=useState(''),[followNotice,setFollowNotice]=useState('');useEffect(()=>setPaid(false),[s.world?.simulation_id]);
  const scenario=s.world?.config.scenario??s.selectedScenario;
  return <aside className="side-panel"><div className="panel-scroll">{city&&s.selected?<Inspector/>:<>
@@ -175,7 +176,7 @@ export default function LivePanel(){const s=useStore(),city=s.stage==='CITY';con
  :<><p className="panel-intro">One city. Thousands of connected decisions.<br/>Change something. See what follows.</p>
  <div className="pinned-prompt"><span className="eyebrow">THE QUESTION</span><p>{scenarioQuestion[s.selectedScenario]}</p></div>
  <div className="examples"><div className="section-heading"><span>A FEW PLACES TO START</span></div>{scenarioChoices.map(([id,label])=><button key={id} className={s.selectedScenario===id?'active':''} aria-pressed={s.selectedScenario===id} onClick={()=>s.set({selectedScenario:id})}><span>{label}</span>{s.selectedScenario===id?<Check size={14}/>:<ArrowUpRight size={14}/>}</button>)}</div>
- <WorldDataOptions/><button disabled={s.busy} className="primary" onClick={s.createWorld}>{s.busy?'Creating world…':'Create and explore economy'} <ArrowRight size={18}/></button>
+ <WorldDataOptions/><PublicDataPanel/><button disabled={s.busy} className="primary" onClick={s.createWorld}>{s.busy?'Creating world…':'Create and explore economy'} <ArrowRight size={18}/></button>
  {!MINIMAL&&<p className="muted">Seed 42 · 40 households · 8 businesses · 5 banks. Supported experiments: bank asset losses and supplier shortages.</p>}
  <div className="connections"><Globe2 size={18}/><p>Follow the connections.<span>Households, businesses, banks and government. One shared economy.</span></p></div></>}
  </>}</div><div className="panel-footer"><span className="tiny-dot"/> {s.busy?'Working…':'Stylized simulation — not a forecast of a real city.'}</div></aside>;}
@@ -226,7 +227,11 @@ function ForkChart({metric,fork,index,setIndex,focus}:{metric:ForkMetric;fork:Fo
   <line x1={x(index)} x2={x(index)} y1={CT} y2={CB} stroke="#ffffff80"/>
   <text x={CL} y={CH-22} fill="#aab9c9" fontSize="9">Day {fork.source_tick}</text><text x={CR} y={CH-22} textAnchor="end" fill="#aab9c9" fontSize="9">Day {fork.end_tick}</text></svg>
   {hover&&<div className="chart-tooltip" style={{left:`${x(index)/CW*100}%`}} role="tooltip"><b>Day {fork.source_tick+index}</b>{fork.branches.map((b,i)=><span key={b.strategy}><i style={{background:BRANCH_STYLE[i].color}}/>{strategyName[b.strategy]}<strong>{metric.format(at[i])}</strong></span>)}{identical&&<small>All three branches have the same value.</small>}</div>}</div></div>;}
-export function BranchCompare(){const s=useStore(),fork=s.fork,[index,setIndex]=useState(0),[focus,setFocus]=useState<string|null>(null);useEffect(()=>{setIndex(0);setFocus(null);},[fork?.fork_id]);if(!fork)return null;
+export function BranchCompare(){const s=useStore(),fork=s.fork,[index,setIndex]=useState(0),[focus,setFocus]=useState<string|null>(null),[exporting,setExporting]=useState(false),[exportError,setExportError]=useState('');useEffect(()=>{setIndex(0);setFocus(null);},[fork?.fork_id]);if(!fork)return null;
+ const exportReport=async()=>{if(!s.world)return;setExporting(true);setExportError('');try{
+  const [saved,events]=await Promise.all([api<ComparisonEvidence>(`/api/forks/${fork.fork_id}`),api<{events:EconomyEvent[]}>(`/api/worlds/${s.world.simulation_id}/events?limit=1000`)]);
+  downloadComparison(comparisonReport(saved,s.world,events.events,s.report),saved.fork_id);
+ }catch(error){setExportError(error instanceof Error?error.message:'Comparison export failed');}finally{setExporting(false);}};
  const first=fork.branches[0].timeline[0],budget=Math.max(fork.request?.budget_cents??0,...fork.branches.flatMap(b=>b.timeline.map(t=>t.public_support_disbursed_cents)),1);
  const metrics:ForkMetric[]=[
   {key:'unemployment',title:'Unemployment',get:unemployment,format:n=>Math.round(n*10)/10+'%',max:100,ticks:[0,25,50,75,100]},
@@ -234,7 +239,7 @@ export function BranchCompare(){const s=useStore(),fork=s.fork,[index,setIndex]=
   {key:'stressed_banks',title:'Stressed banks',get:t=>t.stressed_banks,format:n=>String(Math.round(n)),max:first.banks,ticks:integerTicks(first.banks)},
   {key:'public_support_disbursed_cents',title:'Gross public support',get:t=>t.public_support_disbursed_cents,format:n=>currency(n).replace(/\.00$/,''),max:budget,ticks:[0,.25,.5,.75,1].map(f=>Math.round(budget*f))}];
  const last=fork.branches[0].timeline.length-1;
- return <div className="compare-view"><div className="compare-header"><div><p className="eyebrow">FORK REALITY</p><h2>One world. Three futures.</h2></div><button className="dark-quiet" onClick={()=>s.set({compare:false})}><ArrowLeft size={14}/>Back to city</button></div>
+ return <div className="compare-view"><button className="dark-quiet" disabled={exporting} onClick={()=>void exportReport()}>{exporting?'Preparing report…':'Download comparison report'}</button>{exportError&&<p role="alert">{exportError}</p>}<div className="compare-header"><div><p className="eyebrow">FORK REALITY</p><h2>One world. Three futures.</h2></div><button className="dark-quiet" onClick={()=>s.set({compare:false})}><ArrowLeft size={14}/>Back to city</button></div>
  <div className="snapshot-proof">Same source day {fork.source_tick}<code title={fork.snapshot_sha256}>{fork.snapshot_sha256.slice(0,16)}…</code></div>
  <div className="comparison-legend">{fork.branches.map((b,i)=><button key={b.strategy} aria-pressed={focus===b.strategy} className={focus&&focus!==b.strategy?'dimmed':''} onClick={()=>setFocus(focus===b.strategy?null:b.strategy)}><svg width="26" height="10" viewBox="0 0 26 10"><line x1="0" x2="26" y1="5" y2="5" stroke={BRANCH_STYLE[i].color} strokeWidth="2" strokeDasharray={BRANCH_STYLE[i].dash}/><Marker kind={BRANCH_STYLE[i].marker} x={13} y={5} color={BRANCH_STYLE[i].color}/></svg>{strategyName[b.strategy]}</button>)}<small>Click a branch to isolate it</small></div>
  <div className="chart-grid">{metrics.map(m=><ForkChart key={m.key} metric={m} fork={fork} index={index} setIndex={setIndex} focus={focus}/>)}</div>

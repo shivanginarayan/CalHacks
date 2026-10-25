@@ -1,6 +1,7 @@
 import {afterEach,describe,expect,it,vi} from 'vitest';
 import {api,currency,postOnce} from '../apps/web/src/data/api';
-import {getLiveLayout,liveCityState} from '../apps/web/src/data/liveCity';
+import {getLiveLayout,liveCityState,bindEntities,liveSnapshot,districtEntityIds} from '../apps/web/src/data/liveCity';
+import {getCityLayout} from '../apps/web/src/data/fixtures';
 import {useStore} from '../apps/web/src/state/store';
 import examples from '../docs/examples.json';
 import type {World} from '../apps/web/src/data/api';
@@ -22,6 +23,26 @@ describe('backend integration contract',()=>{
  it('reports backend rejections instead of substituting fixture outcomes',async()=>{
   vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:false,status:409,json:async()=>({detail:'Source world changed'})}));
   await expect(api('/api/test',{})).rejects.toThrow('Source world changed');
+ });
+ it('binds featured banks and shops once without changing decorative layout IDs',()=>{
+  const world=structuredClone(examples.world_after_one_tick) as unknown as World;
+  useStore.setState({world});const layout=getCityLayout(),ids=layout.buildings.map(b=>b.id),bound=bindEntities(layout.buildings);
+  expect(bound.get('bank-1')?.id).toBe('bank_1');expect(bound.get('cafe-14')?.id).toBe('business_1');
+  expect(districtEntityIds('Mission District').has('business_1')).toBe(true);
+  expect(districtEntityIds('Mission District').has('bank_1')).toBe(false);
+  expect(new Set([...bound.values()].map(e=>e.id)).size).toBe(world.entities.length);
+  expect(layout.buildings.map(b=>b.id)).toEqual(ids);
+ });
+ it('reflects replacement backend objects and constrained active banks in live overlays',()=>{
+  const world=structuredClone(examples.world_after_one_tick) as unknown as World;
+  useStore.setState({world});const layout=getCityLayout(),before=bindEntities(layout.buildings);
+  const replacement=structuredClone(world),business=replacement.entities.find(e=>e.id==='business_1')!,bank=replacement.entities.find(e=>e.id==='bank_1')!;
+  business.status='defaulted';bank.status='active';bank.lending_available=false;
+  useStore.setState({world:replacement,tick:12});const bound=bindEntities(layout.buildings),snapshot=liveSnapshot(layout,1,bound);
+  expect(before.get('cafe-14')?.status).toBe('active');expect(bound.get('cafe-14')?.status).toBe('defaulted');
+  expect(snapshot.firms.find(f=>f.id==='cafe-14')?.open).toBe(false);
+  expect(snapshot.districts[layout.buildings.find(b=>b.id==='cafe-14')!.district].firmOpenRate).toBeLessThan(100);
+  expect(liveCityState().stressedBanks.has('bank_1')).toBe(true);expect(snapshot.tick).toBe(12);
  });
  it('reuses the original request ID after an uncertain network response',async()=>{
   const fetch=vi.fn().mockRejectedValueOnce(new Error('connection lost')).mockResolvedValue({ok:true,json:async()=>({status:'settled'})});

@@ -22,7 +22,9 @@ class Store(CreditStore, SupplyStore, PlaybackStore, JobStore, SponsorStore):
         self.path = str(path)
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         with self.connection() as connection:
-            connection.execute("PRAGMA journal_mode=WAL")
+            mode = connection.execute("PRAGMA journal_mode").fetchone()[0]
+            if mode.lower() != "wal":
+                connection.execute("PRAGMA journal_mode=WAL")
             connection.execute("CREATE TABLE IF NOT EXISTS worlds (id TEXT PRIMARY KEY, state TEXT NOT NULL)")
             connection.execute("""CREATE TABLE IF NOT EXISTS forks (
                 id TEXT PRIMARY KEY, source_id TEXT NOT NULL, request_id TEXT NOT NULL,
@@ -42,15 +44,18 @@ class Store(CreditStore, SupplyStore, PlaybackStore, JobStore, SponsorStore):
 
     @contextmanager
     def connection(self):
-        connection = sqlite3.connect(self.path, timeout=30)
+        # Each scope owns its transaction. Reusing a thread-local connection
+        # lets an inner context commit an outer financial mutation prematurely.
+        conn = sqlite3.connect(self.path, timeout=30)
         try:
-            with connection:
-                yield connection
+            with conn:
+                yield conn
         finally:
-            connection.close()
+            conn.close()
 
     def create(self, world):
         with self.connection() as connection:
+            connection.execute("BEGIN IMMEDIATE")
             connection.execute("INSERT INTO worlds VALUES (?, ?)",
                                (world.state["simulation_id"], json.dumps(world.state)))
 

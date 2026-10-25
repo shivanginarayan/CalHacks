@@ -27,8 +27,8 @@ def pull_credit_report(store, simulation_id, business_id, profile_id, force_refr
         raise ProviderNotConfigured("The selected sponsor test profile needs its documented credit_request payload")
     config = os.getenv("CRS_CREDIT_PRODUCT_CONFIG", "")
     variant = os.getenv("CRS_CREDIT_REPORT_VARIANT", "standard")
-    if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", config) or variant not in ("basic", "standard"):
-        raise ProviderNotConfigured("Set CRS_CREDIT_PRODUCT_CONFIG and a documented basic/standard variant")
+    if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", config) or variant != "standard":
+        raise ProviderNotConfigured("Set CRS_CREDIT_PRODUCT_CONFIG and the documented standard variant")
     try:
         rules = json.loads(Path(os.environ["CRS_CREDIT_RULES_PATH"]).read_text(encoding="utf-8-sig"))
         if not isinstance(rules, dict) or not isinstance(rules.get("score_path"), str) or not rules["score_path"] or not isinstance(rules.get("risk_rules", []), list):
@@ -51,10 +51,12 @@ def pull_credit_report(store, simulation_id, business_id, profile_id, force_refr
                 response = client.post(fraud.CRS_BASE + "/users/login", json={"username": os.environ["CRS_USERNAME"], "password": os.environ["CRS_PASSWORD"]})
                 response.raise_for_status()
                 token = response.json()["token"]
-            response = client.post(fraud.CRS_BASE + f"/experian/credit-profile/credit-report/{variant}/{config}",
+            response = client.post(fraud.CRS_BASE + f"/experian/credit-report/{variant}/{config}",
                                    headers={"Authorization": "Bearer " + token, "Accept": "application/json"}, json=profile["credit_request"])
             response.raise_for_status()
             raw = response.json()
+            if not isinstance(raw, dict) or raw.get("errorMessages"):
+                raise ProviderError("CRS credit report contains product or bureau errors; underwriting remains held")
             decision, signals = fraud.normalize(raw, rules.get("risk_rules", []))
             score = None
             try:

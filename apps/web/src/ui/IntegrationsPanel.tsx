@@ -1,6 +1,7 @@
 import {useEffect,useState} from 'react';
 import {api,postOnce} from '../data/api';
 import {useStore} from '../state/store';
+import ControlRoom from './ControlRoom';
 
 type Status={fetch:{configured:boolean};crs:{configured:boolean};spacetime:{configured:boolean;database:string|null}};
 type Observation={tool:string;source?:string;source_url?:string;population_estimate?:number;reference_period?:string;total_institutions?:number;scope?:string;error?:string;institutions?:{name:string;fdic_certificate:number}[]};
@@ -9,7 +10,7 @@ type Screen={report_id:string;entity_id:string;profile_id:string;provider:string
 type Sync={enabled:boolean;last_sequence:number;source_sequence:number;error:string|null};
 
 // Fraud screening, SpacetimeDB and Fetch research are hidden, not removed; set true to restore them.
-const SPONSOR_TOOLS=false;
+const SPONSOR_TOOLS=true;
 export default function IntegrationsPanel(){
  const s=useStore(),id=s.world?.simulation_id;
  const [status,setStatus]=useState<Status|null>(null),[context,setContext]=useState<Context|null>(null);
@@ -17,6 +18,7 @@ export default function IntegrationsPanel(){
  const [receiver,setReceiver]=useState('business_2'),[payer,setPayer]=useState('business_1');
  const [screen,setScreen]=useState<Screen|null>(null),[sync,setSync]=useState<Sync|null>(null);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ const [services,setServices]=useState<{services:string[];reports:unknown}|null>(null);
  const customers=s.world?.entities.filter(e=>['business','household'].includes(e.kind))??[];
  useEffect(()=>{let current=true;setContext(null);setScreen(null);setSync(null);setNotice('');setError('');if(!id)return;
   void Promise.all([api<Status>('/api/integrations/status'),api<{profiles:{profile_id:string}[]}>('/api/fraud/profiles'),api<{reports:Context[]}>(`/api/worlds/${id}/data-context`),api<Screen[]>(`/api/worlds/${id}/fraud/screens`)]).then(([a,b,c,d])=>{
@@ -48,6 +50,10 @@ export default function IntegrationsPanel(){
   {screen&&<p role="status"><b>{screen.decision.toUpperCase()} · {screen.provider}</b><br/>{screen.explanation}</p>}
   <label>Payer<select aria-label="Screened payment payer" value={payer} onChange={e=>setPayer(e.target.value)}>{customers.map(e=><option key={e.id} value={e.id}>{e.name}</option>)}</select></label>
   <button disabled={busy||!canPay||payer===receiver||s.playing} onClick={()=>void run(async()=>{await postOnce(base+'/fraud/payments',{fraud_report_id:screen!.report_id,payer_id:payer,receiver_id:receiver,amount_cents:100},'transaction_id');setNotice('Screened $1 payment settled.');await s.refresh();})}>Confirm screened $1 payment</button>
+  <h3>Economic service agents</h3><p>Ten typed Fetch service roles use saved-state tools. The existing live Nemotron workflows remain separate; these service audits move no money.</p>
+  <button disabled={busy} onClick={()=>void run(async()=>setServices(await api(base+'/economic-services')))}>Inspect economic services</button>
+  {services&&<><p>{services.services.join(' · ')}</p><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(services.reports,null,2)}</pre></>}
+  <ControlRoom/>
   <h3>SpacetimeDB shared feed</h3><p className="muted">Mirrors committed financial events into a shared database.</p>
   <button disabled={busy||!status?.spacetime.configured} onClick={()=>void run(async()=>setSync(await api<Sync>(base+'/spacetime/enable',{})))}>Enable shared event feed</button>
   <p>{sync?.enabled?`${sync.last_sequence} / ${sync.source_sequence} events delivered`:'Feed not enabled'}{status?.spacetime.database?` · ${status.spacetime.database}`:''}</p>

@@ -6,6 +6,303 @@
     "version": "0.9.0"
   },
   "paths": {
+    "/api/calibrations/collection/status": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Collection Status",
+        "operationId": "collection_status_api_calibrations_collection_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calibrations/collect": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Start Collection",
+        "operationId": "start_collection_api_calibrations_collect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calibrations/ensure": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Ensure Public Inputs",
+        "operationId": "ensure_public_inputs_api_calibrations_ensure_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calibrations/collection/{job_id}": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Collection Job",
+        "operationId": "collection_job_api_calibrations_collection__job_id__get",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Job Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calibrations/{calibration_id}": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Calibration Detail",
+        "operationId": "calibration_detail_api_calibrations__calibration_id__get",
+        "parameters": [
+          {
+            "name": "calibration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Calibration Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/shock-stories/preview": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Preview Shock Story",
+        "operationId": "preview_shock_story_api_worlds__simulation_id__shock_stories_preview_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebtStress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/shock-stories": {
+      "get": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Shock Story History",
+        "operationId": "shock_story_history_api_worlds__simulation_id__shock_stories_get",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/worlds/{simulation_id}/shock-stories/apply": {
+      "post": {
+        "tags": [
+          "Sponsor integrations"
+        ],
+        "summary": "Apply Shock Story",
+        "operationId": "apply_shock_story_api_worlds__simulation_id__shock_stories_apply_post",
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyStory"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/integrations/status": {
       "get": {
         "tags": [
@@ -3080,6 +3377,22 @@
         ],
         "title": "ApplyAgentRequest"
       },
+      "ApplyStory": {
+        "properties": {
+          "report_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Report Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "report_id"
+        ],
+        "title": "ApplyStory"
+      },
       "Audit": {
         "properties": {
           "balanced": {
@@ -3190,6 +3503,22 @@
           "balanced"
         ],
         "title": "BalanceSheet"
+      },
+      "CollectRequest": {
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Request Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "request_id"
+        ],
+        "title": "CollectRequest"
       },
       "CreditDecision": {
         "properties": {
@@ -3615,6 +3944,48 @@
           "role"
         ],
         "title": "CreditTrace"
+      },
+      "DebtStress": {
+        "properties": {
+          "bank_id": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Bank Id",
+            "default": "bank_1"
+          },
+          "debt_increase_percent": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Debt Increase Percent",
+            "default": 25
+          },
+          "yield_increase_bps": {
+            "type": "integer",
+            "maximum": 500.0,
+            "minimum": 0.0,
+            "title": "Yield Increase Bps",
+            "default": 200
+          },
+          "modified_duration_years": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Modified Duration Years",
+            "default": 5
+          },
+          "portfolio_exposure_percent": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Portfolio Exposure Percent",
+            "default": 50
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "DebtStress"
       },
       "Entity": {
         "properties": {

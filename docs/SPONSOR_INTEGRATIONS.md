@@ -39,7 +39,7 @@ No live CRS request is verified yet: sponsor credentials/config/test profiles ar
 
 A real TypeScript module stores public `economy_event` rows and a private publishing-identity record. Only that identity can ingest. Batches are atomic and immutable, keyed by world ID/event sequence: identical replay succeeds; conflicting replay fails. The projection contains ticks, event types, synthetic actor IDs and integer-cent amounts, excluding identity reports/model prompts.
 
-SQLite remains the authoritative ledger. Enabling a feed mirrors committed events in batches of at most 100 using a durable cursor. A background worker retries every two seconds. Delivery failure cannot roll back or duplicate financial settlement. The UI shows delivered/source counts and errors. The public table supports SpacetimeDB subscribers; this first dashboard retains its existing SSE transport and shows mirror status. A read endpoint queries the actual SpacetimeDB table.
+SQLite remains the authoritative ledger. Enabling a feed mirrors committed events in batches of at most 100 using a durable cursor. A background worker retries every two seconds. Delivery failure cannot roll back or duplicate financial settlement. The UI shows delivered/source counts and errors. The shared control room now uses direct SpacetimeDB SDK subscriptions for presence, proposals, independent-identity reviews, execution receipts and financial events. SpacetimeDB owns this collaborative workflow; SQLite remains the accounting source of truth and the main dashboard retains its SSE transport. See [the complete demonstration](./SPACETIME_SUBMISSION.md).
 
 ### Local Windows setup
 
@@ -81,7 +81,7 @@ In a world click **Enable shared event feed**, then advance a day. Inspect the t
 node scripts/qa-sponsors.mjs
 ```
 
-Verified locally: module built/published, public data retrieved, 20 events written/read from SpacetimeDB, duplicate replay unchanged, ledger balanced. Browser checks verified sourced data, blocked demo payment, automatic event catch-up, reload persistence and mobile layout. ACP validates against the actual SDK. No successful ASI inference, Agentverse registration or live CRS call is claimed.
+Verified locally: module built/published, public data retrieved, 20 events written/read from SpacetimeDB, duplicate replay unchanged, ledger balanced. Browser checks verified sourced data, blocked demo payment, automatic event catch-up, reload persistence and mobile layout. ACP validates against the actual SDK. Agentverse registration, active public discovery and a full ACP mailbox stress/evidence conversation are verified. The ASI:One UI stress-test/evidence conversation is also verified. No successful separate ASI inference or live CRS call is claimed.
 
 Meaningful live CRS sandbox use is required by its [challenge](https://calhacks.crscreditapi.com/); mocked tests do not establish it. SpacetimeDB now has an actual database-backed feature to demonstrate. Sponsor eligibility/winning remains subject to their rubric.
 

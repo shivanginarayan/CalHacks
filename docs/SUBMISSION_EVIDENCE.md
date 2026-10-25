@@ -2,9 +2,13 @@
 
 ## Customer and seats
 
+The current [Microsoft and technical-complexity guide](./MICROSOFT_TECHNICAL_SUBMISSION.md) contains copy-ready descriptions, the complete five-seed evaluation methodology and the new downloadable comparison report. [Nebius × NVIDIA readiness](./NEBIUS_SUBMISSION_READINESS.md) covers the separate online event; it is not an additional Cal Hacks sponsor category.
+
 Our customer hypothesis is risk teams at regional/community banks and bank-supervision teams that need an understandable way to explore liquidity shocks. We have not conducted customer interviews or measured production savings. The prototype fills stress-testing analyst and credit-officer workflows: inspect financial facts, test scenarios, explain decisions and escalate exceptions.
 
 ## Opening demonstration
+
+The [Hyphenate and Apify submission guide](./HYPHENATE_APIFY_SUBMISSION.md) provides the timed pitch, copy-ready sponsor descriptions, source limitations and live recording command. Use that guide for the current automatic-loading UI. The combined live check creates separate worlds and records public traces and financial receipts; it does not substitute scripted agents for live calls.
 
 1. Create a standard world. Use a prearranged supplier expense to give a business a real observed payroll shortfall; label this as scenario setup.
 2. Inspect the business, open Credit safeguards and set a threshold below that shortfall. Request a review. Show `needs_human_approval`, its reasons, and that no loan settled even if automatic settlement was requested.
@@ -21,12 +25,12 @@ For a deterministic recovery rehearsal, run `scripts/hyphenate_demo.py`. It deli
 | Accounting, settlement, production, clearing and forks | Real calculations on synthetic state, tested with balance and replay invariants. |
 | Households, businesses, banks and opening balances | Seeded simulation; city geography is decorative. |
 | Census and FDIC context | Actual sourced population/institution records, with dates/scope; not a fully calibrated local economy. |
-| Apify price/wage calibration | Collector and immutable snapshot integration implemented and fixture-tested; no live collection yet. |
+| Apify price/wage calibration | Live private limited-permission Actor verified: 29 listed drink-price options at one SF cafe and the official general minimum wage, with run/dataset/source/date provenance. Values seed new worlds; remaining entities/balances/behavior are synthetic. See [Apify evidence and scope](./APIFY.md). |
 | CRS owner credit reports and fraud flags | Adapter and enforced underwriting controls implemented and fixture-tested; live credentials/config/test profiles still required. |
 | Agent decisions | Live Nemotron on Nebius verified. Demo and scripted rehearsal providers are labeled separately. |
-| Fetch conversation workflow | Complete backend conversation and evidence follow-up verified with live Nemotron; ACP SDK validated. Agentverse registration and ASI:One conversation remain unverified. |
-| x402 paid research | Real local 402 challenge and actual SDK path tested; facilitator/RPC tests are mocked. Fresh buyer wallet is unfunded, so no successful on-chain transaction yet. |
-| SpacetimeDB | Actual local database-backed event mirror verified, including replay and write authorization. |
+| Fetch conversation workflow | Complete backend conversation and evidence follow-up verified with live Nemotron; ACP SDK validated. Agentverse registration, active public discovery and full signed ACP mailbox workflow verified. Full ASI:One UI stress-test and saved-evidence follow-up also verified. |
+| x402 paid research | Real x402 SDK/facilitator purchase completed for 0.01 Base Sepolia test USDC, with independent receipt/transfer verification. Separate live policy run enabled the optional tool but did not choose to purchase. See [transaction evidence](./X402_SUBMISSION.md). |
+| SpacetimeDB | Real shared control room: direct subscriptions, two-session presence, second-identity approval, snapshot-bound exactly-once execution, persistent receipts and reducer authorization verified. See [SpacetimeDB demo](./SPACETIME_SUBMISSION.md). |
 | Nessie | Optional and not implemented; no usage claimed. |
 
 ## Measurable usefulness
